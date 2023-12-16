@@ -1,3 +1,38 @@
 [submodule "sources/meta-imx"]
 	path = sources/meta-imx
 	url = git@github.com:nxp-imx/meta-imx.git
+[submodule "sources/base"]
+	path = sources/base
+	url = git@github.com:Freescale/fsl-community-bsp-base.git
+	branch = kirkstone
+[submodule "sources/meta-browser"]
+	path = sources/meta-browser
+	url = git@github.com:OSSystems/meta-browser.git
+[submodule "sources/meta-clang"]
+	path = sources/meta-clang
+	url = git@github.com:kraj/meta-clang.git
+[submodule "sources/meta-freescale"]
+	path = sources/meta-freescale
+	url = git@github.com:Freescale/meta-freescale.git
+[submodule "sources/meta-freescale-distro"]
+	path = sources/meta-freescale-distro
+	url = git@github.com:Freescale/meta-freescale-distro.git
+[submodule "sources/meta-freescale-3rdparty"]
+	path = sources/meta-freescale-3rdparty
+	url = git@github.com:Freescale/meta-freescale-3rdparty.git
+[submodule "sources/meta-openembedded"]
+	path = sources/meta-openembedded
+	url = git@github.com:openembedded/meta-openembedded.git
+[submodule "sources/meta-timesys"]
+	path = sources/meta-timesys
+	url = git@github.com:TimesysGit/meta-timesys.git
+[submodule "sources/meta-virtualization"]
+	path = sources/meta-virtualization
+	url = git@github.com:ni/meta-virtualization.git
+[submodule "sources/poky"]
+	path = sources/poky
+	url = git@github.com:yoctoproject/poky.git
+[submodule "sources/meta-dotnet-core"]
+	path = sources/meta-dotnet-core
+	url = git@github.com:RDunkley/meta-dotnet-core.git
+	branch = kirkstone
