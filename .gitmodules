@@ -1,0 +1,3 @@
+[submodule "sources/meta-imx"]
+	path = sources/meta-imx
+	url = git@github.com:nxp-imx/meta-imx.git

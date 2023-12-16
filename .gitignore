@@ -1,0 +1,10 @@
+build/cache
+build/sstate-cache
+build/tmp
+build/conf/*.org
+build/conf/*.sample
+build/conf/*.cfg
+build/*.log
+build/*.lock
+.repo
+downloads
