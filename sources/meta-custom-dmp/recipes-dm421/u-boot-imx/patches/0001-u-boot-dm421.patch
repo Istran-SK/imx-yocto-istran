@@ -1,32 +1,185 @@
+From 3fd62779842c32a6be1f03bf6b59c4d514a27692 Mon Sep 17 00:00:00 2001
+From: axing <axing@dmp.com.tw>
+Date: Tue, 14 Nov 2023 14:16:46 +0800
+Subject: [PATCH 1/1] u-boot-dm421
+
+---
+ arch/arm/dts/Makefile                       |    1 +
+ arch/arm/dts/imx8mm-dm421-uboot.dtsi        |  134 ++
+ arch/arm/dts/imx8mm-dm421.dts               |  581 ++++++
+ arch/arm/mach-imx/imx8m/Kconfig             |    8 +
+ board/icop/common/Kconfig                   |   44 +
+ board/icop/common/Makefile                  |   92 +
+ board/icop/common/arm_sleep.c               |  129 ++
+ board/icop/common/cadmus.c                  |   78 +
+ board/icop/common/cadmus.h                  |   37 +
+ board/icop/common/cds_pci_ft.c              |   77 +
+ board/icop/common/cds_via.c                 |   92 +
+ board/icop/common/cmd_esbc_validate.c       |   86 +
+ board/icop/common/dcu_sii9022a.c            |  248 +++
+ board/icop/common/dcu_sii9022a.h            |   12 +
+ board/icop/common/diu_ch7301.c              |  216 +++
+ board/icop/common/diu_ch7301.h              |   12 +
+ board/icop/common/eeprom.h                  |   33 +
+ board/icop/common/emc2305.c                 |   62 +
+ board/icop/common/emc2305.h                 |   23 +
+ board/icop/common/epdc_setup.c              |  224 +++
+ board/icop/common/fman.c                    |   89 +
+ board/icop/common/fman.h                    |   14 +
+ board/icop/common/fsl_chain_of_trust.c      |  165 ++
+ board/icop/common/fsl_validate.c            |  962 ++++++++++
+ board/icop/common/ics307_clk.c              |  145 ++
+ board/icop/common/ics307_clk.h              |   15 +
+ board/icop/common/idt8t49n222a_serdes_clk.c |  206 ++
+ board/icop/common/idt8t49n222a_serdes_clk.h |  106 ++
+ board/icop/common/ls102xa_stream_id.c       |   35 +
+ board/icop/common/mc34vr500.c               |   94 +
+ board/icop/common/mmc.c                     |   49 +
+ board/icop/common/mpc85xx_sleep.c           |   95 +
+ board/icop/common/ngpixis.c                 |  249 +++
+ board/icop/common/ngpixis.h                 |   60 +
+ board/icop/common/ns_access.c               |  239 +++
+ board/icop/common/p_corenet/Makefile        |    8 +
+ board/icop/common/p_corenet/law.c           |   36 +
+ board/icop/common/p_corenet/pci.c           |   25 +
+ board/icop/common/p_corenet/tlb.c           |  160 ++
+ board/icop/common/pfuze.c                   |  173 ++
+ board/icop/common/pfuze.h                   |   17 +
+ board/icop/common/pixis.c                   |  541 ++++++
+ board/icop/common/pixis.h                   |  165 ++
+ board/icop/common/pq-mds-pib.c              |  102 +
+ board/icop/common/pq-mds-pib.h              |    9 +
+ board/icop/common/qixis.c                   |  374 ++++
+ board/icop/common/qixis.h                   |  136 ++
+ board/icop/common/qspi_header               |  128 ++
+ board/icop/common/recovery_keypad.c         |   60 +
+ board/icop/common/recovery_keypad.h         |   13 +
+ board/icop/common/sdhc_boot.c               |   79 +
+ board/icop/common/sgmii_riser.c             |  129 ++
+ board/icop/common/sgmii_riser.h             |   16 +
+ board/icop/common/sleep.h                   |   20 +
+ board/icop/common/spl.h                     |   12 +
+ board/icop/common/sys_eeprom.c              |  620 +++++++
+ board/icop/common/tcpc.c                    | 1017 ++++++++++
+ board/icop/common/tcpc.h                    |  469 +++++
+ board/icop/common/via.h                     |   18 +
+ board/icop/common/vid.c                     |  965 ++++++++++
+ board/icop/common/vid.h                     |   23 +
+ board/icop/common/vsc3316_3308.c            |  275 +++
+ board/icop/common/vsc3316_3308.h            |   24 +
+ board/icop/common/zm7300.c                  |  232 +++
+ board/icop/common/zm7300.h                  |   21 +
+ board/icop/imx8mm_dm421/Kconfig             |   14 +
+ board/icop/imx8mm_dm421/MAINTAINERS         |    6 +
+ board/icop/imx8mm_dm421/Makefile            |   17 +
+ board/icop/imx8mm_dm421/README              |   37 +
+ board/icop/imx8mm_dm421/ddr4_timing.c       | 1265 +++++++++++++
+ board/icop/imx8mm_dm421/imx8mm_dm421.c      |  338 ++++
+ board/icop/imx8mm_dm421/lpddr4_timing.c     | 1855 +++++++++++++++++++
+ board/icop/imx8mm_dm421/lpddr4_timing_4g.c  | 1845 ++++++++++++++++++
+ board/icop/imx8mm_dm421/spl.c               |  325 ++++
+ configs/imx8mm_dm421_defconfig              |  141 ++
+ include/configs/imx8mm_dm421.h              |  291 +++
+ 76 files changed, 16713 insertions(+)
+ create mode 100644 arch/arm/dts/imx8mm-dm421-uboot.dtsi
+ create mode 100644 arch/arm/dts/imx8mm-dm421.dts
+ create mode 100644 board/icop/common/Kconfig
+ create mode 100644 board/icop/common/Makefile
+ create mode 100644 board/icop/common/arm_sleep.c
+ create mode 100644 board/icop/common/cadmus.c
+ create mode 100644 board/icop/common/cadmus.h
+ create mode 100644 board/icop/common/cds_pci_ft.c
+ create mode 100644 board/icop/common/cds_via.c
+ create mode 100644 board/icop/common/cmd_esbc_validate.c
+ create mode 100644 board/icop/common/dcu_sii9022a.c
+ create mode 100644 board/icop/common/dcu_sii9022a.h
+ create mode 100644 board/icop/common/diu_ch7301.c
+ create mode 100644 board/icop/common/diu_ch7301.h
+ create mode 100644 board/icop/common/eeprom.h
+ create mode 100644 board/icop/common/emc2305.c
+ create mode 100644 board/icop/common/emc2305.h
+ create mode 100644 board/icop/common/epdc_setup.c
+ create mode 100644 board/icop/common/fman.c
+ create mode 100644 board/icop/common/fman.h
+ create mode 100644 board/icop/common/fsl_chain_of_trust.c
+ create mode 100644 board/icop/common/fsl_validate.c
+ create mode 100644 board/icop/common/ics307_clk.c
+ create mode 100644 board/icop/common/ics307_clk.h
+ create mode 100644 board/icop/common/idt8t49n222a_serdes_clk.c
+ create mode 100644 board/icop/common/idt8t49n222a_serdes_clk.h
+ create mode 100644 board/icop/common/ls102xa_stream_id.c
+ create mode 100644 board/icop/common/mc34vr500.c
+ create mode 100644 board/icop/common/mmc.c
+ create mode 100644 board/icop/common/mpc85xx_sleep.c
+ create mode 100644 board/icop/common/ngpixis.c
+ create mode 100644 board/icop/common/ngpixis.h
+ create mode 100644 board/icop/common/ns_access.c
+ create mode 100644 board/icop/common/p_corenet/Makefile
+ create mode 100644 board/icop/common/p_corenet/law.c
+ create mode 100644 board/icop/common/p_corenet/pci.c
+ create mode 100644 board/icop/common/p_corenet/tlb.c
+ create mode 100644 board/icop/common/pfuze.c
+ create mode 100644 board/icop/common/pfuze.h
+ create mode 100644 board/icop/common/pixis.c
+ create mode 100644 board/icop/common/pixis.h
+ create mode 100644 board/icop/common/pq-mds-pib.c
+ create mode 100644 board/icop/common/pq-mds-pib.h
+ create mode 100644 board/icop/common/qixis.c
+ create mode 100644 board/icop/common/qixis.h
+ create mode 100644 board/icop/common/qspi_header
+ create mode 100644 board/icop/common/recovery_keypad.c
+ create mode 100644 board/icop/common/recovery_keypad.h
+ create mode 100644 board/icop/common/sdhc_boot.c
+ create mode 100644 board/icop/common/sgmii_riser.c
+ create mode 100644 board/icop/common/sgmii_riser.h
+ create mode 100644 board/icop/common/sleep.h
+ create mode 100644 board/icop/common/spl.h
+ create mode 100644 board/icop/common/sys_eeprom.c
+ create mode 100644 board/icop/common/tcpc.c
+ create mode 100644 board/icop/common/tcpc.h
+ create mode 100644 board/icop/common/via.h
+ create mode 100644 board/icop/common/vid.c
+ create mode 100644 board/icop/common/vid.h
+ create mode 100644 board/icop/common/vsc3316_3308.c
+ create mode 100644 board/icop/common/vsc3316_3308.h
+ create mode 100644 board/icop/common/zm7300.c
+ create mode 100644 board/icop/common/zm7300.h
+ create mode 100644 board/icop/imx8mm_dm421/Kconfig
+ create mode 100644 board/icop/imx8mm_dm421/MAINTAINERS
+ create mode 100644 board/icop/imx8mm_dm421/Makefile
+ create mode 100644 board/icop/imx8mm_dm421/README
+ create mode 100644 board/icop/imx8mm_dm421/ddr4_timing.c
+ create mode 100644 board/icop/imx8mm_dm421/imx8mm_dm421.c
+ create mode 100644 board/icop/imx8mm_dm421/lpddr4_timing.c
+ create mode 100644 board/icop/imx8mm_dm421/lpddr4_timing_4g.c
+ create mode 100644 board/icop/imx8mm_dm421/spl.c
+ create mode 100644 configs/imx8mm_dm421_defconfig
+ create mode 100644 include/configs/imx8mm_dm421.h
+
 diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
-index 709fdaecd7..dc41447a72 100644
+index 0d24acd457..fc2cf060fd 100644
 --- a/arch/arm/dts/Makefile
 +++ b/arch/arm/dts/Makefile
-@@ -969,6 +969,7 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
- 	imx8mm-ddr3l-val.dtb \
- 	imx8mm-ddr4-val.dtb \
+@@ -783,6 +783,7 @@ dtb-$(CONFIG_ARCH_IMX8) += \
+ 
+ dtb-$(CONFIG_ARCH_IMX8M) += \
  	imx8mm-evk.dtb \
 +	imx8mm-dm421.dtb \
- 	imx8mm-ab2.dtb \
- 	imx8mm-icore-mx8mm-ctouch2.dtb \
- 	imx8mm-icore-mx8mm-edimm2.2.dtb \
-diff --git a/arch/arm/dts/imx8mm-dm421-u-boot.dtsi b/arch/arm/dts/imx8mm-dm421-u-boot.dtsi
+ 	imx8mm-evk-qca-wifi.dtb \
+ 	imx8mm-ddr4-evk.dtb \
+ 	imx8mm-ddr3l-val.dtb \
+diff --git a/arch/arm/dts/imx8mm-dm421-uboot.dtsi b/arch/arm/dts/imx8mm-dm421-uboot.dtsi
 new file mode 100644
-index 0000000000..02fdc88e27
+index 0000000000..71986fac72
 --- /dev/null
-+++ b/arch/arm/dts/imx8mm-dm421-u-boot.dtsi
-@@ -0,0 +1,201 @@
++++ b/arch/arm/dts/imx8mm-dm421-uboot.dtsi
+@@ -0,0 +1,134 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2019 NXP
 + */
 +
 +/ {
-+	wdt-reboot {
-+		compatible = "wdt-reboot";
-+		wdt = <&wdog1>;
-+		u-boot,dm-spl;
-+	};
 +
 +	aliases {
 +		usbgadget0 = &usbg1;
@@ -90,31 +243,6 @@ index 0000000000..02fdc88e27
 +	u-boot,dm-spl;
 +};
 +
-+&reg_usdhc2_vmmc {
-+	u-boot,off-on-delay-us = <20000>;
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_reg_usdhc2_vmmc {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_uart2 {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_usdhc2_gpio {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_usdhc2 {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_usdhc3 {
-+	u-boot,dm-spl;
-+};
-+
 +&gpio1 {
 +	u-boot,dm-spl;
 +};
@@ -135,9 +263,11 @@ index 0000000000..02fdc88e27
 +	u-boot,dm-spl;
 +};
 +
++/*
 +&uart2 {
 +	u-boot,dm-spl;
 +};
++*/
 +
 +&usdhc1 {
 +	u-boot,dm-spl;
@@ -153,7 +283,6 @@ index 0000000000..02fdc88e27
 +	assigned-clocks = <&clk IMX8MM_CLK_USDHC2>;
 +	assigned-clock-rates = <400000000>;
 +	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_400M>;
-+	fsl,signal-voltage-switch-extra-delay-ms = <8>;
 +};
 +
 +&usdhc3 {
@@ -169,210 +298,38 @@ index 0000000000..02fdc88e27
 +	u-boot,dm-spl;
 +};
 +
-+&{/soc@0/bus@30800000/i2c@30a20000/bd71837@4b} {
-+	u-boot,dm-spl;
-+};
-+
-+&{/soc@0/bus@30800000/i2c@30a20000/bd71837@4b/regulators} {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_i2c1 {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_pmic {
-+	u-boot,dm-spl;
-+};
-+
 +&fec1 {
 +	phy-reset-gpios = <&gpio4 22 GPIO_ACTIVE_LOW>;
 +};
 +
-+&ethphy0 {
-+	vddio0: vddio-regulator {
-+		regulator-name = "VDDIO";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
++&flexspi {
++	assigned-clock-rates = <100000000>;
++	assigned-clocks = <&clk IMX8MM_CLK_QSPI>;
++	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_100M>;
 +};
 +
-+&wdog1 {
-+	u-boot,dm-spl;
-+};
-+
-+&usbotg1 {
-+	status = "okay";
-+	//extcon = <&ptn5110>;
-+};
-+
-+&lcdif {
-+	/delete-property/ assigned-clocks;
-+	/delete-property/ assigned-clock-parents;
-+	/delete-property/ assigned-clock-rates;
-+};
-+
-+&mipi_dsi {
-+	/delete-property/ assigned-clocks;
-+	/delete-property/ assigned-clock-parents;
-+	/delete-property/ assigned-clock-rates;
-+};
 diff --git a/arch/arm/dts/imx8mm-dm421.dts b/arch/arm/dts/imx8mm-dm421.dts
 new file mode 100644
-index 0000000000..8522329d3f
+index 0000000000..374cf43022
 --- /dev/null
 +++ b/arch/arm/dts/imx8mm-dm421.dts
-@@ -0,0 +1,133 @@
+@@ -0,0 +1,581 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
-+ * Copyright 2019-2020 NXP
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/usb/pd.h>
-+#include "imx8mm-dm421.dtsi"
-+
-+/ {
-+	model = "ICOP i.MX8MM DM421 board";
-+	compatible = "icop,imx8mm-dm421", "fsl,imx8mm";
-+
-+	chosen {
-+		bootargs = "console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200";
-+		stdout-path = &uart2;
-+	};
-+
-+	aliases {
-+		spi0 = &flexspi;
-+	};
-+};
-+
-+&ddrc {
-+	operating-points-v2 = <&ddrc_opp_table>;
-+
-+	ddrc_opp_table: opp-table {
-+		compatible = "operating-points-v2";
-+
-+		opp-25M {
-+			opp-hz = /bits/ 64 <25000000>;
-+		};
-+
-+		opp-100M {
-+			opp-hz = /bits/ 64 <100000000>;
-+		};
-+
-+		opp-750M {
-+			opp-hz = /bits/ 64 <750000000>;
-+		};
-+	};
-+};
-+
-+&flexspi {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexspi>;
-+	status = "okay";
-+
-+	flash@0 {
-+		reg = <0>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-max-frequency = <80000000>;
-+		spi-tx-bus-width = <4>;
-+		spi-rx-bus-width = <4>;
-+	};
-+};
-+
-+
-+&usdhc3 {
-+	assigned-clocks = <&clk IMX8MM_CLK_USDHC3_ROOT>;
-+	assigned-clock-rates = <400000000>;
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
-+	bus-width = <8>;
-+	non-removable;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_flexspi: flexspigrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_NAND_ALE_QSPI_A_SCLK               0x1c2
-+			MX8MM_IOMUXC_NAND_CE0_B_QSPI_A_SS0_B            0x82
-+			MX8MM_IOMUXC_NAND_DATA00_QSPI_A_DATA0           0x82
-+			MX8MM_IOMUXC_NAND_DATA01_QSPI_A_DATA1           0x82
-+			MX8MM_IOMUXC_NAND_DATA02_QSPI_A_DATA2           0x82
-+			MX8MM_IOMUXC_NAND_DATA03_QSPI_A_DATA3           0x82
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK               0x190
-+			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD               0x1d0
-+			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0           0x1d0
-+			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1           0x1d0
-+			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2           0x1d0
-+			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3           0x1d0
-+			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4             0x1d0
-+			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5            0x1d0
-+			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6            0x1d0
-+			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7              0x1d0
-+			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE           0x190
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_100mhz: usdhc3-100mhzgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK               0x194
-+			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD               0x1d4
-+			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0           0x1d4
-+			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1           0x1d4
-+			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2           0x1d4
-+			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3           0x1d4
-+			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4             0x1d4
-+			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5            0x1d4
-+			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6            0x1d4
-+			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7              0x1d4
-+			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE           0x194
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_200mhz: usdhc3-200mhzgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK               0x196
-+			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD               0x1d6
-+			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0           0x1d6
-+			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1           0x1d6
-+			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2           0x1d6
-+			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3           0x1d6
-+			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4             0x1d6
-+			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5            0x1d6
-+			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6            0x1d6
-+			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7              0x1d6
-+			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE           0x196
-+		>;
-+	};
-+};
-diff --git a/arch/arm/dts/imx8mm-dm421.dtsi b/arch/arm/dts/imx8mm-dm421.dtsi
-new file mode 100644
-index 0000000000..0459b47f04
---- /dev/null
-+++ b/arch/arm/dts/imx8mm-dm421.dtsi
-@@ -0,0 +1,520 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2020 NXP
++ * Copyright 2019 NXP
 + */
 +
 +/dts-v1/;
 +
 +#include <dt-bindings/usb/pd.h>
 +#include "imx8mm.dtsi"
++#include "imx8mm-dm421-uboot.dtsi"
++
 +
 +/ {
++	model = "NXP i.MX8MM DM421";
++	compatible = "fsl,imx8mm-dm421", "fsl,imx8mm";
++
 +	chosen {
 +		bootargs = "console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200";
 +		stdout-path = &uart2;
@@ -398,177 +355,18 @@ index 0000000000..0459b47f04
 +		regulator-min-microvolt = <3300000>;
 +		regulator-max-microvolt = <3300000>;
 +		gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
++		off-on-delay-us = <20000>;
 +		enable-active-high;
++	};
++
++	dsi_host: dsi-host {
++		compatible = "samsung,sec-mipi-dsi";
++		status = "okay";
 +	};
 +};
 +
-+&iomuxc {
-+
-+	pinctrl_fec1: fec1grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC				0x3
-+			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO			0x3
-+			MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
-+			MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
-+			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
-+			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
-+			MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
-+			MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
-+			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
-+			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
-+			MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
-+			MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
-+			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
-+			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
-+			MX8MM_IOMUXC_SAI1_RXD1_GPIO4_IO3			0x19
-+		>;
-+	};
-+
-+	pinctrl_wdog: wdoggrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B		0xc6
-+		>;
-+	};
-+
-+	pinctrl_mipi_dsi_en: mipi_dsi_en {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO08_GPIO1_IO8			0x19
-+		>;
-+	};
-+
-+	pinctrl_gpio_led: gpioledgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_NAND_READY_B_GPIO3_IO16		0x19
-+		>;
-+	};
-+
-+	pinctrl_ecspi2: ecspi2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK		0x82
-+			MX8MM_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI		0x82
-+			MX8MM_IOMUXC_ECSPI2_MISO_ECSPI2_MISO		0x82
-+		>;
-+	};
-+
-+	pinctrl_ecspi2_cs: ecspi2cs {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_ECSPI2_SS0_GPIO5_IO13			0x40000
-+		>;
-+	};
-+
-+	pinctrl_pmic: pmicirqgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3			0x141
-+		>;
-+	};
-+
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL				0x400001c3
-+			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA				0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL				0x400001c3
-+			MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA				0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_i2c3: i2c3grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C3_SCL_I2C3_SCL				0x400001c3
-+			MX8MM_IOMUXC_I2C3_SDA_I2C3_SDA				0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_i2c1_gpio: i2c1grp-gpio {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C1_SCL_GPIO5_IO14			0x1c3
-+			MX8MM_IOMUXC_I2C1_SDA_GPIO5_IO15			0x1c3
-+		>;
-+	};
-+
-+	pinctrl_i2c2_gpio: i2c2grp-gpio {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C2_SCL_GPIO5_IO16			0x1c3
-+			MX8MM_IOMUXC_I2C2_SDA_GPIO5_IO17			0x1c3
-+		>;
-+	};
-+
-+	pinctrl_i2c3_gpio: i2c3grp-gpio {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C3_SCL_GPIO5_IO18			0x1c3
-+			MX8MM_IOMUXC_I2C3_SDA_GPIO5_IO19			0x1c3
-+		>;
-+	};
-+
-+	pinctrl_i2c4: i2c4grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL				0x400001c3
-+			MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA				0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_uart2: uart2grp {
-+		fsl,pins = <
-+			/*
-+			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX			0x140
-+			MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX			0x140
-+			*/
-+			0x1D8 0x440 0x4FC 0x04 0x02 0x49
-+			0x1DC 0x444 0x000 0x04 0x00 0x49
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_gpio: usdhc2grpgpiogrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15			0x1c4
-+		>;
-+	};
-+
-+	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19			0x41
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK				0x190
-+			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD				0x1d0
-+			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0			0x1d0
-+			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1			0x1d0
-+			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2			0x1d0
-+			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3			0x1d0
-+			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK				0x194
-+			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD				0x1d4
-+			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0			0x1d4
-+			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1			0x1d4
-+			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2			0x1d4
-+			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3			0x1d4
-+			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK				0x196
-+			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD				0x1d6
-+			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0			0x1d6
-+			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1			0x1d6
-+			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2			0x1d6
-+			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3			0x1d6
-+			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
-+		>;
-+	};
++&A53_0 {
++	cpu-supply = <&buck2_reg>;
 +};
 +
 +&fec1 {
@@ -576,6 +374,7 @@ index 0000000000..0459b47f04
 +	pinctrl-0 = <&pinctrl_fec1>;
 +	phy-mode = "rgmii-id";
 +	phy-handle = <&ethphy0>;
++	phy-reset-gpios = <&gpio4 3 GPIO_ACTIVE_LOW>;
 +	fsl,magic-packet;
 +	status = "okay";
 +
@@ -586,9 +385,6 @@ index 0000000000..0459b47f04
 +		ethphy0: ethernet-phy@0 {
 +			compatible = "ethernet-phy-ieee802.3-c22";
 +			reg = <0>;
-+			reset-gpios = <&gpio4 3 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <250>;
-+			reset-deassert-us = <250>;
 +			at803x,led-act-blind-workaround;
 +			at803x,eee-okay;
 +			at803x,vddio-1p8v;
@@ -596,36 +392,38 @@ index 0000000000..0459b47f04
 +	};
 +};
 +
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	scl-gpios = <&gpio5 14 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio5 15 GPIO_ACTIVE_HIGH>;
++&flexspi {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flexspi0>;
 +	status = "okay";
 +
-+	pmic: bd71837@4b {
-+		reg = <0x4b>;
-+		compatible = "rohm,bd71837";
-+		/* PMIC BD71837 PMIC_nINT GPIO1_IO3 */
-+		pinctrl-0 = <&pinctrl_pmic>;
-+		gpio_intr = <&gpio1 3 GPIO_ACTIVE_LOW>;
++	flash0: mt25qu256aba@0 {
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "jedec,spi-nor";
++		spi-max-frequency = <80000000>;
++		spi-tx-bus-width = <4>;
++		spi-rx-bus-width = <4>;
++	};
++};
 +
-+		gpo {
-+			rohm,drv = <0x0C>;	/* 0b0000_1100 all gpos with cmos output mode */
-+		};
++&i2c1 {
++	clock-frequency = <400000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c1>;
++	status = "okay";
++
++	pmic@4b {
++		compatible = "rohm,bd71847";
++		reg = <0x4b>;
++		pinctrl-0 = <&pinctrl_pmic>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <3 GPIO_ACTIVE_LOW>;
 +
 +		regulators {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			bd71837,pmic-buck2-uses-i2c-dvs;
-+			bd71837,pmic-buck2-dvs-voltage = <1000000>, <900000>, <0>; /* VDD_ARM: Run-Idle */
-+
-+			buck1_reg: regulator@0 {
-+				reg = <0>;
-+				regulator-compatible = "buck1";
++			buck1_reg: BUCK1 {
++				regulator-name = "BUCK1";
 +				regulator-min-microvolt = <700000>;
 +				regulator-max-microvolt = <1300000>;
 +				regulator-boot-on;
@@ -633,123 +431,91 @@ index 0000000000..0459b47f04
 +				regulator-ramp-delay = <1250>;
 +			};
 +
-+			buck2_reg: regulator@1 {
-+				reg = <1>;
-+				regulator-compatible = "buck2";
++			buck2_reg: BUCK2 {
++				regulator-name = "BUCK2";
 +				regulator-min-microvolt = <700000>;
 +				regulator-max-microvolt = <1300000>;
 +				regulator-boot-on;
 +				regulator-always-on;
 +				regulator-ramp-delay = <1250>;
++				rohm,dvs-run-voltage = <1000000>;
++				rohm,dvs-idle-voltage = <900000>;
 +			};
 +
-+			buck3_reg: regulator@2 {
-+				reg = <2>;
-+				regulator-compatible = "buck3";
-+				regulator-min-microvolt = <700000>;
-+				regulator-max-microvolt = <1300000>;
-+			};
-+
-+			buck4_reg: regulator@3 {
-+				reg = <3>;
-+				regulator-compatible = "buck4";
-+				regulator-min-microvolt = <700000>;
-+				regulator-max-microvolt = <1300000>;
-+			};
-+
-+			buck5_reg: regulator@4 {
-+				reg = <4>;
-+				regulator-compatible = "buck5";
++			buck3_reg: BUCK3 {
++				// BUCK5 in datasheet
++				regulator-name = "BUCK3";
 +				regulator-min-microvolt = <700000>;
 +				regulator-max-microvolt = <1350000>;
 +				regulator-boot-on;
 +				regulator-always-on;
 +			};
 +
-+			buck6_reg: regulator@5 {
-+				reg = <5>;
-+				regulator-compatible = "buck6";
++			buck4_reg: BUCK4 {
++				// BUCK6 in datasheet
++				regulator-name = "BUCK4";
 +				regulator-min-microvolt = <3000000>;
 +				regulator-max-microvolt = <3300000>;
 +				regulator-boot-on;
 +				regulator-always-on;
 +			};
 +
-+			buck7_reg: regulator@6 {
-+				reg = <6>;
-+				regulator-compatible = "buck7";
++			buck5_reg: BUCK5 {
++				// BUCK7 in datasheet
++				regulator-name = "BUCK5";
 +				regulator-min-microvolt = <1605000>;
 +				regulator-max-microvolt = <1995000>;
 +				regulator-boot-on;
 +				regulator-always-on;
 +			};
 +
-+			buck8_reg: regulator@7 {
-+				reg = <7>;
-+				regulator-compatible = "buck8";
++			buck6_reg: BUCK6 {
++				// BUCK8 in datasheet
++				regulator-name = "BUCK6";
 +				regulator-min-microvolt = <800000>;
 +				regulator-max-microvolt = <1400000>;
 +				regulator-boot-on;
 +				regulator-always-on;
 +			};
 +
-+			ldo1_reg: regulator@8 {
-+				reg = <8>;
-+				regulator-compatible = "ldo1";
-+				regulator-min-microvolt = <3000000>;
-+				regulator-max-microvolt = <3300000>;
++			ldo1_reg: LDO1 {
++				regulator-name = "LDO1";
++				regulator-min-microvolt = <1600000>;
++				regulator-max-microvolt = <1900000>;
 +				regulator-boot-on;
 +				regulator-always-on;
 +			};
 +
-+			ldo2_reg: regulator@9 {
-+				reg = <9>;
-+				regulator-compatible = "ldo2";
-+				regulator-min-microvolt = <900000>;
++			ldo2_reg: LDO2 {
++				regulator-name = "LDO2";
++				regulator-min-microvolt = <800000>;
 +				regulator-max-microvolt = <900000>;
 +				regulator-boot-on;
 +				regulator-always-on;
 +			};
 +
-+			ldo3_reg: regulator@10 {
-+				reg = <10>;
-+				regulator-compatible = "ldo3";
++			ldo3_reg: LDO3 {
++				regulator-name = "LDO3";
 +				regulator-min-microvolt = <1800000>;
 +				regulator-max-microvolt = <3300000>;
 +				regulator-boot-on;
 +				regulator-always-on;
 +			};
 +
-+			ldo4_reg: regulator@11 {
-+				reg = <11>;
-+				regulator-compatible = "ldo4";
++			ldo4_reg: LDO4 {
++				regulator-name = "LDO4";
 +				regulator-min-microvolt = <900000>;
 +				regulator-max-microvolt = <1800000>;
 +				regulator-boot-on;
 +				regulator-always-on;
 +			};
 +
-+			ldo5_reg: regulator@12 {
-+				reg = <12>;
-+				regulator-compatible = "ldo5";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+			};
-+
-+			ldo6_reg: regulator@13 {
-+				reg = <13>;
-+				regulator-compatible = "ldo6";
++			ldo6_reg: LDO6 {
++				regulator-name = "LDO6";
 +				regulator-min-microvolt = <900000>;
 +				regulator-max-microvolt = <1800000>;
 +				regulator-boot-on;
 +				regulator-always-on;
-+			};
-+
-+			ldo7_reg: regulator@14 {
-+				reg = <14>;
-+				regulator-compatible = "ldo7";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
 +			};
 +		};
 +	};
@@ -826,15 +592,36 @@ index 0000000000..0459b47f04
 +	};
 +};
 +
++&sai3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_sai3>;
++	assigned-clocks = <&clk IMX8MM_CLK_SAI3>;
++	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
++	assigned-clock-rates = <24576000>;
++	status = "okay";
++};
++
++&snvs_pwrkey {
++	status = "okay";
++};
++
 +&uart2 { /* console */
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&pinctrl_uart2>;
 +	status = "okay";
 +};
 +
++&usbotg1 {
++	status = "okay";
++	/*extcon = <&ptn5110>;*/
++};
++
++&usbotg2 {
++	status = "okay";
++	/*extcon = <&ptn5110_2>;*/
++};
++
 +&usdhc2 {
-+	assigned-clocks = <&clk IMX8MM_CLK_USDHC2>;
-+	assigned-clock-rates = <200000000>;
 +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
 +	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
 +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
@@ -842,6 +629,23 @@ index 0000000000..0459b47f04
 +	cd-gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
 +	bus-width = <4>;
 +	//vmmc-supply = <&reg_usdhc2_vmmc>;
++	status = "okay";
++};
++
++&usdhc3 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc3>;
++	pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
++	pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
++	bus-width = <8>;
++	non-removable;
++	status = "okay";
++};
++
++&wdog1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wdog>;
++	fsl,ext-reset-output;
 +	status = "okay";
 +};
 +
@@ -855,72 +659,279 @@ index 0000000000..0459b47f04
 +	};
 +};
 +
-+&wdog1 {
++&iomuxc {
 +	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_wdog>;
-+	fsl,ext-reset-output;
-+	status = "okay";
-+};
++	pinctrl-0 = <&pinctrl_hog_1>;
 +
-+&snvs_pwrkey {
-+	status = "okay";
-+};
++	pinctrl_hog_1: hoggrp-1 {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO08_GPIO1_IO8			0x19
++		>;
++	};
++	pinctrl_fec1: fec1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC				0x3
++			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO			0x3
++			MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
++			MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
++			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
++			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
++			MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
++			MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
++			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
++			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
++			MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
++			MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
++			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
++			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
++			MX8MM_IOMUXC_SAI1_RXD1_GPIO4_IO3			0x19
++		>;
++	};
 +
-+&A53_0 {
-+	cpu-supply = <&buck2_reg>;
-+};
++	pinctrl_flexspi0: flexspi0grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_ALE_QSPI_A_SCLK               0x1c2
++			MX8MM_IOMUXC_NAND_CE0_B_QSPI_A_SS0_B            0x82
++			MX8MM_IOMUXC_NAND_DATA00_QSPI_A_DATA0           0x82
++			MX8MM_IOMUXC_NAND_DATA01_QSPI_A_DATA1           0x82
++			MX8MM_IOMUXC_NAND_DATA02_QSPI_A_DATA2           0x82
++			MX8MM_IOMUXC_NAND_DATA03_QSPI_A_DATA3           0x82
++		>;
++	};
 +
-+&A53_1 {
-+	cpu-supply = <&buck2_reg>;
-+};
++	pinctrl_gpio_led: gpioledgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_READY_B_GPIO3_IO16	0x19
++		>;
++	};
 +
-+&A53_2 {
-+	cpu-supply = <&buck2_reg>;
-+};
++	pinctrl_gpio_wlf: gpiowlfgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C4_SDA_GPIO5_IO21	0xd6
++		>;
++	};
 +
-+&A53_3 {
-+	cpu-supply = <&buck2_reg>;
-+};
++	pinctrl_i2c1: i2c1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL			0x400001c3
++			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA			0x400001c3
++		>;
++	};
 +
++	pinctrl_i2c2: i2c2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL			0x400001c3
++			MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA			0x400001c3
++		>;
++	};
++
++	pinctrl_i2c3: i2c3grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C3_SCL_I2C3_SCL			0x400001c3
++			MX8MM_IOMUXC_I2C3_SDA_I2C3_SDA			0x400001c3
++		>;
++	};
++
++	pinctrl_i2c4: i2c4grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL			0x400001c3
++			MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA			0x400001c3
++		>;
++	};
++
++	pinctrl_i2c1_gpio: i2c1grp-gpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C1_SCL_GPIO5_IO14        		0x1c3
++			MX8MM_IOMUXC_I2C1_SDA_GPIO5_IO15        	0x1c3
++		>;
++	};
++
++	pinctrl_i2c2_gpio: i2c2grp-gpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C2_SCL_GPIO5_IO16        		0x1c3
++			MX8MM_IOMUXC_I2C2_SDA_GPIO5_IO17        	0x1c3
++		>;
++	};
++
++	pinctrl_i2c3_gpio: i2c3grp-gpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C3_SCL_GPIO5_IO18        		0x1c3
++			MX8MM_IOMUXC_I2C3_SDA_GPIO5_IO19        	0x1c3
++		>;
++	};
++
++	pinctrl_i2c4_gpio: i2c4grp-gpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C4_SCL_GPIO5_IO20        		0x1c3
++			MX8MM_IOMUXC_I2C4_SDA_GPIO5_IO21        	0x1c3
++		>;
++	};
++
++	pinctrl_pmic: pmicirq {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x41
++		>;
++	};
++
++	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmc {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
++		>;
++	};
++
++	pinctrl_sai3: sai3grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI3_TXFS_SAI3_TX_SYNC     0xd6
++			MX8MM_IOMUXC_SAI3_TXC_SAI3_TX_BCLK      0xd6
++			MX8MM_IOMUXC_SAI3_MCLK_SAI3_MCLK        0xd6
++			MX8MM_IOMUXC_SAI3_TXD_SAI3_TX_DATA0     0xd6
++		>;
++	};
++
++	pinctrl_uart2: uart2grp {
++		fsl,pins = <
++			/*
++			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX	0x140
++			MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX	0x140
++			*/
++			0x1D8 0x440 0x4FC 0x04 0x02 0x49
++			0x1DC 0x444 0x000 0x04 0x00 0x49
++		>;
++	};
++
++	pinctrl_usdhc2_gpio: usdhc2grpgpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++		>;
++	};
++
++	pinctrl_usdhc2: usdhc2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x190
++			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d0
++			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
++			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
++			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
++			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
++			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0x1d0
++		>;
++	};
++
++	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
++			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
++			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d4
++			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d4
++			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d4
++			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d4
++			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0x1d0
++		>;
++	};
++
++	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x196
++			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d6
++			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d6
++			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d6
++			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d6
++			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d6
++			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0x1d0
++		>;
++	};
++
++	pinctrl_usdhc3: usdhc3grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x190
++			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d0
++			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d0
++			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d0
++			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d0
++			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d0
++			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4		0x1d0
++			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x1d0
++			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x1d0
++			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7		0x1d0
++			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE		0x190
++		>;
++	};
++
++	pinctrl_usdhc3_100mhz: usdhc3grp100mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x194
++			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d4
++			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d4
++			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d4
++			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d4
++			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d4
++			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4		0x1d4
++			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x1d4
++			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x1d4
++			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7		0x1d4
++			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE		0x194
++		>;
++	};
++
++	pinctrl_usdhc3_200mhz: usdhc3grp200mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x196
++			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d6
++			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d6
++			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d6
++			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d6
++			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d6
++			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4		0x1d6
++			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x1d6
++			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x1d6
++			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7		0x1d6
++			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE		0x196
++		>;
++	};
++
++	pinctrl_wdog: wdoggrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B	0xc6
++		>;
++	};
++};
 diff --git a/arch/arm/mach-imx/imx8m/Kconfig b/arch/arm/mach-imx/imx8m/Kconfig
-index a225a9784f..aa6dfeb4c1 100644
+index 41c68a49a3..b3210a694e 100644
 --- a/arch/arm/mach-imx/imx8m/Kconfig
 +++ b/arch/arm/mach-imx/imx8m/Kconfig
-@@ -110,6 +110,12 @@ config TARGET_IMX8MM_EVK
- 	select ARCH_MISC_INIT
- 	select SPL_CRYPTO if SPL
+@@ -82,6 +82,13 @@ config TARGET_IMX8MM_EVK
+ 	select SUPPORT_SPL
+ 	select IMX8M_LPDDR4
  
 +config TARGET_IMX8MM_DM421
-+       bool "imx8mm LPDDR4 DM421 board"
-+       select IMX8MM
-+       select SUPPORT_SPL
-+       select IMX8M_LPDDR4
++	bool "imx8mm LPDDR4 DM421 board"
++	select IMX8MM
++	select SUPPORT_SPL
++	select IMX8M_LPDDR4
 +
- config TARGET_IMX8MM_DDR4_EVK
- 	bool "imx8mm DDR4 EVK board"
++
+ config TARGET_IMX8MM_EVK_QCA
+ 	bool "imx8mm LPDDR4 EVK Legacy QCA WIFI board"
  	select IMX8MM
-@@ -355,6 +361,7 @@ source "board/freescale/imx8mm_evk/Kconfig"
- source "board/freescale/imx8mm_val/Kconfig"
+@@ -164,5 +171,6 @@ source "board/freescale/imx8mm_val/Kconfig"
  source "board/freescale/imx8mn_evk/Kconfig"
  source "board/freescale/imx8mp_evk/Kconfig"
+ source "board/toradex/verdin-imx8mm/Kconfig"
 +source "board/icop/imx8mm_dm421/Kconfig"
- source "board/gateworks/venice/Kconfig"
- source "board/google/imx8mq_phanbell/Kconfig"
- source "board/kontron/pitx_imx8m/Kconfig"
+ 
+ endif
 diff --git a/board/icop/common/Kconfig b/board/icop/common/Kconfig
 new file mode 100644
-index 0000000000..f4ceb21469
+index 0000000000..eccfc12bfc
 --- /dev/null
 +++ b/board/icop/common/Kconfig
-@@ -0,0 +1,101 @@
+@@ -0,0 +1,44 @@
 +config CHAIN_OF_TRUST
 +	depends on !FIT_SIGNATURE && NXP_ESBC
 +	imply CMD_BLOB
 +	imply CMD_HASH if ARM
 +	select FSL_CAAM
-+	select ARCH_MISC_INIT
 +	select SPL_BOARD_INIT if (ARM && SPL)
-+	select SPL_HASH if (ARM && SPL)
 +	select SHA_HW_ACCEL
 +	select SHA_PROG_HW_ACCEL
 +	select ENV_IS_NOWHERE
@@ -938,88 +949,33 @@ index 0000000000..f4ceb21469
 +	    esbc_validate - validate signature using RSA verification
 +	    esbc_halt - put the core in spin loop (Secure Boot Only)
 +
-+config FSL_USE_PCA9547_MUX
-+	bool "Enable PCA9547 I2C Mux on Freescale boards"
++config VOL_MONITOR_LTC3882_READ
++	depends on VID
++	bool "Enable the LTC3882 voltage monitor read"
++	default n
 +	help
-+	 This option enables the PCA9547 I2C mux on Freescale boards.
++	 This option enables LTC3882 voltage monitor read
++	 functionality. It is used by common VID driver.
++
++config VOL_MONITOR_LTC3882_SET
++	depends on VID
++	bool "Enable the LTC3882 voltage monitor set"
++	default n
++	help
++	 This option enables LTC3882 voltage monitor set
++	 functionality. It is used by common VID driver.
 +
 +config USB_TCPC
 +	bool "USB Typec port controller simple driver"
 +	default n
 +	help
 +	  Enable USB type-c port controller (TCPC) driver
-+
-+config VID
-+	bool "Enable Freescale VID"
-+	depends on I2C || DM_I2C
-+	help
-+	 This option enables setting core voltage based on individual
-+	 values saved in SoC fuses.
-+
-+config SPL_VID
-+	bool "Enable Freescale VID in SPL"
-+	depends on I2C || DM_I2C
-+	help
-+	 This option enables setting core voltage based on individual
-+	 values saved in SoC fuses, in SPL.
-+
-+if VID || SPL_VID
-+
-+config VID_FLS_ENV
-+	string "Environment variable for overriding VDD"
-+	help
-+	  This option allows for specifying the environment variable
-+	  to check to override VDD information.
-+
-+config VOL_MONITOR_INA220
-+	bool "Enable the INA220 voltage monitor read"
-+	help
-+	  This option enables INA220 voltage monitor read
-+	  functionality. It is used by the common VID driver.
-+
-+config VOL_MONITOR_IR36021_READ
-+	bool "Enable the IR36021 voltage monitor read"
-+	help
-+	 This option enables IR36021 voltage monitor read
-+	 functionality. It is used by the common VID driver.
-+
-+config VOL_MONITOR_IR36021_SET
-+	bool "Enable the IR36021 voltage monitor set"
-+	help
-+	 This option enables IR36021 voltage monitor set
-+	 functionality. It is used by the common VID driver.
-+
-+config VOL_MONITOR_LTC3882_READ
-+	bool "Enable the LTC3882 voltage monitor read"
-+	help
-+	 This option enables LTC3882 voltage monitor read
-+	 functionality. It is used by the common VID driver.
-+
-+config VOL_MONITOR_LTC3882_SET
-+	bool "Enable the LTC3882 voltage monitor set"
-+	help
-+	 This option enables LTC3882 voltage monitor set
-+	 functionality. It is used by the common VID driver.
-+
-+config VOL_MONITOR_ISL68233_READ
-+	bool "Enable the ISL68233 voltage monitor read"
-+	help
-+	 This option enables ISL68233 voltage monitor read
-+	 functionality. It is used by the common VID driver.
-+
-+config VOL_MONITOR_ISL68233_SET
-+	bool "Enable the ISL68233 voltage monitor set"
-+	help
-+	 This option enables ISL68233 voltage monitor set
-+	 functionality. It is used by the common VID driver.
-+
-+endif
 diff --git a/board/icop/common/Makefile b/board/icop/common/Makefile
 new file mode 100644
-index 0000000000..18854df253
+index 0000000000..13922fc522
 --- /dev/null
 +++ b/board/icop/common/Makefile
-@@ -0,0 +1,101 @@
+@@ -0,0 +1,92 @@
 +# SPDX-License-Identifier: GPL-2.0+
 +#
 +# (C) Copyright 2006
@@ -1037,15 +993,6 @@ index 0000000000..18854df253
 +# necessary to create built-in.o
 +obj- := __dummy__.o
 +else
-+# include i2c_common.o once if either VID or FSL_USE_PCA9547_MUX
-+I2C_COMMON=
-+ifdef CONFIG_VID
-+I2C_COMMON=y
-+endif
-+ifdef CONFIG_FSL_USE_PCA9547_MUX
-+I2C_COMMON=y
-+endif
-+
 +obj-$(CONFIG_FSL_CADMUS)	+= cadmus.o
 +obj-$(CONFIG_FSL_VIA)		+= cds_via.o
 +obj-$(CONFIG_FMAN_ENET)	+= fman.o
@@ -1053,9 +1000,7 @@ index 0000000000..18854df253
 +ifndef CONFIG_SPL_BUILD
 +obj-$(CONFIG_FSL_NGPIXIS)	+= ngpixis.o
 +endif
-+obj-$(I2C_COMMON)		+= i2c_common.o
-+obj-$(CONFIG_FSL_USE_PCA9547_MUX)		+= i2c_mux.o
-+obj-$(CONFIG_$(SPL_)VID)	+= vid.o
++obj-$(CONFIG_VID)		+= vid.o
 +obj-$(CONFIG_FSL_QIXIS)	+= qixis.o
 +obj-$(CONFIG_PQ_MDS_PIB)	+= pq-mds-pib.o
 +ifndef CONFIG_SPL_BUILD
@@ -1076,23 +1021,26 @@ index 0000000000..18854df253
 +
 +obj-$(CONFIG_FSL_DCU_SII9022A)    += dcu_sii9022a.o
 +
++obj-$(CONFIG_TARGET_MPC8541CDS)	+= cds_pci_ft.o
 +obj-$(CONFIG_TARGET_MPC8548CDS)	+= cds_pci_ft.o
++obj-$(CONFIG_TARGET_MPC8555CDS)	+= cds_pci_ft.o
 +
 +obj-$(CONFIG_TARGET_MPC8536DS)	+= ics307_clk.o
++obj-$(CONFIG_TARGET_MPC8572DS)	+= ics307_clk.o
 +obj-$(CONFIG_TARGET_P1022DS)		+= ics307_clk.o
 +obj-$(CONFIG_P2020DS)		+= ics307_clk.o
 +obj-$(CONFIG_TARGET_P3041DS)		+= ics307_clk.o
 +obj-$(CONFIG_TARGET_P4080DS)		+= ics307_clk.o
++obj-$(CONFIG_TARGET_P5020DS)		+= ics307_clk.o
 +obj-$(CONFIG_TARGET_P5040DS)		+= ics307_clk.o
 +obj-$(CONFIG_VSC_CROSSBAR)    += vsc3316_3308.o
++obj-$(CONFIG_IDT8T49N222A)	+= idt8t49n222a_serdes_clk.o
 +obj-$(CONFIG_ZM7300)		+= zm7300.o
 +obj-$(CONFIG_POWER_PFUZE100)	+= pfuze.o
 +obj-$(CONFIG_DM_PMIC_PFUZE100)	+= pfuze.o
 +obj-$(CONFIG_POWER_MC34VR500)	+= mc34vr500.o
 +obj-$(CONFIG_MXC_EPDC)		+= epdc_setup.o
-+ifneq (,$(filter $(SOC), mx25 mx31 mx35 mx5 mx6 mx7 mx7ulp imx8 imx8m vf610 imx8ulp imx9))
 +obj-y				+= mmc.o
-+endif
 +ifdef CONFIG_FSL_FASTBOOT
 +obj-${CONFIG_ANDROID_RECOVERY} += recovery_keypad.o
 +endif
@@ -1100,7 +1048,6 @@ index 0000000000..18854df253
 +obj-$(CONFIG_LS102XA_STREAM_ID)	+= ls102xa_stream_id.o
 +
 +obj-$(CONFIG_EMC2305)              += emc2305.o
-+obj-$(CONFIG_QSFP_EEPROM)	+= qsfp_eeprom.o
 +
 +# deal with common files for P-series corenet based devices
 +obj-$(CONFIG_TARGET_P2041RDB)	+= p_corenet/
@@ -1123,18 +1070,16 @@ index 0000000000..18854df253
 +endif
 diff --git a/board/icop/common/arm_sleep.c b/board/icop/common/arm_sleep.c
 new file mode 100644
-index 0000000000..733940860f
+index 0000000000..d18b4fc24b
 --- /dev/null
 +++ b/board/icop/common/arm_sleep.c
-@@ -0,0 +1,131 @@
+@@ -0,0 +1,129 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2014 Freescale Semiconductor, Inc.
 + */
 +
 +#include <common.h>
-+#include <log.h>
-+#include <asm/global_data.h>
 +#include <asm/io.h>
 +#ifndef CONFIG_ARMV7_NONSEC
 +#error " Deep sleep needs non-secure mode support. "
@@ -1260,7 +1205,7 @@ index 0000000000..733940860f
 +}
 diff --git a/board/icop/common/cadmus.c b/board/icop/common/cadmus.c
 new file mode 100644
-index 0000000000..8f3fb5fa81
+index 0000000000..7e7394f333
 --- /dev/null
 +++ b/board/icop/common/cadmus.c
 @@ -0,0 +1,78 @@
@@ -1271,7 +1216,7 @@ index 0000000000..8f3fb5fa81
 +
 +
 +#include <common.h>
-+#include <clock_legacy.h>
++
 +
 +/*
 + * CADMUS Board System Registers
@@ -1303,7 +1248,7 @@ index 0000000000..8f3fb5fa81
 +
 +
 +unsigned long
-+get_board_sys_clk(void)
++get_clock_freq(void)
 +{
 +	volatile cadmus_reg_t *cadmus = (cadmus_reg_t *)CONFIG_SYS_CADMUS_BASE_REG;
 +
@@ -1344,7 +1289,7 @@ index 0000000000..8f3fb5fa81
 +}
 diff --git a/board/icop/common/cadmus.h b/board/icop/common/cadmus.h
 new file mode 100644
-index 0000000000..fb74e8f6db
+index 0000000000..ddc2bb6c1f
 --- /dev/null
 +++ b/board/icop/common/cadmus.h
 @@ -0,0 +1,37 @@
@@ -1369,7 +1314,7 @@ index 0000000000..fb74e8f6db
 +/*
 + * Returns either 33000000 or 66000000 as the SYS_CLK_FREQ.
 + */
-+extern unsigned long get_board_sys_clk(void);
++extern unsigned long get_clock_freq(void);
 +
 +
 +/*
@@ -1387,10 +1332,10 @@ index 0000000000..fb74e8f6db
 +#endif	/* __CADMUS_H_ */
 diff --git a/board/icop/common/cds_pci_ft.c b/board/icop/common/cds_pci_ft.c
 new file mode 100644
-index 0000000000..dc2d62850d
+index 0000000000..fb2e5c7bf3
 --- /dev/null
 +++ b/board/icop/common/cds_pci_ft.c
-@@ -0,0 +1,18 @@
+@@ -0,0 +1,77 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2004 Freescale Semiconductor.
@@ -1402,9 +1347,68 @@ index 0000000000..dc2d62850d
 +#include "cadmus.h"
 +
 +#if defined(CONFIG_OF_BOARD_SETUP)
-+int ft_board_setup(void *blob, struct bd_info *bd)
++#if defined(CONFIG_PCI) && !defined(CONFIG_DM_PCI)
++static void cds_pci_fixup(void *blob)
++{
++	int node;
++	const char *path;
++	int len, slot, i;
++	u32 *map = NULL, *piccells = NULL;
++	int off, cells;
++
++	node = fdt_path_offset(blob, "/aliases");
++	if (node >= 0) {
++		path = fdt_getprop(blob, node, "pci0", NULL);
++		if (path) {
++			node = fdt_path_offset(blob, path);
++			if (node >= 0) {
++				map = fdt_getprop_w(blob, node, "interrupt-map", &len);
++			}
++			/* Each item in "interrupt-map" property is translated with
++			 * following cells:
++			 * PCI #address-cells, PCI #interrupt-cells,
++			 * PIC address, PIC #address-cells, PIC #interrupt-cells.
++			 */
++			cells = fdt_getprop_u32_default(blob, path, "#address-cells", 1);
++			cells += fdt_getprop_u32_default(blob, path, "#interrupt-cells", 1);
++			off = fdt_node_offset_by_phandle(blob, fdt32_to_cpu(*(map+cells)));
++			if (off <= 0)
++				return;
++			cells += 1;
++			piccells = (u32 *)fdt_getprop(blob, off, "#address-cells", NULL);
++			if (piccells == NULL)
++				return;
++			cells += *piccells;
++			piccells = (u32 *)fdt_getprop(blob, off, "#interrupt-cells", NULL);
++			if (piccells == NULL)
++				return;
++			cells += *piccells;
++		}
++	}
++
++	if (map) {
++		len /= sizeof(u32);
++
++		slot = get_pci_slot();
++
++		for (i=0;i<len;i+=cells) {
++			/* We rotate the interrupt pins so that the mapping
++			 * changes depending on the slot the carrier card is in.
++			 */
++			map[3] = ((map[3] + slot - 2) % 4) + 1;
++			map+=cells;
++		}
++	}
++}
++#endif
++
++int ft_board_setup(void *blob, bd_t *bd)
 +{
 +	ft_cpu_setup(blob, bd);
++#if defined(CONFIG_PCI) && !defined(CONFIG_DM_PCI)
++	ft_pci_setup(blob, bd);
++	cds_pci_fixup(blob);
++#endif
 +
 +	return 0;
 +}
@@ -1509,7 +1513,7 @@ index 0000000000..8f8f0d1f58
 +}
 diff --git a/board/icop/common/cmd_esbc_validate.c b/board/icop/common/cmd_esbc_validate.c
 new file mode 100644
-index 0000000000..6c096266b4
+index 0000000000..36b620ca23
 --- /dev/null
 +++ b/board/icop/common/cmd_esbc_validate.c
 @@ -0,0 +1,86 @@
@@ -1523,8 +1527,8 @@ index 0000000000..6c096266b4
 +#include <env.h>
 +#include <fsl_validate.h>
 +
-+int do_esbc_halt(struct cmd_tbl *cmdtp, int flag, int argc,
-+		 char *const argv[])
++int do_esbc_halt(cmd_tbl_t *cmdtp, int flag, int argc,
++				char * const argv[])
 +{
 +	if (fsl_check_boot_mode_secure() == 0) {
 +		printf("Boot Mode is Non-Secure. Not entering spin loop.\n");
@@ -1539,8 +1543,8 @@ index 0000000000..6c096266b4
 +}
 +
 +#ifndef CONFIG_SPL_BUILD
-+static int do_esbc_validate(struct cmd_tbl *cmdtp, int flag, int argc,
-+			    char *const argv[])
++static int do_esbc_validate(cmd_tbl_t *cmdtp, int flag, int argc,
++				char * const argv[])
 +{
 +	char *hash_str = NULL;
 +	uintptr_t haddr;
@@ -1555,7 +1559,7 @@ index 0000000000..6c096266b4
 +		hash_str = argv[2];
 +
 +	/* First argument - header address -32/64bit */
-+	haddr = (uintptr_t)hextoul(argv[1], NULL);
++	haddr = (uintptr_t)simple_strtoul(argv[1], NULL, 16);
 +
 +	/* With esbc_validate command, Image address must be
 +	 * part of header. So, the function is called
@@ -1601,7 +1605,7 @@ index 0000000000..6c096266b4
 +#endif
 diff --git a/board/icop/common/dcu_sii9022a.c b/board/icop/common/dcu_sii9022a.c
 new file mode 100644
-index 0000000000..9137d246ea
+index 0000000000..832ae258f1
 --- /dev/null
 +++ b/board/icop/common/dcu_sii9022a.c
 @@ -0,0 +1,248 @@
@@ -1671,7 +1675,7 @@ index 0000000000..9137d246ea
 +	u8 temp;
 +	u16 temp1, temp2;
 +	u32 temp3;
-+#if CONFIG_IS_ENABLED(DM_I2C)
++#ifdef CONFIG_DM_I2C
 +	struct udevice *dev;
 +	int ret;
 +
@@ -1873,10 +1877,10 @@ index 0000000000..7851775530
 +#endif
 diff --git a/board/icop/common/diu_ch7301.c b/board/icop/common/diu_ch7301.c
 new file mode 100644
-index 0000000000..05e6a3acf1
+index 0000000000..7f11123e6f
 --- /dev/null
 +++ b/board/icop/common/diu_ch7301.c
-@@ -0,0 +1,217 @@
+@@ -0,0 +1,216 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2014 Freescale Semiconductor, Inc.
@@ -1891,7 +1895,6 @@ index 0000000000..05e6a3acf1
 +#include <common.h>
 +#include <stdio_dev.h>
 +#include <i2c.h>
-+#include <linux/delay.h>
 +
 +#define I2C_DVI_INPUT_DATA_FORMAT_REG		0x1F
 +#define I2C_DVI_PLL_CHARGE_CNTL_REG		0x33
@@ -1932,7 +1935,7 @@ index 0000000000..05e6a3acf1
 +	u8 temp;
 +
 +	temp = I2C_DVI_TEST_PATTERN_VAL;
-+#if CONFIG_IS_ENABLED(DM_I2C)
++#ifdef CONFIG_DM_I2C
 +	struct udevice *dev;
 +
 +	ret = i2c_get_chip_for_busnum(CONFIG_SYS_I2C_DVI_BUS_NUM,
@@ -2153,27 +2156,27 @@ index 0000000000..328fd3974b
 +#endif	/* __CADMUS_H_ */
 diff --git a/board/icop/common/emc2305.c b/board/icop/common/emc2305.c
 new file mode 100644
-index 0000000000..9a75c5a09d
+index 0000000000..b1ca051db2
 --- /dev/null
 +++ b/board/icop/common/emc2305.c
 @@ -0,0 +1,62 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright 2018-2020 NXP.
++ * Copyright 2018 NXP.
 + *
++ * SPDX-License-Identifier:     GPL-2.0+
 + */
 +
 +#include <common.h>
 +#include <command.h>
 +#include <i2c.h>
-+#include <asm/global_data.h>
 +#include <asm/io.h>
 +
 +#include "emc2305.h"
 +
 +DECLARE_GLOBAL_DATA_PTR;
 +
-+void set_fan_speed(u8 data, int chip_addr)
++void set_fan_speed(u8 data)
 +{
 +	u8 index;
 +	u8 Fan[NUM_OF_FANS] = {I2C_EMC2305_FAN1,
@@ -2183,15 +2186,15 @@ index 0000000000..9a75c5a09d
 +			       I2C_EMC2305_FAN5};
 +
 +	for (index = 0; index < NUM_OF_FANS; index++) {
-+#if !CONFIG_IS_ENABLED(DM_I2C)
-+		if (i2c_write(chip_addr, Fan[index], 1, &data, 1) != 0) {
++#ifndef CONFIG_DM_I2C
++		if (i2c_write(I2C_EMC2305_ADDR, Fan[index], 1, &data, 1) != 0) {
 +			printf("Error: failed to change fan speed @%x\n",
 +			       Fan[index]);
 +		}
 +#else
 +		struct udevice *dev;
 +
-+		if (i2c_get_chip_for_busnum(0, chip_addr, 1, &dev))
++		if (i2c_get_chip_for_busnum(0, I2C_EMC2305_ADDR, 1, &dev))
 +			continue;
 +
 +		if (dm_i2c_write(dev, Fan[index], &data, 1) != 0) {
@@ -2202,18 +2205,18 @@ index 0000000000..9a75c5a09d
 +	}
 +}
 +
-+void emc2305_init(int chip_addr)
++void emc2305_init(void)
 +{
 +	u8 data;
 +
 +	data = I2C_EMC2305_CMD;
-+#if !CONFIG_IS_ENABLED(DM_I2C)
-+	if (i2c_write(chip_addr, I2C_EMC2305_CONF, 1, &data, 1) != 0)
++#ifndef CONFIG_DM_I2C
++	if (i2c_write(I2C_EMC2305_ADDR, I2C_EMC2305_CONF, 1, &data, 1) != 0)
 +		printf("Error: failed to configure EMC2305\n");
 +#else
 +	struct udevice *dev;
 +
-+	if (!i2c_get_chip_for_busnum(0, chip_addr, 1, &dev))
++	if (!i2c_get_chip_for_busnum(0, I2C_EMC2305_ADDR, 1, &dev))
 +		if (dm_i2c_write(dev, I2C_EMC2305_CONF, &data, 1))
 +			printf("Error: failed to configure EMC2305\n");
 +#endif
@@ -2221,14 +2224,15 @@ index 0000000000..9a75c5a09d
 +}
 diff --git a/board/icop/common/emc2305.h b/board/icop/common/emc2305.h
 new file mode 100644
-index 0000000000..24c5410d12
+index 0000000000..eddf537138
 --- /dev/null
 +++ b/board/icop/common/emc2305.h
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,23 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
-+ * Copyright 2018-2020 NXP
++ * Copyright 2018 NXP
 + *
++ * SPDX-License-Identifier:     GPL-2.0+
 + */
 +
 +#ifndef __EMC2305_H_
@@ -2243,16 +2247,16 @@ index 0000000000..24c5410d12
 +
 +#define NUM_OF_FANS			5
 +
-+void emc2305_init(int chip_addr);
-+void set_fan_speed(u8 data, int chip_addr);
++void emc2305_init(void);
++void set_fan_speed(u8 data);
 +
 +#endif  /* __EMC2305_H_ */
 diff --git a/board/icop/common/epdc_setup.c b/board/icop/common/epdc_setup.c
 new file mode 100644
-index 0000000000..78935c6ff7
+index 0000000000..a26f9f320b
 --- /dev/null
 +++ b/board/icop/common/epdc_setup.c
-@@ -0,0 +1,226 @@
+@@ -0,0 +1,224 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
 + * Copyright (C) 2016 Freescale Semiconductor, Inc. All Rights Reserved.
@@ -2267,8 +2271,6 @@ index 0000000000..78935c6ff7
 +#include <mxc_epdc_fb.h>
 +#include <fs.h>
 +#include <cpu_func.h>
-+#include <env.h>
-+#include <asm/cache.h>
 +
 +#define is_digit(c)	((c) >= '0' && (c) <= '9')
 +__weak int mmc_get_env_devno(void)
@@ -2596,28 +2598,29 @@ index 0000000000..16afc34b03
 +#endif
 diff --git a/board/icop/common/fsl_chain_of_trust.c b/board/icop/common/fsl_chain_of_trust.c
 new file mode 100644
-index 0000000000..1b9733cf83
+index 0000000000..a024e7239e
 --- /dev/null
 +++ b/board/icop/common/fsl_chain_of_trust.c
-@@ -0,0 +1,159 @@
+@@ -0,0 +1,165 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2015 Freescale Semiconductor, Inc.
-+ * Copyright 2022 NXP
 + */
 +
 +#include <common.h>
 +#include <dm.h>
 +#include <env.h>
-+#include <init.h>
 +#include <fsl_validate.h>
 +#include <fsl_secboot_err.h>
 +#include <fsl_sfp.h>
-+#include <log.h>
 +#include <dm/root.h>
 +
 +#if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_FRAMEWORK)
 +#include <spl.h>
++#endif
++
++#ifdef CONFIG_ADDR_MAP
++#include <asm/mmu.h>
 +#endif
 +
 +#ifdef CONFIG_FSL_CORENET
@@ -2716,6 +2719,11 @@ index 0000000000..1b9733cf83
 +		fsl_secboot_handle_error(ERROR_ESBC_PAMU_INIT);
 +#endif
 +
++#ifdef CONFIG_FSL_CAAM
++	if (sec_init() < 0)
++		fsl_secboot_handle_error(ERROR_ESBC_SEC_INIT);
++#endif
++
 +/*
 + * dm_init_and_scan() is called as part of common SPL framework, so no
 + * need to call it again but in case of powerpc platforms which currently
@@ -2761,25 +2769,22 @@ index 0000000000..1b9733cf83
 +#endif /* ifdef CONFIG_SPL_BUILD */
 diff --git a/board/icop/common/fsl_validate.c b/board/icop/common/fsl_validate.c
 new file mode 100644
-index 0000000000..569a8c4655
+index 0000000000..2bf9d58746
 --- /dev/null
 +++ b/board/icop/common/fsl_validate.c
-@@ -0,0 +1,974 @@
+@@ -0,0 +1,962 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2015 Freescale Semiconductor, Inc.
-+ * Copyright 2021-2022 NXP
 + */
 +
 +#include <common.h>
 +#include <dm.h>
-+#include <flash.h>
 +#include <fsl_validate.h>
 +#include <fsl_secboot_err.h>
 +#include <fsl_sfp.h>
 +#include <fsl_sec.h>
 +#include <command.h>
-+#include <log.h>
 +#include <malloc.h>
 +#include <u-boot/rsa-mod-exp.h>
 +#include <hash.h>
@@ -2787,7 +2792,6 @@ index 0000000000..569a8c4655
 +#ifdef CONFIG_ARCH_LS1021A
 +#include <asm/arch/immap_ls102xa.h>
 +#endif
-+#include <dm/lists.h>
 +
 +#define SHA256_BITS	256
 +#define SHA256_BYTES	(256/8)
@@ -3269,6 +3273,7 @@ index 0000000000..569a8c4655
 +	ret = algo->hash_init(algo, &ctx);
 +	if (ret)
 +		return ret;
++
 +	/* Update hash for ESBC key */
 +#ifdef CONFIG_KEY_REVOCATION
 +	if (check_srk(img)) {
@@ -3283,12 +3288,12 @@ index 0000000000..569a8c4655
 +			img->img_key, img->key_len, 1);
 +	if (ret)
 +		return ret;
++
 +	/* Copy hash at destination buffer */
 +	ret = algo->hash_finish(algo, ctx, hash_val, algo->digest_size);
-+	if (ret) {
-+		free(ctx);
++	if (ret)
 +		return ret;
-+	}
++
 +	for (i = 0; i < SHA256_BYTES; i++)
 +		img->img_key_hash[i] = hash_val[i];
 +
@@ -3351,10 +3356,9 @@ index 0000000000..569a8c4655
 +#endif
 +	if (ret)
 +		return ret;
-+	if (!key_hash) {
-+		free(ctx);
++	if (!key_hash)
 +		return ERROR_KEY_TABLE_NOT_FOUND;
-+	}
++
 +	/* Update hash for actual Image */
 +	ret = algo->hash_update(algo, ctx,
 +		(u8 *)(*(img->img_addr_ptr)), img->img_size, 1);
@@ -3363,10 +3367,9 @@ index 0000000000..569a8c4655
 +
 +	/* Copy hash at destination buffer */
 +	ret = algo->hash_finish(algo, ctx, hash_val, algo->digest_size);
-+	if (ret) {
-+		free(ctx);
++	if (ret)
 +		return ret;
-+	}
++
 +	return 0;
 +}
 +
@@ -3537,7 +3540,7 @@ index 0000000000..569a8c4655
 +	if (!p) {
 +		return 0;
 +	} else {
-+		tmp = hextoul(p, &endptr);
++		tmp = simple_strtoul(p, &endptr, 16);
 +		if (sizeof(ulong) == 4)
 +			*num = cpu_to_be32(tmp);
 +		else
@@ -3574,13 +3577,6 @@ index 0000000000..569a8c4655
 +	prop.num_bits = key_len * 8;
 +	prop.exp_len = key_len;
 +
-+#if defined(CONFIG_SPL_BUILD)
-+	ret = device_bind_driver(NULL, "fsl_rsa_mod_exp", "fsl_rsa_mod_exp", NULL);
-+	if (ret) {
-+		printf("Couldn't bind fsl_rsa_mod_exp driver (%d)\n", ret);
-+		return -EINVAL;
-+	}
-+#endif
 +	ret = uclass_get_device(UCLASS_MOD_EXP, 0, &mod_exp_dev);
 +	if (ret) {
 +		printf("RSA: Can't find Modular Exp implementation\n");
@@ -3739,186 +3735,18 @@ index 0000000000..569a8c4655
 +	free(img);
 +	return ret;
 +}
-diff --git a/board/icop/common/i2c_common.c b/board/icop/common/i2c_common.c
-new file mode 100644
-index 0000000000..0f09ed7d34
---- /dev/null
-+++ b/board/icop/common/i2c_common.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2014 Freescale Semiconductor, Inc.
-+ * Copyright 2020-21 NXP
-+ * Copyright 2021 Microsoft Corporation
-+ */
-+
-+#include <common.h>
-+#include <i2c.h>
-+#include "i2c_common.h"
-+
-+#ifdef CONFIG_DM_I2C
-+
-+/* If DM is in use, retrieve the chip for the specified bus number */
-+int fsl_i2c_get_device(int address, int bus, DEVICE_HANDLE_T *dev)
-+{
-+	int ret = i2c_get_chip_for_busnum(bus, address, 1, dev);
-+
-+	if (ret)
-+		printf("I2C: Bus %d has no device with address 0x%02X\n",
-+		       bus, address);
-+	return ret;
-+}
-+
-+#else
-+
-+/* Handle is passed directly */
-+int fsl_i2c_get_device(int address, int bus, DEVICE_HANDLE_T *dev)
-+{
-+	*dev = address;
-+	return 0;
-+}
-+
-+#endif
-diff --git a/board/icop/common/i2c_common.h b/board/icop/common/i2c_common.h
-new file mode 100644
-index 0000000000..840ad66183
---- /dev/null
-+++ b/board/icop/common/i2c_common.h
-@@ -0,0 +1,30 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright 2014 Freescale Semiconductor, Inc.
-+ * Copyright 2020-21 NXP
-+ * Copyright 2021 Microsoft Corporation
-+ */
-+
-+#ifndef __NXP_I2C_COMMON_H__
-+#define __NXP_I2C_COMMON_H__
-+
-+/* Common functionality shared by the I2C drivers for VID and the mux. */
-+#ifdef CONFIG_DM_I2C
-+#define DEVICE_HANDLE_T struct udevice *
-+
-+#define I2C_READ(dev, register, data, length) \
-+	dm_i2c_read(dev, register, data, length)
-+#define I2C_WRITE(dev, register, data, length) \
-+	dm_i2c_write(dev, register, data, length)
-+#else
-+#define DEVICE_HANDLE_T int
-+
-+#define I2C_READ(dev, register, data, length) \
-+	i2c_read(dev, register, 1, data, length)
-+#define I2C_WRITE(dev, register, data, length) \
-+	i2c_write(dev, register, 1, data, length)
-+#endif
-+
-+int fsl_i2c_get_device(int address, int bus, DEVICE_HANDLE_T *dev);
-+
-+#endif
-diff --git a/board/icop/common/i2c_mux.c b/board/icop/common/i2c_mux.c
-new file mode 100644
-index 0000000000..9523dd0942
---- /dev/null
-+++ b/board/icop/common/i2c_mux.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2014 Freescale Semiconductor, Inc.
-+ * Copyright 2020-2022 NXP
-+ * Copyright 2021 Microsoft Corporation
-+ */
-+
-+#include <common.h>
-+#include <i2c.h>
-+#include "i2c_common.h"
-+#include "i2c_mux.h"
-+
-+/*
-+ * A new Kconfig option for something that used to always be built should be
-+ * “default y”.
-+ */
-+#ifdef CONFIG_FSL_USE_PCA9547_MUX
-+
-+int select_i2c_ch_pca9547(u8 ch, int bus)
-+{
-+	int ret;
-+	DEVICE_HANDLE_T dev;
-+
-+	/* Open device handle */
-+	ret = fsl_i2c_get_device(I2C_MUX_PCA_ADDR_PRI, bus, &dev);
-+	if (ret) {
-+		printf("PCA: No PCA9547 device found\n");
-+		return ret;
-+	}
-+
-+	ret = I2C_WRITE(dev, 0, &ch, sizeof(ch));
-+	if (ret) {
-+		printf("PCA: Unable to select channel %d (%d)\n", (int)ch, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+#ifdef I2C_MUX_PCA_ADDR_SEC
-+int select_i2c_ch_pca9547_sec(u8 ch, int bus)
-+{
-+	int ret;
-+	DEVICE_HANDLE_T dev;
-+
-+	/* Open device handle */
-+	ret = fsl_i2c_get_device(I2C_MUX_PCA_ADDR_SEC, bus, &dev);
-+	if (ret) {
-+		printf("PCA: No PCA9547 device found\n");
-+		return ret;
-+	}
-+
-+	ret = I2C_WRITE(dev, 0, &ch, sizeof(ch));
-+	if (ret) {
-+		printf("PCA: Unable to select channel %d (%d)\n", (int)ch, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+#endif
-+#endif
-diff --git a/board/icop/common/i2c_mux.h b/board/icop/common/i2c_mux.h
-new file mode 100644
-index 0000000000..b58a284326
---- /dev/null
-+++ b/board/icop/common/i2c_mux.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright 2014 Freescale Semiconductor, Inc.
-+ * Copyright 2020-2022 NXP
-+ * Copyright 2021 Microsoft Corporation
-+ */
-+
-+#ifndef __NXP_I2C_MUX_H__
-+#define __NXP_I2C_MUX_H__
-+
-+#ifdef CONFIG_FSL_USE_PCA9547_MUX
-+int select_i2c_ch_pca9547(u8 ch, int bus);
-+int select_i2c_ch_pca9547_sec(u8 ch, int bus);
-+#endif
-+
-+#endif
 diff --git a/board/icop/common/ics307_clk.c b/board/icop/common/ics307_clk.c
 new file mode 100644
-index 0000000000..01662d36e9
+index 0000000000..f1e60cf277
 --- /dev/null
 +++ b/board/icop/common/ics307_clk.c
-@@ -0,0 +1,149 @@
+@@ -0,0 +1,145 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2010-2011 Freescale Semiconductor, Inc.
 + */
 +
 +#include <common.h>
-+#include <clock_legacy.h>
-+#include <log.h>
 +#include <asm/io.h>
 +
 +#include "ics307_clk.h"
@@ -4051,7 +3879,6 @@ index 0000000000..01662d36e9
 +			in_8(&fpga_reg->sclk[2]));
 +}
 +
-+#ifdef CONFIG_DYNAMIC_DDR_CLK_FREQ
 +unsigned long get_board_ddr_clk(void)
 +{
 +	return ics307_clk_freq(
@@ -4059,13 +3886,12 @@ index 0000000000..01662d36e9
 +			in_8(&fpga_reg->dclk[1]),
 +			in_8(&fpga_reg->dclk[2]));
 +}
-+#endif
 diff --git a/board/icop/common/ics307_clk.h b/board/icop/common/ics307_clk.h
 new file mode 100644
-index 0000000000..163496930c
+index 0000000000..81d1aa715d
 --- /dev/null
 +++ b/board/icop/common/ics307_clk.h
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,15 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
 + * Copyright 2010-2011 Freescale Semiconductor, Inc.
@@ -4076,10 +3902,335 @@ index 0000000000..163496930c
 +#ifndef __ASSEMBLY__
 +
 +extern unsigned long get_board_sys_clk(void);
++extern unsigned long get_board_ddr_clk(void);
 +extern unsigned long ics307_sysclk_calculator(unsigned long out_freq);
 +#endif
 +
 +#endif	/* __ICS_CLK_H_ */
+diff --git a/board/icop/common/idt8t49n222a_serdes_clk.c b/board/icop/common/idt8t49n222a_serdes_clk.c
+new file mode 100644
+index 0000000000..4f8e8b7d42
+--- /dev/null
++++ b/board/icop/common/idt8t49n222a_serdes_clk.c
+@@ -0,0 +1,206 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright 2013 Freescale Semiconductor, Inc.
++ * Author: Shaveta Leekha <shaveta@freescale.com>
++ */
++
++#include "idt8t49n222a_serdes_clk.h"
++
++#define DEVICE_ID_REG		0x00
++
++static int check_pll_status(u8 idt_addr)
++{
++	u8 val = 0;
++	int ret;
++
++	ret = i2c_read(idt_addr, 0x17, 1, &val, 1);
++	if (ret < 0) {
++		printf("IDT:0x%x could not read status register from device.\n",
++			idt_addr);
++		return ret;
++	}
++
++	if (val & 0x04) {
++		debug("idt8t49n222a PLL is LOCKED: %x\n", val);
++	} else {
++		printf("idt8t49n222a PLL is not LOCKED: %x\n", val);
++		return -1;
++	}
++
++	return 0;
++}
++
++int set_serdes_refclk(u8 idt_addr, u8 serdes_num,
++			enum serdes_refclk refclk1,
++			enum serdes_refclk refclk2, u8 feedback)
++{
++	u8 dev_id = 0;
++	int i, ret;
++
++	debug("IDT:Configuring idt8t49n222a device at I2C address: 0x%2x\n",
++		idt_addr);
++
++	ret = i2c_read(idt_addr, DEVICE_ID_REG, 1, &dev_id, 1);
++	if (ret < 0) {
++		debug("IDT:0x%x could not read DEV_ID from device.\n",
++			idt_addr);
++		return ret;
++	}
++
++	if ((dev_id != 0x00) && (dev_id != 0x24) && (dev_id != 0x2a)) {
++		debug("IDT: device at address 0x%x is not idt8t49n222a.\n",
++			idt_addr);
++	}
++
++	if (serdes_num != 1 && serdes_num != 2) {
++		debug("serdes_num should be 1 for SerDes1 and"
++			" 2 for SerDes2.\n");
++		return -1;
++	}
++
++	if ((refclk1 == SERDES_REFCLK_122_88 && refclk2 != SERDES_REFCLK_122_88)
++		|| (refclk1 != SERDES_REFCLK_122_88
++			&& refclk2 == SERDES_REFCLK_122_88)) {
++		debug("Only one refclk at 122.88MHz is not supported."
++			" Please set both refclk1 & refclk2 to 122.88MHz"
++			" or both not to 122.88MHz.\n");
++		return -1;
++	}
++
++	if (refclk1 != SERDES_REFCLK_100 && refclk1 != SERDES_REFCLK_122_88
++					&& refclk1 != SERDES_REFCLK_125
++					&& refclk1 != SERDES_REFCLK_156_25) {
++		debug("refclk1 should be 100MHZ, 122.88MHz, 125MHz"
++			" or 156.25MHz.\n");
++		return -1;
++	}
++
++	if (refclk2 != SERDES_REFCLK_100 && refclk2 != SERDES_REFCLK_122_88
++					&& refclk2 != SERDES_REFCLK_125
++					&& refclk2 != SERDES_REFCLK_156_25) {
++		debug("refclk2 should be 100MHZ, 122.88MHz, 125MHz"
++			" or 156.25MHz.\n");
++		return -1;
++	}
++
++	if (feedback != 0 && feedback != 1) {
++		debug("valid values for feedback are 0(default) or 1.\n");
++		return -1;
++	}
++
++	/* Configuring IDT for output refclks as
++	 * Refclk1 = 122.88MHz  Refclk2 = 122.88MHz
++	 */
++	if (refclk1 == SERDES_REFCLK_122_88 &&
++			refclk2 == SERDES_REFCLK_122_88) {
++		printf("Setting refclk1:122.88 and refclk2:122.88\n");
++		for (i = 0; i < NUM_IDT_REGS; i++)
++			i2c_reg_write(idt_addr, idt_conf_122_88[i][0],
++						idt_conf_122_88[i][1]);
++
++		if (feedback) {
++			for (i = 0; i < NUM_IDT_REGS_FEEDBACK; i++)
++				i2c_reg_write(idt_addr,
++					idt_conf_122_88_feedback[i][0],
++					idt_conf_122_88_feedback[i][1]);
++		}
++	}
++
++	if (refclk1 != SERDES_REFCLK_122_88 &&
++			refclk2 != SERDES_REFCLK_122_88) {
++		for (i = 0; i < NUM_IDT_REGS; i++)
++			i2c_reg_write(idt_addr, idt_conf_not_122_88[i][0],
++						idt_conf_not_122_88[i][1]);
++	}
++
++	/* Configuring IDT for output refclks as
++	 * Refclk1 = 100MHz  Refclk2 = 125MHz
++	 */
++	if (refclk1 == SERDES_REFCLK_100 && refclk2 == SERDES_REFCLK_125) {
++		printf("Setting refclk1:100 and refclk2:125\n");
++		i2c_reg_write(idt_addr, 0x11, 0x10);
++	}
++
++	/* Configuring IDT for output refclks as
++	 * Refclk1 = 125MHz  Refclk2 = 125MHz
++	 */
++	if (refclk1 == SERDES_REFCLK_125 && refclk2 == SERDES_REFCLK_125) {
++		printf("Setting refclk1:125 and refclk2:125\n");
++		i2c_reg_write(idt_addr, 0x10, 0x10);
++		i2c_reg_write(idt_addr, 0x11, 0x10);
++	}
++
++	/* Configuring IDT for output refclks as
++	 * Refclk1 = 125MHz  Refclk2 = 100MHz
++	 */
++	if (refclk1 == SERDES_REFCLK_125 && refclk2 == SERDES_REFCLK_100) {
++		printf("Setting refclk1:125 and refclk2:100\n");
++		i2c_reg_write(idt_addr, 0x10, 0x10);
++	}
++
++	/* Configuring IDT for output refclks as
++	 * Refclk1 = 156.25MHz  Refclk2 = 156.25MHz
++	 */
++	if (refclk1 == SERDES_REFCLK_156_25 &&
++			refclk2 == SERDES_REFCLK_156_25) {
++		printf("Setting refclk1:156.25 and refclk2:156.25\n");
++		for (i = 0; i < NUM_IDT_REGS_156_25; i++)
++			i2c_reg_write(idt_addr, idt_conf_156_25[i][0],
++						idt_conf_156_25[i][1]);
++	}
++
++	/* Configuring IDT for output refclks as
++	 * Refclk1 = 100MHz  Refclk2 = 156.25MHz
++	 */
++	if (refclk1 == SERDES_REFCLK_100 &&
++			refclk2 == SERDES_REFCLK_156_25) {
++		printf("Setting refclk1:100 and refclk2:156.25\n");
++		for (i = 0; i < NUM_IDT_REGS_156_25; i++)
++			i2c_reg_write(idt_addr, idt_conf_100_156_25[i][0],
++						idt_conf_100_156_25[i][1]);
++	}
++
++	/* Configuring IDT for output refclks as
++	 * Refclk1 = 125MHz  Refclk2 = 156.25MHz
++	 */
++	if (refclk1 == SERDES_REFCLK_125 &&
++			refclk2 == SERDES_REFCLK_156_25) {
++		printf("Setting refclk1:125 and refclk2:156.25\n");
++		for (i = 0; i < NUM_IDT_REGS_156_25; i++)
++			i2c_reg_write(idt_addr, idt_conf_125_156_25[i][0],
++						idt_conf_125_156_25[i][1]);
++	}
++
++	/* Configuring IDT for output refclks as
++	 * Refclk1 = 156.25MHz  Refclk2 = 100MHz
++	 */
++	if (refclk1 == SERDES_REFCLK_156_25 &&
++			refclk2 == SERDES_REFCLK_100) {
++		printf("Setting refclk1:156.25 and refclk2:100\n");
++		for (i = 0; i < NUM_IDT_REGS_156_25; i++)
++			i2c_reg_write(idt_addr, idt_conf_156_25_100[i][0],
++						idt_conf_156_25_100[i][1]);
++	}
++
++	/* Configuring IDT for output refclks as
++	 * Refclk1 = 156.25MHz  Refclk2 = 125MHz
++	 */
++	if (refclk1 == SERDES_REFCLK_156_25 &&
++			refclk2 == SERDES_REFCLK_125) {
++		printf("Setting refclk1:156.25 and refclk2:125\n");
++		for (i = 0; i < NUM_IDT_REGS_156_25; i++)
++			i2c_reg_write(idt_addr, idt_conf_156_25_125[i][0],
++						idt_conf_156_25_125[i][1]);
++	}
++
++	/* waiting for maximum of 1 second if PLL doesn'r get locked
++	 * initially. then check the status again.
++	 */
++	if (check_pll_status(idt_addr)) {
++		mdelay(1000);
++		if (check_pll_status(idt_addr))
++			return -1;
++	}
++
++	return 0;
++}
+diff --git a/board/icop/common/idt8t49n222a_serdes_clk.h b/board/icop/common/idt8t49n222a_serdes_clk.h
+new file mode 100644
+index 0000000000..b1528e3266
+--- /dev/null
++++ b/board/icop/common/idt8t49n222a_serdes_clk.h
+@@ -0,0 +1,106 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Copyright 2013 Freescale Semiconductor, Inc.
++ * Author: Shaveta Leekha <shaveta@freescale.com>
++ */
++
++#ifndef __IDT8T49N222A_SERDES_CLK_H_
++#define __IDT8T49N222A_SERDES_CLK_H_	1
++
++#include <common.h>
++#include <i2c.h>
++#include "qixis.h"
++#include "../b4860qds/b4860qds_qixis.h"
++#include <errno.h>
++
++#define NUM_IDT_REGS		23
++#define NUM_IDT_REGS_FEEDBACK	12
++#define NUM_IDT_REGS_156_25	11
++
++/* CLK */
++enum serdes_refclk {
++	SERDES_REFCLK_100,	/* refclk 100Mhz */
++	SERDES_REFCLK_122_88,	/* refclk 122.88Mhz */
++	SERDES_REFCLK_125,	/* refclk 125Mhz */
++	SERDES_REFCLK_156_25,	/* refclk 156.25Mhz */
++	SERDES_REFCLK_NONE = -1,
++};
++
++/* configuration values for IDT registers for Output Refclks:
++ * Refclk1 = 122.88MHz Refclk2 = 122.88MHz
++ */
++static const u8 idt_conf_122_88[23][2] = { {0x00, 0x3C}, {0x01, 0x00},
++		{0x02, 0x9F}, {0x03, 0x00}, {0x04, 0x0B}, {0x05, 0x00},
++		{0x06, 0x00}, {0x07, 0x00}, {0x08, 0x7D}, {0x09, 0x00},
++		{0x0A, 0x08}, {0x0B, 0x00}, {0x0C, 0xDC}, {0x0D, 0x00},
++		{0x0E, 0x00}, {0x0F, 0x00}, {0x10, 0x12}, {0x11, 0x12},
++		{0x12, 0xB9}, {0x13, 0xBC}, {0x14, 0x40}, {0x15, 0x08},
++		{0x16, 0xA0} };
++
++
++/* configuration values for IDT registers for Output Refclks:
++ * Refclk1 not equal to 122.88MHz Refclk2 not equal to 122.88MHz
++ */
++static const u8 idt_conf_not_122_88[23][2] = { {0x00, 0x00}, {0x01, 0x00},
++		{0x02, 0x00}, {0x03, 0x00}, {0x04, 0x0A}, {0x05, 0x00},
++		{0x06, 0x00}, {0x07, 0x00}, {0x08, 0x7D}, {0x09, 0x00},
++		{0x0A, 0x08}, {0x0B, 0x00}, {0x0C, 0xDC}, {0x0D, 0x00},
++		{0x0E, 0x00}, {0x0F, 0x00}, {0x10, 0x14}, {0x11, 0x14},
++		{0x12, 0x35}, {0x13, 0xBC}, {0x14, 0x40}, {0x15, 0x08},
++		{0x16, 0xA0} };
++
++/* Reconfiguration values for some of IDT registers for
++ * Output Refclks:
++ * Refclk1 = 122.88MHz Refclk2 = 122.88MHz
++ * and with feedback as 1
++ */
++static const u8 idt_conf_122_88_feedback[12][2] = { {0x00, 0x50}, {0x02, 0xD7},
++		{0x04, 0x89}, {0x06, 0xC3}, {0x08, 0xC0}, {0x0A, 0x07},
++		{0x0C, 0x80}, {0x10, 0x10}, {0x11, 0x10}, {0x12, 0x1B},
++		{0x14, 0x00}, {0x15, 0xE8} };
++
++/* configuration values for IDT registers for Output Refclks:
++ * Refclk1 : 156.25MHz Refclk2 : 156.25MHz
++ */
++static const u8 idt_conf_156_25[11][2] = { {0x04, 0x19}, {0x06, 0x03},
++		{0x08, 0xC0}, {0x0A, 0x07}, {0x0C, 0xA1}, {0x0E, 0x20},
++		{0x10, 0x10}, {0x11, 0x10}, {0x12, 0xB5}, {0x13, 0x3C},
++		{0x15, 0xE8} };
++
++/* configuration values for IDT registers for Output Refclks:
++ * Refclk1 : 100MHz Refclk2 : 156.25MHz
++ */
++static const u8 idt_conf_100_156_25[11][2] = { {0x04, 0x19}, {0x06, 0x03},
++		{0x08, 0xC0}, {0x0A, 0x07}, {0x0C, 0xA1}, {0x0E, 0x20},
++		{0x10, 0x19}, {0x11, 0x10}, {0x12, 0xB5}, {0x13, 0x3C},
++		{0x15, 0xE8} };
++
++/* configuration values for IDT registers for Output Refclks:
++ * Refclk1 : 125MHz Refclk2 : 156.25MHz
++ */
++static const u8 idt_conf_125_156_25[11][2] = { {0x04, 0x19}, {0x06, 0x03},
++		{0x08, 0xC0}, {0x0A, 0x07}, {0x0C, 0xA1}, {0x0E, 0x20},
++		{0x10, 0x14}, {0x11, 0x10}, {0x12, 0xB5}, {0x13, 0x3C},
++		{0x15, 0xE8} };
++
++/* configuration values for IDT registers for Output Refclks:
++ * Refclk1 : 156.25MHz Refclk2 : 100MHz
++ */
++static const u8 idt_conf_156_25_100[11][2] = { {0x04, 0x19}, {0x06, 0x03},
++		{0x08, 0xC0}, {0x0A, 0x07}, {0x0C, 0xA1}, {0x0E, 0x20},
++		{0x10, 0x10}, {0x11, 0x19}, {0x12, 0xB5}, {0x13, 0x3C},
++		{0x15, 0xE8} };
++
++/* configuration values for IDT registers for Output Refclks:
++ * Refclk1 : 156.25MHz Refclk2 : 125MHz
++ */
++static const u8 idt_conf_156_25_125[11][2] = { {0x04, 0x19}, {0x06, 0x03},
++		{0x08, 0xC0}, {0x0A, 0x07}, {0x0C, 0xA1}, {0x0E, 0x20},
++		{0x10, 0x10}, {0x11, 0x14}, {0x12, 0xB5}, {0x13, 0x3C},
++		{0x15, 0xE8} };
++
++int set_serdes_refclk(u8 idt_addr, u8 serdes_num,
++			enum serdes_refclk refclk1,
++			enum serdes_refclk refclk2, u8 feedback);
++
++#endif	/*__IDT8T49N222A_SERDES_CLK_H_ */
 diff --git a/board/icop/common/ls102xa_stream_id.c b/board/icop/common/ls102xa_stream_id.c
 new file mode 100644
 index 0000000000..a6ee87da9f
@@ -4123,10 +4274,10 @@ index 0000000000..a6ee87da9f
 +}
 diff --git a/board/icop/common/mc34vr500.c b/board/icop/common/mc34vr500.c
 new file mode 100644
-index 0000000000..d6b4c65a3c
+index 0000000000..d4f0f0c652
 --- /dev/null
 +++ b/board/icop/common/mc34vr500.c
-@@ -0,0 +1,95 @@
+@@ -0,0 +1,94 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2016 Freescale Semiconductor, Inc.
@@ -4136,7 +4287,6 @@ index 0000000000..d6b4c65a3c
 +#include <common.h>
 +#include <errno.h>
 +#include <i2c.h>
-+#include <log.h>
 +#include <power/pmic.h>
 +#include <power/mc34vr500_pmic.h>
 +
@@ -4224,23 +4374,21 @@ index 0000000000..d6b4c65a3c
 +}
 diff --git a/board/icop/common/mmc.c b/board/icop/common/mmc.c
 new file mode 100644
-index 0000000000..ab1652d697
+index 0000000000..d886808dba
 --- /dev/null
 +++ b/board/icop/common/mmc.c
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,49 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
 + * Copyright (C) 2016 Freescale Semiconductor, Inc.
 + * Copyright 2018 NXP
 + */
 +#include <common.h>
-+#include <command.h>
 +#include <asm/arch/sys_proto.h>
 +#include <linux/errno.h>
 +#include <asm/io.h>
 +#include <stdbool.h>
 +#include <mmc.h>
-+#include <env.h>
 +
 +static int check_mmc_autodetect(void)
 +{
@@ -4281,18 +4429,16 @@ index 0000000000..ab1652d697
 +}
 diff --git a/board/icop/common/mpc85xx_sleep.c b/board/icop/common/mpc85xx_sleep.c
 new file mode 100644
-index 0000000000..d2bb173c18
+index 0000000000..739a416730
 --- /dev/null
 +++ b/board/icop/common/mpc85xx_sleep.c
-@@ -0,0 +1,97 @@
+@@ -0,0 +1,95 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2014 Freescale Semiconductor, Inc.
 + */
 +
 +#include <common.h>
-+#include <log.h>
-+#include <asm/global_data.h>
 +#include <asm/immap_85xx.h>
 +#include "sleep.h"
 +#ifdef CONFIG_U_QE
@@ -4384,10 +4530,10 @@ index 0000000000..d2bb173c18
 +}
 diff --git a/board/icop/common/ngpixis.c b/board/icop/common/ngpixis.c
 new file mode 100644
-index 0000000000..37a6f775a0
+index 0000000000..d7254010bf
 --- /dev/null
 +++ b/board/icop/common/ngpixis.c
-@@ -0,0 +1,250 @@
+@@ -0,0 +1,249 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/**
 + * Copyright 2010-2011 Freescale Semiconductor
@@ -4561,8 +4707,7 @@ index 0000000000..37a6f775a0
 +	PIXIS_WRITE(sclk[2], sclk2);
 +}
 +
-+int pixis_reset_cmd(struct cmd_tbl *cmdtp, int flag, int argc,
-+		    char *const argv[])
++int pixis_reset_cmd(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 +{
 +	unsigned int i;
 +	unsigned long sysclk;
@@ -4706,18 +4851,16 @@ index 0000000000..7a20ee015f
 +#define PIXIS_WRITE(reg, value) pixis_write(offsetof(ngpixis_t, reg), value)
 diff --git a/board/icop/common/ns_access.c b/board/icop/common/ns_access.c
 new file mode 100644
-index 0000000000..ee8ed616cb
+index 0000000000..0e6f2135b4
 --- /dev/null
 +++ b/board/icop/common/ns_access.c
-@@ -0,0 +1,241 @@
+@@ -0,0 +1,239 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2014 Freescale Semiconductor
 + */
 +
 +#include <common.h>
-+#include <log.h>
-+#include <asm/cache.h>
 +#include <asm/io.h>
 +#include <fsl_csu.h>
 +#include <asm/arch/ns_access.h>
@@ -4953,16 +5096,17 @@ index 0000000000..ee8ed616cb
 +}
 diff --git a/board/icop/common/p_corenet/Makefile b/board/icop/common/p_corenet/Makefile
 new file mode 100644
-index 0000000000..ce156018a0
+index 0000000000..29c9d544ae
 --- /dev/null
 +++ b/board/icop/common/p_corenet/Makefile
-@@ -0,0 +1,7 @@
+@@ -0,0 +1,8 @@
 +# SPDX-License-Identifier: GPL-2.0+
 +#
 +# (C) Copyright 2002-2006
 +# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
 +
 +obj-y			+= law.o
++obj-$(CONFIG_PCI)	+= pci.o
 +obj-y			+= tlb.o
 diff --git a/board/icop/common/p_corenet/law.c b/board/icop/common/p_corenet/law.c
 new file mode 100644
@@ -5006,6 +5150,37 @@ index 0000000000..603384ac4f
 +};
 +
 +int num_law_entries = ARRAY_SIZE(law_table);
+diff --git a/board/icop/common/p_corenet/pci.c b/board/icop/common/p_corenet/pci.c
+new file mode 100644
+index 0000000000..94e4715f1c
+--- /dev/null
++++ b/board/icop/common/p_corenet/pci.c
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright 2007-2011 Freescale Semiconductor, Inc.
++ */
++
++#include <common.h>
++#include <command.h>
++#include <init.h>
++#include <pci.h>
++#include <asm/fsl_pci.h>
++#include <linux/libfdt.h>
++#include <fdt_support.h>
++#include <asm/fsl_serdes.h>
++
++#if !defined(CONFIG_DM_PCI)
++void pci_init_board(void)
++{
++	fsl_pcie_init_board(0);
++}
++
++void pci_of_setup(void *blob, bd_t *bd)
++{
++	FT_FSL_PCI_SETUP;
++}
++#endif
 diff --git a/board/icop/common/p_corenet/tlb.c b/board/icop/common/p_corenet/tlb.c
 new file mode 100644
 index 0000000000..c0ab1a5fd1
@@ -5376,10 +5551,10 @@ index 0000000000..45b49afaeb
 +#endif
 diff --git a/board/icop/common/pixis.c b/board/icop/common/pixis.c
 new file mode 100644
-index 0000000000..6fdb11039e
+index 0000000000..e9b7127833
 --- /dev/null
 +++ b/board/icop/common/pixis.c
-@@ -0,0 +1,543 @@
+@@ -0,0 +1,541 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2006,2010 Freescale Semiconductor
@@ -5648,8 +5823,8 @@ index 0000000000..6fdb11039e
 +/* Disable the watchdog
 + *
 + */
-+static int pixis_disable_watchdog_cmd(struct cmd_tbl *cmdtp, int flag, int argc,
-+				      char *const argv[])
++static int pixis_disable_watchdog_cmd(cmd_tbl_t *cmdtp, int flag, int argc,
++				      char * const argv[])
 +{
 +	/* Disable the VELA sequencer and the watchdog */
 +	clrbits_8(pixis_base + PIXIS_VCTL, 9);
@@ -5667,8 +5842,7 @@ index 0000000000..6fdb11039e
 +
 +/* Enable or disable SGMII mode for a TSEC
 + */
-+static int pixis_set_sgmii(struct cmd_tbl *cmdtp, int flag, int argc,
-+			   char *const argv[])
++static int pixis_set_sgmii(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 +{
 +	int which_tsec = -1;
 +	unsigned char mask;
@@ -5785,17 +5959,16 @@ index 0000000000..6fdb11039e
 +		mulconst = 1;
 +		for (i = 0; i < j; i++)
 +			mulconst *= 10;
-+		decval = dectoul(decarr, NULL);
++		decval = simple_strtoul(decarr, NULL, 10);
 +	}
 +
-+	intval = dectoul(intarr, NULL);
++	intval = simple_strtoul(intarr, NULL, 10);
 +	intval = intval * mulconst;
 +
 +	return intval + decval;
 +}
 +
-+static int pixis_reset_cmd(struct cmd_tbl *cmdtp, int flag, int argc,
-+			   char *const argv[])
++static int pixis_reset_cmd(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 +{
 +	unsigned int i;
 +	char *p_cf = NULL;
@@ -5871,9 +6044,9 @@ index 0000000000..6fdb11039e
 +		unsigned long corepll;
 +		unsigned long mpxpll;
 +
-+		sysclk = dectoul(p_cf_sysclk, NULL);
++		sysclk = simple_strtoul(p_cf_sysclk, NULL, 10);
 +		corepll = strfractoint(p_cf_corepll);
-+		mpxpll = dectoul(p_cf_mpxpll, NULL);
++		mpxpll = simple_strtoul(p_cf_mpxpll, NULL, 10);
 +
 +		if (!(set_px_sysclk(sysclk)
 +		      && set_px_corepll(corepll)
@@ -5925,10 +6098,10 @@ index 0000000000..6fdb11039e
 +);
 diff --git a/board/icop/common/pixis.h b/board/icop/common/pixis.h
 new file mode 100644
-index 0000000000..f19e85cb1c
+index 0000000000..40053c45bb
 --- /dev/null
 +++ b/board/icop/common/pixis.h
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,165 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
 + * Copyright 2010 Freescale Semiconductor, Inc.
@@ -5975,6 +6148,117 @@ index 0000000000..f19e85cb1c
 +	u8 vtempmax[2];
 +	u8 res2[4];
 +} __attribute__ ((packed)) pixis_t;
++
++#elif defined(CONFIG_TARGET_MPC8544DS)
++typedef struct pixis {
++	u8 id;
++	u8 ver;
++	u8 pver;
++	u8 csr;
++	u8 rst;
++	u8 pwr;
++	u8 aux1;
++	u8 spd;
++	u8 res[8];
++	u8 vctl;
++	u8 vstat;
++	u8 vcfgen0;
++	u8 vcfgen1;
++	u8 vcore0;
++	u8 res1;
++	u8 vboot;
++	u8 vspeed[2];
++	u8 vclkh;
++	u8 vclkl;
++	u8 watch;
++	u8 led;
++	u8 vspeed2;
++	u8 res2[34];
++} __attribute__ ((packed)) pixis_t;
++
++#elif defined(CONFIG_TARGET_MPC8572DS)
++typedef struct pixis {
++	u8 id;
++	u8 ver;
++	u8 pver;
++	u8 csr;
++	u8 rst;
++	u8 pwr1;
++	u8 aux1;
++	u8 spd;
++	u8 aux2;
++	u8 res[7];
++	u8 vctl;
++	u8 vstat;
++	u8 vcfgen0;
++	u8 vcfgen1;
++	u8 vcore0;
++	u8 res1;
++	u8 vboot;
++	u8 vspeed[3];
++	u8 res2[2];
++	u8 sclk[3];
++	u8 dclk[3];
++	u8 res3[2];
++	u8 watch;
++	u8 led;
++	u8 res4[25];
++} __attribute__ ((packed)) pixis_t;
++
++#elif defined(CONFIG_TARGET_MPC8610HPCD)
++typedef struct pixis {
++	u8 id;
++	u8 ver;	/* also called arch */
++	u8 pver;
++	u8 csr;
++	u8 rst;
++	u8 pwr;
++	u8 aux;
++	u8 spd;
++	u8 brdcfg0;
++	u8 brdcfg1;
++	u8 res[4];
++	u8 led;
++	u8 serno;
++	u8 vctl;
++	u8 vstat;
++	u8 vcfgen0;
++	u8 vcfgen1;
++	u8 vcore0;
++	u8 res1;
++	u8 vboot;
++	u8 vspeed[2];
++	u8 res2;
++	u8 sclk[3];
++	u8 res3;
++	u8 watch;
++	u8 res4[33];
++} __attribute__ ((packed)) pixis_t;
++
++#elif defined(CONFIG_TARGET_MPC8641HPCN)
++typedef struct pixis {
++	u8 id;
++	u8 ver;
++	u8 pver;
++	u8 csr;
++	u8 rst;
++	u8 pwr;
++	u8 aux;
++	u8 spd;
++	u8 res[8];
++	u8 vctl;
++	u8 vstat;
++	u8 vcfgen0;
++	u8 vcfgen1;
++	u8 vcore0;
++	u8 res1;
++	u8 vboot;
++	u8 vspeed[2];
++	u8 vclkh;
++	u8 vclkl;
++	u8 watch;
++	u8 res3[36];
++} __attribute__ ((packed)) pixis_t;
 +#else
 +#error Need to define pixis_t for this board
 +#endif
@@ -5985,10 +6269,10 @@ index 0000000000..f19e85cb1c
 +#endif	/* __PIXIS_H_ */
 diff --git a/board/icop/common/pq-mds-pib.c b/board/icop/common/pq-mds-pib.c
 new file mode 100644
-index 0000000000..162c8a954f
+index 0000000000..ae66039857
 --- /dev/null
 +++ b/board/icop/common/pq-mds-pib.c
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,102 @@
 +/*
 + * Copyright (C) 2007 Freescale Semiconductor, Inc.
 + *
@@ -6027,7 +6311,11 @@ index 0000000000..162c8a954f
 +	i2c_write(0x26, 0x6, 1, &val8, 1);
 +	val8 = 0x34;
 +	i2c_write(0x26, 0x7, 1, &val8, 1);
++#if defined(CONFIG_TARGET_MPC832XEMDS)
++	val8 = 0xf9;            /* PMC2, PMC3 slot to PCI bus */
++#else
 +	val8 = 0xf3;		/* PMC1, PMC2, PMC3 slot to PCI bus */
++#endif
 +	i2c_write(0x26, 0x2, 1, &val8, 1);
 +	val8 = 0xff;
 +	i2c_write(0x26, 0x3, 1, &val8, 1);
@@ -6042,9 +6330,47 @@ index 0000000000..162c8a954f
 +
 +	eieio();
 +
++#if defined(CONFIG_TARGET_MPC832XEMDS)
++	printf("PCI 32bit bus on PMC2 &PMC3\n");
++#else
 +	printf("PCI 32bit bus on PMC1 & PMC2 &PMC3\n");
 +#endif
++#endif
 +
++#if defined(CONFIG_PQ_MDS_PIB_ATM)
++#if defined(CONFIG_TARGET_MPC8569MDS)
++	val8 = 0;
++	i2c_write(0x20, 0x6, 1, &val8, 1);
++	i2c_write(0x20, 0x7, 1, &val8, 1);
++
++	val8 = 0xdf;
++	i2c_write(0x20, 0x2, 1, &val8, 1);
++	val8 = 0xf7;
++	i2c_write(0x20, 0x3, 1, &val8, 1);
++
++	eieio();
++
++	printf("QOC3 ATM card on PMC0\n");
++#elif defined(CONFIG_TARGET_MPC832XEMDS)
++	val8 = 0;
++	i2c_write(0x26, 0x7, 1, &val8, 1);
++	val8 = 0xf7;
++	i2c_write(0x26, 0x3, 1, &val8, 1);
++
++	val8 = 0;
++	i2c_write(0x21, 0x6, 1, &val8, 1);
++	i2c_write(0x21, 0x7, 1, &val8, 1);
++
++	val8 = 0xdf;
++	i2c_write(0x21, 0x2, 1, &val8, 1);
++	val8 = 0xef;
++	i2c_write(0x21, 0x3, 1, &val8, 1);
++
++	eieio();
++
++	printf("QOC3 ATM card on PMC1\n");
++#endif
++#endif
 +	/* Reset to original I2C bus */
 +	i2c_set_bus_num(orig_i2c_bus);
 +	return 0;
@@ -6066,10 +6392,10 @@ index 0000000000..67066fd118
 +extern int pib_init(void);
 diff --git a/board/icop/common/qixis.c b/board/icop/common/qixis.c
 new file mode 100644
-index 0000000000..2bb838cea6
+index 0000000000..dd1ee90b3c
 --- /dev/null
 +++ b/board/icop/common/qixis.c
-@@ -0,0 +1,388 @@
+@@ -0,0 +1,374 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2011 Freescale Semiconductor
@@ -6104,7 +6430,7 @@ index 0000000000..2bb838cea6
 +#ifdef CONFIG_SYS_I2C_FPGA_ADDR
 +u8 qixis_read_i2c(unsigned int reg)
 +{
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +	return i2c_reg_read(CONFIG_SYS_I2C_FPGA_ADDR, reg);
 +#else
 +	struct udevice *dev;
@@ -6119,7 +6445,7 @@ index 0000000000..2bb838cea6
 +void qixis_write_i2c(unsigned int reg, u8 value)
 +{
 +	u8 val = value;
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +	i2c_reg_write(CONFIG_SYS_I2C_FPGA_ADDR, reg, val);
 +#else
 +	struct udevice *dev;
@@ -6305,8 +6631,7 @@ index 0000000000..2bb838cea6
 +	puts("Reverse engineering switch is not implemented for this board\n");
 +}
 +
-+static int qixis_reset_cmd(struct cmd_tbl *cmdtp, int flag, int argc,
-+			   char *const argv[])
++static int qixis_reset_cmd(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 +{
 +	int i;
 +
@@ -6396,19 +6721,6 @@ index 0000000000..2bb838cea6
 +#else
 +		printf("Not implemented\n");
 +#endif
-+	} else if (strcmp(argv[1], "xspi") == 0) {
-+#ifdef QIXIS_LBMAP_XSPI
-+		QIXIS_WRITE(rst_ctl, 0x30);
-+		QIXIS_WRITE(rcfg_ctl, 0);
-+		set_lbmap(QIXIS_LBMAP_XSPI);
-+		set_rcw_src(QIXIS_RCW_SRC_XSPI);
-+		qixis_write_i2c(offsetof(struct qixis, rcfg_ctl),
-+				QIXIS_RCFG_CTL_RECONFIG_IDLE);
-+		qixis_write_i2c(offsetof(struct qixis, rcfg_ctl),
-+				QIXIS_RCFG_CTL_RECONFIG_START);
-+#else
-+		printf("Not implemented\n");
-+#endif
 +	} else if (strcmp(argv[1], "watchdog") == 0) {
 +		static char *period[9] = {"2s", "4s", "8s", "16s", "32s",
 +					  "1min", "2min", "4min", "8min"};
@@ -6460,14 +6772,13 @@ index 0000000000..2bb838cea6
 +#endif
 diff --git a/board/icop/common/qixis.h b/board/icop/common/qixis.h
 new file mode 100644
-index 0000000000..0860bd2312
+index 0000000000..c11062e75e
 --- /dev/null
 +++ b/board/icop/common/qixis.h
-@@ -0,0 +1,169 @@
+@@ -0,0 +1,136 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
 + * Copyright 2011 Freescale Semiconductor
-+ * Copyright 2020 NXP
 + * Author: Shengzhou Liu <Shengzhou.Liu@freescale.com>
 + *
 + * This file provides support for the QIXIS of some Freescale reference boards.
@@ -6502,12 +6813,7 @@ index 0000000000..0860bd2312
 +	u8 gdc;
 +	u8 gdd;         /* DCM Debug Data Register,0x17 */
 +	u8 dmack;
-+	u8 res1;
-+	u8 sdhc1;
-+	u8 sdhc2;
-+	u8 stat_pres3;
-+	u8 los_stat;
-+	u8 usb_ctl;
++	u8 res1[6];
 +	u8 watch;       /* Watchdog Register,0x1F */
 +	u8 pwr_ctl[2];  /* Power Control Register,0x20 */
 +	u8 res2[2];
@@ -6587,8 +6893,8 @@ index 0000000000..0860bd2312
 +#endif
 +
 +/* Use for SDHC adapter card type identification and operation */
++#ifdef CONFIG_FSL_ESDHC_ADAPTER_IDENT
 +#define QIXIS_SDID_MASK                         0x07
-+
 +#define QIXIS_ESDHC_ADAPTER_TYPE_EMMC45         0x1	/* eMMC Card Rev4.5 */
 +#define QIXIS_ESDHC_ADAPTER_TYPE_SDMMC_LEGACY   0x2	/* SD/MMC Legacy Card */
 +#define QIXIS_ESDHC_ADAPTER_TYPE_EMMC44         0x3	/* eMMC Card Rev4.4 */
@@ -6597,158 +6903,15 @@ index 0000000000..0860bd2312
 +#define QIXIS_ESDHC_ADAPTER_TYPE_SD             0x6	/* SD Card Rev2.0 3.0 */
 +#define QIXIS_ESDHC_NO_ADAPTER                  0x7	/* No Card is Present*/
 +
-+#define QIXIS_SDHC1_S1V3	0x80	/* SDHC1: SDHC1 3.3V power control */
-+#define QIXIS_SDHC1_VS		0x30	/* BRDCFG11: route to SDHC1_VS */
-+
 +#define QIXIS_SDCLKIN		0x08
 +#define QIXIS_SDCLKOUT		0x02
 +#define QIXIS_DAT5_6_7		0X02
 +#define QIXIS_DAT4		0X01
 +
 +#define QIXIS_EVDD_BY_SDHC_VS	0x0c
-+
-+#if defined(CONFIG_TARGET_LX2160AQDS) || defined(CONFIG_TARGET_LX2162AQDS) || \
-+defined(CONFIG_TARGET_LX2160ARDB)
-+#define QIXIS_XMAP_MASK			0x07
-+#define QIXIS_RST_CTL_RESET_EN		0x30
-+#define QIXIS_LBMAP_DFLTBANK		0x00
-+#define QIXIS_LBMAP_ALTBANK		0x20
-+#define QIXIS_LBMAP_QSPI		0x00
-+#define QIXIS_RCW_SRC_QSPI		0xff
-+#define QIXIS_RST_CTL_RESET		0x31
-+#define QIXIS_RCFG_CTL_RECONFIG_IDLE	0x20
-+#define QIXIS_RCFG_CTL_RECONFIG_START	0x21
-+#define QIXIS_RCFG_CTL_WATCHDOG_ENBLE	0x08
-+#define QIXIS_LBMAP_MASK		0x0f
-+#define QIXIS_LBMAP_SD
-+#define QIXIS_LBMAP_EMMC
-+#define QIXIS_RCW_SRC_SD		0x08
-+#define QIXIS_RCW_SRC_EMMC         0x09
-+#define NON_EXTENDED_DUTCFG
-+#endif
-+
-+#if defined(CONFIG_TARGET_LX2160AQDS) || defined(CONFIG_TARGET_LX2162AQDS)
-+#define QIXIS_SDID_MASK			0x07
-+#define QIXIS_ESDHC_NO_ADAPTER		0x7
 +#endif
 +
 +#endif
-diff --git a/board/icop/common/qsfp_eeprom.c b/board/icop/common/qsfp_eeprom.c
-new file mode 100644
-index 0000000000..d57a10d663
---- /dev/null
-+++ b/board/icop/common/qsfp_eeprom.c
-@@ -0,0 +1,90 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2019-2022 NXP
-+ */
-+#include <common.h>
-+#include <command.h>
-+#include <i2c.h>
-+#include <linux/ctype.h>
-+
-+#define DEV_ID_QSFP		0x0c
-+#define DEV_ID_QSFP_PLUS	0x0d
-+
-+static struct __attribute__ ((__packed__)) qsfp_eeprom_map {
-+	struct __attribute__ ((__packed__)) qsfp_low_mem {
-+	/*	field			byte address */
-+	u8	identifier;		/* 0 */
-+	u16	status;			/* 1-2 */
-+	u8	reserved[124];		/* 3-126 */
-+	u8	page_select;		/* 127 */
-+	} base;
-+
-+	struct __attribute__ ((__packed__)) qsfp_page00_mem {
-+	/*	field			byte address */
-+	u8	identifier;		/* 128 */
-+	u8	ext_identifier;		/* 129 */
-+	u8	connector;		/* 130 */
-+	u8	compat[8];		/* 131-138 */
-+	u8	reserved[3];		/* 139-142 */
-+	u8	length_fiber[4];
-+	u8	length_copper;		/* 146 */
-+	u8	tech;			/* 147 */
-+	u8	vendor_name[16];	/* 148-163 */
-+	u8	reserved2;		/* 164 */
-+	u8	oui[3];			/* 165-167 */
-+	u8	pn[16];			/* 168-183 */
-+	u8	rev[2];			/* 184-185 */
-+	u8	reserved3[10];		/* 186-195 */
-+	u8	serial[16];		/* 196-211 */
-+	u8	date[8];		/* 212-219 */
-+	u8	reserved4[35];		/* 220-255 */
-+	} page0;
-+} qsfp;
-+
-+unsigned char get_qsfp_compat0(void)
-+{
-+	int ret;
-+	char vendor[20] = {0};
-+	char serial[20] = {0};
-+	char pname[20] = {0};
-+	char mfgdt[20] = {0};
-+#ifdef CONFIG_DM_I2C
-+	struct udevice *dev;
-+#endif
-+
-+	memset(&qsfp, 0, sizeof(qsfp));
-+#ifndef CONFIG_DM_I2C
-+	ret = i2c_read(I2C_SFP_EEPROM_ADDR,
-+		       0,
-+		       I2C_SFP_EEPROM_ADDR_LEN,
-+		       (void *)&qsfp,
-+		       sizeof(qsfp));
-+#else
-+	ret = i2c_get_chip_for_busnum(0, I2C_SFP_EEPROM_ADDR, 1, &dev);
-+	if (!ret)
-+		ret = dm_i2c_read(dev, 0, (void *)&qsfp, sizeof(qsfp));
-+#endif
-+
-+	if (ret != 0) {
-+		debug("\nQSFP: no module detected\n");
-+		return 0;
-+	}
-+	/* check if QSFP type */
-+	if (qsfp.base.identifier != DEV_ID_QSFP_PLUS) {
-+		debug("\nQSFP: unrecognized module\n");
-+		return 0;
-+	}
-+
-+	/* copy fields and trim the whitespaces and dump on screen */
-+	snprintf(vendor, sizeof(vendor), "%.16s", qsfp.page0.vendor_name);
-+	snprintf(serial, sizeof(serial), "%.16s", qsfp.page0.serial);
-+	snprintf(pname, sizeof(pname), "%.16s", qsfp.page0.pn);
-+	snprintf(mfgdt, sizeof(mfgdt), "%.2s/%.2s/%.2s",
-+		 &qsfp.page0.date[0], &qsfp.page0.date[2], &qsfp.page0.date[4]);
-+
-+	printf("QSFP: detected %s %s s/n: %s mfgdt: %s\n",
-+	       strim(vendor), strim(pname), strim(serial), strim(mfgdt));
-+
-+	/* return ethernet compatibility code*/
-+	return qsfp.page0.compat[0];
-+}
-diff --git a/board/icop/common/qsfp_eeprom.h b/board/icop/common/qsfp_eeprom.h
-new file mode 100644
-index 0000000000..4aab21997f
---- /dev/null
-+++ b/board/icop/common/qsfp_eeprom.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright 2019-2022 NXP
-+ */
-+
-+#ifndef __QSFP_EEPROM_H_
-+#define __QSFP_EEPROM_H_
-+/*
-+ * QSFP eeprom reader external API interface.
-+ */
-+
-+/* return the ethernet compatibility field 0 */
-+unsigned char get_qsfp_compat0(void);
-+#endif  /* __QSFP_EEPROM_H_ */
 diff --git a/board/icop/common/qspi_header b/board/icop/common/qspi_header
 new file mode 100644
 index 0000000000..d4f3c12d41
@@ -7055,10 +7218,10 @@ index 0000000000..a1c7a94a90
 +}
 diff --git a/board/icop/common/sgmii_riser.c b/board/icop/common/sgmii_riser.c
 new file mode 100644
-index 0000000000..2315793010
+index 0000000000..f3e0fb2cd5
 --- /dev/null
 +++ b/board/icop/common/sgmii_riser.c
-@@ -0,0 +1,130 @@
+@@ -0,0 +1,129 @@
 +/*
 + * Freescale SGMII Riser Card
 + *
@@ -7075,7 +7238,6 @@ index 0000000000..2315793010
 +
 +#include <config.h>
 +#include <common.h>
-+#include <log.h>
 +#include <net.h>
 +#include <linux/libfdt.h>
 +#include <tsec.h>
@@ -7257,10 +7419,10 @@ index 0000000000..d4689d3d72
 +#endif
 diff --git a/board/icop/common/sys_eeprom.c b/board/icop/common/sys_eeprom.c
 new file mode 100644
-index 0000000000..431f8caeb0
+index 0000000000..6f151b0f71
 --- /dev/null
 +++ b/board/icop/common/sys_eeprom.c
-@@ -0,0 +1,625 @@
+@@ -0,0 +1,620 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2006, 2008-2009, 2011 Freescale Semiconductor
@@ -7273,9 +7435,7 @@ index 0000000000..431f8caeb0
 +#include <command.h>
 +#include <env.h>
 +#include <i2c.h>
-+#include <init.h>
 +#include <linux/ctype.h>
-+#include <linux/delay.h>
 +#include <u-boot/crc.h>
 +
 +#ifdef CONFIG_SYS_I2C_EEPROM_CCID
@@ -7325,7 +7485,7 @@ index 0000000000..431f8caeb0
 +	u8 mac_count;     /* 0x40        Number of MAC addresses */
 +	u8 mac_flag;      /* 0x41        MAC table flags */
 +	u8 mac[MAX_NUM_PORTS][6];     /* 0x42 - 0xa1 MAC addresses */
-+	u8 res_2[90];     /* 0xa2 - 0xfb Reserved */
++	u8 res_2[90];     /* 0xa2 - 0xfb Reserved */	
 +	u32 crc;          /* 0xfc - 0xff CRC32 checksum */
 +#endif
 +} e;
@@ -7415,7 +7575,7 @@ index 0000000000..431f8caeb0
 +{
 +	int ret;
 +#ifdef CONFIG_SYS_EEPROM_BUS_NUM
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +	unsigned int bus;
 +#endif
 +#endif
@@ -7424,13 +7584,13 @@ index 0000000000..431f8caeb0
 +		return 0;
 +
 +#ifdef CONFIG_SYS_EEPROM_BUS_NUM
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +	bus = i2c_get_bus_num();
 +	i2c_set_bus_num(CONFIG_SYS_EEPROM_BUS_NUM);
 +#endif
 +#endif
 +
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +	ret = i2c_read(CONFIG_SYS_I2C_EEPROM_ADDR, 0,
 +		       CONFIG_SYS_I2C_EEPROM_ADDR_LEN,
 +		       (void *)&e, sizeof(e));
@@ -7438,18 +7598,16 @@ index 0000000000..431f8caeb0
 +	struct udevice *dev;
 +#ifdef CONFIG_SYS_EEPROM_BUS_NUM
 +	ret = i2c_get_chip_for_busnum(CONFIG_SYS_EEPROM_BUS_NUM,
-+				      CONFIG_SYS_I2C_EEPROM_ADDR,
-+				      CONFIG_SYS_I2C_EEPROM_ADDR_LEN, &dev);
++				      CONFIG_SYS_I2C_EEPROM_ADDR, 1, &dev);
 +#else
-+	ret = i2c_get_chip_for_busnum(0, CONFIG_SYS_I2C_EEPROM_ADDR,
-+				      CONFIG_SYS_I2C_EEPROM_ADDR_LEN, &dev);
++	ret = i2c_get_chip_for_busnum(0, CONFIG_SYS_I2C_EEPROM_ADDR, 1, &dev);
 +#endif
 +	if (!ret)
 +		ret = dm_i2c_read(dev, 0, (void *)&e, sizeof(e));
 +#endif
 +
 +#ifdef CONFIG_SYS_EEPROM_BUS_NUM
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +	i2c_set_bus_num(bus);
 +#endif
 +#endif
@@ -7486,7 +7644,7 @@ index 0000000000..431f8caeb0
 +	int i;
 +	void *p;
 +#ifdef CONFIG_SYS_EEPROM_BUS_NUM
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +	unsigned int bus;
 +#endif
 +#endif
@@ -7500,7 +7658,7 @@ index 0000000000..431f8caeb0
 +#endif
 +	update_crc();
 +
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +#ifdef CONFIG_SYS_EEPROM_BUS_NUM
 +	bus = i2c_get_bus_num();
 +	i2c_set_bus_num(CONFIG_SYS_EEPROM_BUS_NUM);
@@ -7513,7 +7671,7 @@ index 0000000000..431f8caeb0
 +	 * complete a given write.
 +	 */
 +	for (i = 0, p = &e; i < sizeof(e); i += 8, p += 8) {
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +		ret = i2c_write(CONFIG_SYS_I2C_EEPROM_ADDR, i,
 +				CONFIG_SYS_I2C_EEPROM_ADDR_LEN,
 +				p, min((int)(sizeof(e) - i), 8));
@@ -7542,7 +7700,7 @@ index 0000000000..431f8caeb0
 +		/* Verify the write by reading back the EEPROM and comparing */
 +		struct eeprom e2;
 +
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +		ret = i2c_read(CONFIG_SYS_I2C_EEPROM_ADDR, 0,
 +			       CONFIG_SYS_I2C_EEPROM_ADDR_LEN,
 +			       (void *)&e2, sizeof(e2));
@@ -7565,7 +7723,7 @@ index 0000000000..431f8caeb0
 +			ret = -1;
 +	}
 +
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +#ifdef CONFIG_SYS_EEPROM_BUS_NUM
 +	i2c_set_bus_num(bus);
 +#endif
@@ -7641,7 +7799,7 @@ index 0000000000..431f8caeb0
 +	}
 +
 +	for (i = 0; *p && (i < 6); i++) {
-+		e.mac[index][i] = hextoul(p, &p);
++		e.mac[index][i] = simple_strtoul(p, &p, 16);
 +		if (*p == ':')
 +			p++;
 +	}
@@ -7649,7 +7807,7 @@ index 0000000000..431f8caeb0
 +	update_crc();
 +}
 +
-+int do_mac(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
++int do_mac(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 +{
 +	char cmd;
 +
@@ -7715,11 +7873,11 @@ index 0000000000..431f8caeb0
 +		set_date(argv[2]);
 +		break;
 +	case 'p':	/* MAC table size */
-+		e.mac_count = hextoul(argv[2], NULL);
++		e.mac_count = simple_strtoul(argv[2], NULL, 16);
 +		update_crc();
 +		break;
 +	case '0' ... '9':	/* "mac 0" through "mac 22" */
-+		set_mac_address(dectoul(argv[1], NULL), argv[2]);
++		set_mac_address(simple_strtoul(argv[1], NULL, 10), argv[2]);
 +		break;
 +	case 'h':	/* help */
 +	default:
@@ -7857,12 +8015,11 @@ index 0000000000..431f8caeb0
 +		u8 minor;         /* 0x05        Board revision, minor */
 +	} be;
 +
-+#if !CONFIG_IS_ENABLED(DM_I2C)
++#ifndef CONFIG_DM_I2C
 +	i2c_read(CONFIG_SYS_I2C_EEPROM_ADDR, 0, CONFIG_SYS_I2C_EEPROM_ADDR_LEN,
 +		(void *)&be, sizeof(be));
 +#else
 +	struct udevice *dev;
-+	int ret;
 +#ifdef CONFIG_SYS_EEPROM_BUS_NUM
 +	ret = i2c_get_chip_for_busnum(CONFIG_SYS_EEPROM_BUS_NUM,
 +				      CONFIG_SYS_I2C_EEPROM_ADDR,
@@ -7871,7 +8028,7 @@ index 0000000000..431f8caeb0
 +#else
 +	ret = i2c_get_chip_for_busnum(0, CONFIG_SYS_I2C_EEPROM_ADDR,
 +				      CONFIG_SYS_I2C_EEPROM_ADDR_LEN,
-+				      &dev);
++				      &dev)
 +#endif
 +	if (!ret)
 +		dm_i2c_read(dev, 0, (void *)&be, sizeof(be));
@@ -7888,10 +8045,10 @@ index 0000000000..431f8caeb0
 +#endif
 diff --git a/board/icop/common/tcpc.c b/board/icop/common/tcpc.c
 new file mode 100644
-index 0000000000..3726ba978b
+index 0000000000..55fc54336b
 --- /dev/null
 +++ b/board/icop/common/tcpc.c
-@@ -0,0 +1,1053 @@
+@@ -0,0 +1,1017 @@
 +/*
 + * Copyright 2017,2019 NXP
 + *
@@ -7900,7 +8057,6 @@ index 0000000000..3726ba978b
 +#include <common.h>
 +#include <i2c.h>
 +#include <time.h>
-+#include <linux/delay.h>
 +#include "tcpc.h"
 +
 +#ifdef DEBUG
@@ -7929,7 +8085,7 @@ index 0000000000..3726ba978b
 +	uint8_t valb;
 +	int err;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	valb = (TCPC_ROLE_CTRL_CC_RP << TCPC_ROLE_CTRL_CC1_SHIFT) |
@@ -7948,7 +8104,7 @@ index 0000000000..3726ba978b
 +	uint8_t valb;
 +	int err;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	valb = (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC1_SHIFT) |
@@ -7966,7 +8122,7 @@ index 0000000000..3726ba978b
 +	uint8_t valb;
 +	int err;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	err = dm_i2c_read(port->i2c_dev, TCPC_TCPC_CTRL, &valb, 1);
@@ -7995,7 +8151,7 @@ index 0000000000..3726ba978b
 +	uint8_t valb_cc, cc2, cc1;
 +	int err;
 +
-+	if (port == NULL || port->i2c_dev == NULL || polarity == NULL || state == NULL)
++	if (port == NULL || polarity == NULL || state == NULL)
 +		return -EINVAL;
 +
 +	err = dm_i2c_read(port->i2c_dev, TCPC_CC_STATUS, (uint8_t *)&valb_cc, 1);
@@ -8114,7 +8270,7 @@ index 0000000000..3726ba978b
 +{
 +	int err;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	err = dm_i2c_write(port->i2c_dev, TCPC_ALERT, (const uint8_t *)&clear_mask, 2);
@@ -8126,25 +8282,11 @@ index 0000000000..3726ba978b
 +	return 0;
 +}
 +
-+int tcpc_fault_status_mask(struct tcpc_port *port, uint8_t fault_mask)
-+{
-+	int err = 0;
-+
-+	if (!port || port->i2c_dev == NULL)
-+		return -EINVAL;
-+
-+	err = dm_i2c_write(port->i2c_dev, TCPC_FAULT_STATUS_MASK, &fault_mask, 1);
-+	if (err)
-+		tcpc_log(port, "%s dm_i2c_write failed, err %d\n", __func__, err);
-+
-+	return err;
-+}
-+
 +int tcpc_send_command(struct tcpc_port *port, uint8_t command)
 +{
 +	int err;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	err = dm_i2c_write(port->i2c_dev, TCPC_COMMAND, (const uint8_t *)&command, 1);
@@ -8163,7 +8305,7 @@ index 0000000000..3726ba978b
 +	int err;
 +	ulong start;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	tcpc_debug_log(port, "%s reg 0x%x, mask 0x%x, value 0x%x\n", __func__, reg, mask, value);
@@ -8204,7 +8346,7 @@ index 0000000000..3726ba978b
 +	enum typec_cc_state state;
 +	int ret;
 +
-+	if (port == NULL)
++	if ((port == NULL) || (port->i2c_dev == NULL))
 +		return -EINVAL;
 +
 +	if (tcpc_pd_sink_check_charging(port)) {
@@ -8271,7 +8413,7 @@ index 0000000000..3726ba978b
 +	enum typec_cc_state state;
 +	int ret;
 +
-+	if (port == NULL)
++	if ((port == NULL) || (port->i2c_dev == NULL))
 +		return -EINVAL;
 +
 +	/* Check if the PD charge is working. If not, need to configure CC role for UFP */
@@ -8371,7 +8513,7 @@ index 0000000000..3726ba978b
 +	uint8_t cnt;
 +	uint16_t val;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	/* Generally the max tSenderResponse is 30ms, max tTypeCSendSourceCap is 200ms, we set the timeout to 500ms */
@@ -8408,7 +8550,7 @@ index 0000000000..3726ba978b
 +	uint8_t valb;
 +	uint16_t val = 0;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	if (msg_p == NULL || bytes <= 0)
@@ -8690,7 +8832,7 @@ index 0000000000..3726ba978b
 +	enum typec_cc_polarity pol;
 +	enum typec_cc_state state;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return false;
 +
 +	/* Check the CC status, must be sink */
@@ -8728,7 +8870,7 @@ index 0000000000..3726ba978b
 +	uint8_t valb;
 +	int err;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	port->pd_state = UNATTACH;
@@ -8741,18 +8883,9 @@ index 0000000000..3726ba978b
 +	}
 +
 +	if ((valb & TCPC_POWER_STATUS_VBUS_PRES) && (valb & TCPC_POWER_STATUS_SINKING_VBUS)) {
-+		err = dm_i2c_read(port->i2c_dev, TCPC_POWER_CTRL, (uint8_t *)&valb, 1);
-+		if (err) {
-+			tcpc_log(port, "%s dm_i2c_read failed, err %d\n", __func__, err);
-+			return -EIO;
-+		}
-+
++		dm_i2c_read(port->i2c_dev, TCPC_POWER_CTRL, (uint8_t *)&valb, 1);
 +		valb &= ~TCPC_POWER_CTRL_AUTO_DISCH_DISCO; /* disable AutoDischargeDisconnect */
-+		err = dm_i2c_write(port->i2c_dev, TCPC_POWER_CTRL, (const uint8_t *)&valb, 1);
-+		if (err) {
-+			tcpc_log(port, "%s dm_i2c_write failed, err %d\n", __func__, err);
-+			return -EIO;
-+		}
++		dm_i2c_write(port->i2c_dev, TCPC_POWER_CTRL, (const uint8_t *)&valb, 1);
 +
 +		tcpc_disable_sink_vbus(port);
 +	}
@@ -8771,7 +8904,7 @@ index 0000000000..3726ba978b
 +	enum typec_cc_polarity pol;
 +	enum typec_cc_state state;
 +
-+	if (port == NULL || port->i2c_dev == NULL)
++	if (port == NULL)
 +		return -EINVAL;
 +
 +	port->pd_state = UNATTACH;
@@ -8820,18 +8953,9 @@ index 0000000000..3726ba978b
 +		port->pd_state = ATTACHED;
 +	}
 +
-+	err = dm_i2c_read(port->i2c_dev, TCPC_POWER_CTRL, (uint8_t *)&valb, 1);
-+	if (err) {
-+		tcpc_log(port, "%s dm_i2c_read failed, err %d\n", __func__, err);
-+		return -EIO;
-+	}
-+
++	dm_i2c_read(port->i2c_dev, TCPC_POWER_CTRL, (uint8_t *)&valb, 1);
 +	valb &= ~TCPC_POWER_CTRL_AUTO_DISCH_DISCO; /* disable AutoDischargeDisconnect */
-+	err = dm_i2c_write(port->i2c_dev, TCPC_POWER_CTRL, (const uint8_t *)&valb, 1);
-+	if (err) {
-+		tcpc_log(port, "%s dm_i2c_write failed, err %d\n", __func__, err);
-+		return -EIO;
-+	}
++	dm_i2c_write(port->i2c_dev, TCPC_POWER_CTRL, (const uint8_t *)&valb, 1);
 +
 +	if (port->cfg.switch_setup_func)
 +		port->cfg.switch_setup_func(port);
@@ -8936,9 +9060,6 @@ index 0000000000..3726ba978b
 +		tcpc_pd_sink_disable(port);
 +	}
 +
-+	/* Mask all fault status */
-+	tcpc_fault_status_mask(port, 0);
-+
 +	tcpc_clear_alert(port, 0xffff);
 +
 +	tcpc_print_log(port);
@@ -8947,10 +9068,10 @@ index 0000000000..3726ba978b
 +}
 diff --git a/board/icop/common/tcpc.h b/board/icop/common/tcpc.h
 new file mode 100644
-index 0000000000..564a5cf21e
+index 0000000000..ff749518a8
 --- /dev/null
 +++ b/board/icop/common/tcpc.h
-@@ -0,0 +1,471 @@
+@@ -0,0 +1,469 @@
 +/*
 + * Copyright 2017 NXP
 + *
@@ -8978,8 +9099,6 @@ index 0000000000..564a5cf21e
 +#define TCPC_ALERT_RX_STATUS		BIT(2)
 +#define TCPC_ALERT_POWER_STATUS		BIT(1)
 +#define TCPC_ALERT_CC_STATUS		BIT(0)
-+
-+#define TCPC_FAULT_STATUS_MASK		0x15
 +
 +#define TCPC_TCPC_CTRL				0x19
 +#define TCPC_TCPC_CTRL_BIST_MODE	BIT(1)
@@ -9448,15 +9567,13 @@ index 0000000000..77cfacc526
 +#endif /* _MPC85xx_VIA_H */
 diff --git a/board/icop/common/vid.c b/board/icop/common/vid.c
 new file mode 100644
-index 0000000000..d2c9bbbfe9
+index 0000000000..20852476dd
 --- /dev/null
 +++ b/board/icop/common/vid.c
-@@ -0,0 +1,796 @@
+@@ -0,0 +1,965 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2014 Freescale Semiconductor, Inc.
-+ * Copyright 2020-21 NXP
-+ * Copyright 2020 Stephen Carlson <stcarlso@linux.microsoft.com>
 + */
 +
 +#include <common.h>
@@ -9464,7 +9581,6 @@ index 0000000000..d2c9bbbfe9
 +#include <env.h>
 +#include <i2c.h>
 +#include <irq_func.h>
-+#include <log.h>
 +#include <asm/io.h>
 +#ifdef CONFIG_FSL_LSCH2
 +#include <asm/arch/immap_lsch2.h>
@@ -9473,30 +9589,16 @@ index 0000000000..d2c9bbbfe9
 +#else
 +#include <asm/immap_85xx.h>
 +#endif
-+#include <linux/delay.h>
-+#include "i2c_common.h"
 +#include "vid.h"
 +
-+#ifndef I2C_VOL_MONITOR_BUS
-+#define I2C_VOL_MONITOR_BUS                    0
-+#endif
-+
-+/* Voltages are generally handled in mV to keep them as integers */
-+#define MV_PER_V 1000
-+
-+/*
-+ * Select the channel on the I2C mux (on some NXP boards) that contains
-+ * the voltage regulator to use for VID. Return 0 for success or nonzero
-+ * for failure.
-+ */
 +int __weak i2c_multiplexer_select_vid_channel(u8 channel)
 +{
 +	return 0;
 +}
 +
 +/*
-+ * Compensate for a board specific voltage drop between regulator and SoC.
-+ * Returns the voltage offset in mV.
++ * Compensate for a board specific voltage drop between regulator and SoC
++ * return a value in mV
 + */
 +int __weak board_vdd_drop_compensation(void)
 +{
@@ -9504,55 +9606,12 @@ index 0000000000..d2c9bbbfe9
 +}
 +
 +/*
-+ * Performs any board specific adjustments after the VID voltage has been
-+ * set. Return 0 for success or nonzero for failure.
++ * Board specific settings for specific voltage value
 + */
 +int __weak board_adjust_vdd(int vdd)
 +{
 +	return 0;
 +}
-+
-+/*
-+ * Processor specific method of converting the fuse value read from VID
-+ * registers into the core voltage to supply. Return the voltage in mV.
-+ */
-+u16 __weak soc_get_fuse_vid(int vid_index)
-+{
-+	/* Default VDD for Layerscape Chassis 1 devices */
-+	static const u16 vdd[32] = {
-+		0,      /* unused */
-+		9875,   /* 0.9875V */
-+		9750,
-+		9625,
-+		9500,
-+		9375,
-+		9250,
-+		9125,
-+		9000,
-+		8875,
-+		8750,
-+		8625,
-+		8500,
-+		8375,
-+		8250,
-+		8125,
-+		10000,  /* 1.0000V */
-+		10125,
-+		10250,
-+		10375,
-+		10500,
-+		10625,
-+		10750,
-+		10875,
-+		11000,
-+		0,      /* reserved */
-+	};
-+	return vdd[vid_index];
-+}
-+
-+#ifndef I2C_VOL_MONITOR_ADDR
-+#define I2C_VOL_MONITOR_ADDR                    0
-+#endif
 +
 +#if defined(CONFIG_VOL_MONITOR_IR36021_SET) || \
 +	defined(CONFIG_VOL_MONITOR_IR36021_READ)
@@ -9571,22 +9630,30 @@ index 0000000000..d2c9bbbfe9
 + */
 +static int find_ir_chip_on_i2c(void)
 +{
-+	int i2caddress, ret, i;
-+	u8 mfrID;
++	int i2caddress;
++	int ret;
++	u8 byte;
++	int i;
 +	const int ir_i2c_addr[] = {0x38, 0x08, 0x09};
-+	DEVICE_HANDLE_T dev;
++#ifdef CONFIG_DM_I2C
++	struct udevice *dev;
++#endif
 +
 +	/* Check all the address */
 +	for (i = 0; i < (sizeof(ir_i2c_addr)/sizeof(ir_i2c_addr[0])); i++) {
 +		i2caddress = ir_i2c_addr[i];
-+		ret = fsl_i2c_get_device(i2caddress, I2C_VOL_MONITOR_BUS, &dev);
-+		if (!ret) {
-+			ret = I2C_READ(dev, IR36021_MFR_ID_OFFSET,
-+				       (void *)&mfrID, sizeof(mfrID));
-+			/* If manufacturer ID matches the IR36021 */
-+			if (!ret && mfrID == IR36021_MFR_ID)
-+				return i2caddress;
-+		}
++#ifndef CONFIG_DM_I2C
++		ret = i2c_read(i2caddress,
++			       IR36021_MFR_ID_OFFSET, 1, (void *)&byte,
++			       sizeof(byte));
++#else
++		ret = i2c_get_chip_for_busnum(0, i2caddress, 1, &dev);
++		if (!ret)
++			ret = dm_i2c_read(dev, IR36021_MFR_ID_OFFSET,
++					  (void *)&byte, sizeof(byte));
++#endif
++		if ((ret >= 0) && (byte == IR36021_MFR_ID))
++			return i2caddress;
 +	}
 +	return -1;
 +}
@@ -9620,33 +9687,35 @@ index 0000000000..d2c9bbbfe9
 +	int i, ret, voltage_read = 0;
 +	u16 vol_mon;
 +	u8 buf[2];
-+	DEVICE_HANDLE_T dev;
-+
-+	/* Open device handle */
-+	ret = fsl_i2c_get_device(i2caddress, I2C_VOL_MONITOR_BUS, &dev);
-+	if (ret)
-+		return ret;
++#ifdef CONFIG_DM_I2C
++	struct udevice *dev;
++#endif
 +
 +	for (i = 0; i < NUM_READINGS; i++) {
-+		ret = I2C_READ(dev, I2C_VOL_MONITOR_BUS_V_OFFSET,
-+			       (void *)&buf[0], sizeof(buf));
++#ifndef CONFIG_DM_I2C
++		ret = i2c_read(I2C_VOL_MONITOR_ADDR,
++			       I2C_VOL_MONITOR_BUS_V_OFFSET, 1,
++			       (void *)&buf, 2);
++#else
++		ret = i2c_get_chip_for_busnum(0, I2C_VOL_MONITOR_ADDR, 1, &dev);
++		if (!ret)
++			ret = dm_i2c_read(dev, I2C_VOL_MONITOR_BUS_V_OFFSET,
++					  (void *)&buf, 2);
++#endif
 +		if (ret) {
 +			printf("VID: failed to read core voltage\n");
 +			return ret;
 +		}
-+
 +		vol_mon = (buf[0] << 8) | buf[1];
 +		if (vol_mon & I2C_VOL_MONITOR_BUS_V_OVF) {
 +			printf("VID: Core voltage sensor error\n");
 +			return -1;
 +		}
-+
 +		debug("VID: bus voltage reads 0x%04x\n", vol_mon);
 +		/* LSB = 4mv */
 +		voltage_read += (vol_mon >> I2C_VOL_MONITOR_BUS_V_SHIFT) * 4;
 +		udelay(WAIT_FOR_ADC);
 +	}
-+
 +	/* calculate the average */
 +	voltage_read /= NUM_READINGS;
 +
@@ -9654,25 +9723,30 @@ index 0000000000..d2c9bbbfe9
 +}
 +#endif
 +
-+#ifdef CONFIG_VOL_MONITOR_IR36021_READ
 +/* read voltage from IR */
++#ifdef CONFIG_VOL_MONITOR_IR36021_READ
 +static int read_voltage_from_IR(int i2caddress)
 +{
 +	int i, ret, voltage_read = 0;
 +	u16 vol_mon;
 +	u8 buf;
-+	DEVICE_HANDLE_T dev;
-+
-+	/* Open device handle */
-+	ret = fsl_i2c_get_device(i2caddress, I2C_VOL_MONITOR_BUS, &dev);
-+	if (ret)
-+		return ret;
++#ifdef CONFIG_DM_I2C
++	struct udevice *dev;
++#endif
 +
 +	for (i = 0; i < NUM_READINGS; i++) {
-+		ret = I2C_READ(dev, IR36021_LOOP1_VOUT_OFFSET, (void *)&buf,
-+			       sizeof(buf));
++#ifndef CONFIG_DM_I2C
++		ret = i2c_read(i2caddress,
++			       IR36021_LOOP1_VOUT_OFFSET,
++			       1, (void *)&buf, 1);
++#else
++		ret = i2c_get_chip_for_busnum(0, i2caddress, 1, &dev);
++		if (!ret)
++			ret = dm_i2c_read(dev, IR36021_LOOP1_VOUT_OFFSET,
++					  (void *)&buf, 1);
++#endif
 +		if (ret) {
-+			printf("VID: failed to read core voltage\n");
++			printf("VID: failed to read vcpu\n");
 +			return ret;
 +		}
 +		vol_mon = buf;
@@ -9684,7 +9758,7 @@ index 0000000000..d2c9bbbfe9
 +		/* Resolution is 1/128V. We scale up here to get 1/128mV
 +		 * and divide at the end
 +		 */
-+		voltage_read += vol_mon * MV_PER_V;
++		voltage_read += vol_mon * 1000;
 +		udelay(WAIT_FOR_ADC);
 +	}
 +	/* Scale down to the real mV as IR resolution is 1/128V, rounding up */
@@ -9702,94 +9776,49 @@ index 0000000000..d2c9bbbfe9
 +}
 +#endif
 +
-+#if defined(CONFIG_VOL_MONITOR_ISL68233_READ) || \
-+	defined(CONFIG_VOL_MONITOR_LTC3882_READ) || \
-+	defined(CONFIG_VOL_MONITOR_ISL68233_SET) || \
-+	defined(CONFIG_VOL_MONITOR_LTC3882_SET)
-+
-+/*
-+ * The message displayed if the VOUT exponent causes a resolution
-+ * worse than 1.0 V (if exponent is >= 0).
-+ */
-+#define VOUT_WARNING "VID: VOUT_MODE exponent has resolution worse than 1 V!\n"
-+
-+/* Checks the PMBus voltage monitor for the format used for voltage values */
-+static int get_pmbus_multiplier(DEVICE_HANDLE_T dev)
++#ifdef CONFIG_VOL_MONITOR_LTC3882_READ
++/* read the current value of the LTC Regulator Voltage */
++static int read_voltage_from_LTC(int i2caddress)
 +{
-+	u8 mode;
-+	int exponent, multiplier, ret;
++	int  ret, vcode = 0;
++	u8 chan = PWM_CHANNEL0;
 +
-+	ret = I2C_READ(dev, PMBUS_CMD_VOUT_MODE, &mode, sizeof(mode));
-+	if (ret) {
-+		printf("VID: unable to determine voltage multiplier\n");
-+		return 1;
-+	}
++#ifndef CONFIG_DM_I2C
++	/* select the PAGE 0 using PMBus commands PAGE for VDD*/
++	ret = i2c_write(I2C_VOL_MONITOR_ADDR,
++			PMBUS_CMD_PAGE, 1, &chan, 1);
++#else
++	struct udevice *dev;
 +
-+	/* Upper 3 bits is mode, lower 5 bits is exponent */
-+	exponent = (int)mode & 0x1F;
-+	mode >>= 5;
-+	switch (mode) {
-+	case 0:
-+		/* Linear, 5 bit twos component exponent */
-+		if (exponent & 0x10) {
-+			multiplier = 1 << (16 - (exponent & 0xF));
-+		} else {
-+			/* If exponent is >= 0, then resolution is 1 V! */
-+			printf(VOUT_WARNING);
-+			multiplier = 1;
-+		}
-+		break;
-+	case 1:
-+		/* VID code identifier */
-+		printf("VID: custom VID codes are not supported\n");
-+		multiplier = MV_PER_V;
-+		break;
-+	default:
-+		/* Direct, in mV */
-+		multiplier = MV_PER_V;
-+		break;
-+	}
-+
-+	debug("VID: calculated multiplier is %d\n", multiplier);
-+	return multiplier;
-+}
++	ret = i2c_get_chip_for_busnum(0, I2C_VOL_MONITOR_ADDR, 1, &dev);
++	if (!ret)
++		ret = dm_i2c_write(dev, PMBUS_CMD_PAGE, &chan, 1);
 +#endif
-+
-+#if defined(CONFIG_VOL_MONITOR_ISL68233_READ) || \
-+	defined(CONFIG_VOL_MONITOR_LTC3882_READ)
-+static int read_voltage_from_pmbus(int i2caddress)
-+{
-+	int ret, multiplier, vout;
-+	u8 channel = PWM_CHANNEL0;
-+	u16 vcode;
-+	DEVICE_HANDLE_T dev;
-+
-+	/* Open device handle */
-+	ret = fsl_i2c_get_device(i2caddress, I2C_VOL_MONITOR_BUS, &dev);
-+	if (ret)
-+		return ret;
-+
-+	/* Select the right page */
-+	ret = I2C_WRITE(dev, PMBUS_CMD_PAGE, &channel, sizeof(channel));
 +	if (ret) {
-+		printf("VID: failed to select VDD page %d\n", channel);
++		printf("VID: failed to select VDD Page 0\n");
 +		return ret;
 +	}
 +
-+	/* VOUT is little endian */
-+	ret = I2C_READ(dev, PMBUS_CMD_READ_VOUT, (void *)&vcode, sizeof(vcode));
++#ifndef CONFIG_DM_I2C
++	/*read the output voltage using PMBus command READ_VOUT*/
++	ret = i2c_read(I2C_VOL_MONITOR_ADDR,
++		       PMBUS_CMD_READ_VOUT, 1, (void *)&vcode, 2);
++#else
++	ret = dm_i2c_read(dev, PMBUS_CMD_READ_VOUT, (void *)&vcode, 2);
 +	if (ret) {
-+		printf("VID: failed to read core voltage\n");
++		printf("VID: failed to read the volatge\n");
++		return ret;
++	}
++#endif
++	if (ret) {
++		printf("VID: failed to read the volatge\n");
 +		return ret;
 +	}
 +
-+	/* Scale down to the real mV */
-+	multiplier = get_pmbus_multiplier(dev);
-+	vout = (int)vcode;
-+	/* Multiplier 1000 (direct mode) requires no change to convert */
-+	if (multiplier != MV_PER_V)
-+		vout = DIV_ROUND_UP(vout * MV_PER_V, multiplier);
-+	return vout - board_vdd_drop_compensation();
++	/* Scale down to the real mV as LTC resolution is 1/4096V,rounding up */
++	vcode = DIV_ROUND_UP(vcode * 1000, 4096);
++
++	return vcode;
 +}
 +#endif
 +
@@ -9797,14 +9826,13 @@ index 0000000000..d2c9bbbfe9
 +{
 +	int voltage_read;
 +#ifdef CONFIG_VOL_MONITOR_INA220
-+	voltage_read = read_voltage_from_INA220(I2C_VOL_MONITOR_ADDR);
++	voltage_read = read_voltage_from_INA220(i2caddress);
 +#elif defined CONFIG_VOL_MONITOR_IR36021_READ
 +	voltage_read = read_voltage_from_IR(i2caddress);
-+#elif defined(CONFIG_VOL_MONITOR_ISL68233_READ) || \
-+	  defined(CONFIG_VOL_MONITOR_LTC3882_READ)
-+	voltage_read = read_voltage_from_pmbus(i2caddress);
++#elif defined CONFIG_VOL_MONITOR_LTC3882_READ
++	voltage_read = read_voltage_from_LTC(i2caddress);
 +#else
-+	voltage_read = -1;
++	return -1;
 +#endif
 +	return voltage_read;
 +}
@@ -9842,7 +9870,7 @@ index 0000000000..d2c9bbbfe9
 +}
 +
 +/*
-+ * Blocks and reads the VID voltage until it stabilizes, or the
++ * this function keeps reading the voltage until it is stable or until the
 + * timeout expires
 + */
 +static int wait_for_voltage_stable(int i2caddress)
@@ -9852,9 +9880,9 @@ index 0000000000..d2c9bbbfe9
 +	vdd = read_voltage(i2caddress);
 +	udelay(NUM_READINGS * WAIT_FOR_ADC);
 +
++	/* wait until voltage is stable */
 +	vdd_current = read_voltage(i2caddress);
-+	/*
-+	 * The maximum timeout is
++	/* The maximum timeout is
 +	 * MAX_LOOP_WAIT_VOL_STABLE * NUM_READINGS * WAIT_FOR_ADC
 +	 */
 +	for (timeout = MAX_LOOP_WAIT_VOL_STABLE;
@@ -9869,18 +9897,12 @@ index 0000000000..d2c9bbbfe9
 +	return vdd_current;
 +}
 +
-+/* Sets the VID voltage using the IR36021 */
++/* Set the voltage to the IR chip */
 +static int set_voltage_to_IR(int i2caddress, int vdd)
 +{
 +	int wait, vdd_last;
 +	int ret;
 +	u8 vid;
-+	DEVICE_HANDLE_T dev;
-+
-+	/* Open device handle */
-+	ret = fsl_i2c_get_device(i2caddress, I2C_VOL_MONITOR_BUS, &dev);
-+	if (ret)
-+		return ret;
 +
 +	/* Compensate for a board specific voltage drop between regulator and
 +	 * SoC before converting into an IR VID value
@@ -9892,10 +9914,20 @@ index 0000000000..d2c9bbbfe9
 +	vid = DIV_ROUND_UP(vdd - 245, 5);
 +#endif
 +
-+	ret = I2C_WRITE(dev, IR36021_LOOP1_MANUAL_ID_OFFSET, (void *)&vid,
-+			sizeof(vid));
++#ifndef CONFIG_DM_I2C
++	ret = i2c_write(i2caddress, IR36021_LOOP1_MANUAL_ID_OFFSET,
++			1, (void *)&vid, sizeof(vid));
++#else
++	struct udevice *dev;
++
++	ret = i2c_get_chip_for_busnum(0, i2caddress, 1, &dev);
++	if (!ret)
++		ret = dm_i2c_write(dev, IR36021_LOOP1_MANUAL_ID_OFFSET,
++				   (void *)&vid, sizeof(vid));
++
++#endif
 +	if (ret) {
-+		printf("VID: failed to write new voltage\n");
++		printf("VID: failed to write VID\n");
 +		return -1;
 +	}
 +	wait = wait_for_new_voltage(vdd, i2caddress);
@@ -9909,59 +9941,45 @@ index 0000000000..d2c9bbbfe9
 +	debug("VID: Current voltage is %d mV\n", vdd_last);
 +	return vdd_last;
 +}
++
 +#endif
 +
-+#if defined(CONFIG_VOL_MONITOR_ISL68233_SET) || \
-+	defined(CONFIG_VOL_MONITOR_LTC3882_SET)
-+static int set_voltage_to_pmbus(int i2caddress, int vdd)
++#ifdef CONFIG_VOL_MONITOR_LTC3882_SET
++/* this function sets the VDD and returns the value set */
++static int set_voltage_to_LTC(int i2caddress, int vdd)
 +{
 +	int ret, vdd_last, vdd_target = vdd;
-+	int count = MAX_LOOP_WAIT_NEW_VOL, temp = 0, multiplier;
-+	unsigned char value;
++	int count = 100, temp = 0;
 +
-+	/* The data to be sent with the PMBus command PAGE_PLUS_WRITE */
-+	u8 buffer[5] = { 0x04, PWM_CHANNEL0, PMBUS_CMD_VOUT_COMMAND, 0, 0 };
-+	DEVICE_HANDLE_T dev;
++	/* Scale up to the LTC resolution is 1/4096V */
++	vdd = (vdd * 4096) / 1000;
 +
-+	/* Open device handle */
-+	ret = fsl_i2c_get_device(i2caddress, I2C_VOL_MONITOR_BUS, &dev);
-+	if (ret)
-+		return ret;
-+
-+	/* Scale up to the proper value for the VOUT command, little endian */
-+	multiplier = get_pmbus_multiplier(dev);
-+	vdd += board_vdd_drop_compensation();
-+	if (multiplier != MV_PER_V)
-+		vdd = DIV_ROUND_UP(vdd * multiplier, MV_PER_V);
-+	buffer[3] = vdd & 0xFF;
-+	buffer[4] = (vdd & 0xFF00) >> 8;
-+
-+	/* Check write protect state */
-+	ret = I2C_READ(dev, PMBUS_CMD_WRITE_PROTECT, (void *)&value,
-+		       sizeof(value));
-+	if (ret)
-+		goto exit;
-+
-+	if (value != EN_WRITE_ALL_CMD) {
-+		value = EN_WRITE_ALL_CMD;
-+		ret = I2C_WRITE(dev, PMBUS_CMD_WRITE_PROTECT,
-+				(void *)&value, sizeof(value));
-+		if (ret)
-+			goto exit;
-+	}
++	/* 5-byte buffer which needs to be sent following the
++	 * PMBus command PAGE_PLUS_WRITE.
++	 */
++	u8 buff[5] = {0x04, PWM_CHANNEL0, PMBUS_CMD_VOUT_COMMAND,
++			vdd & 0xFF, (vdd & 0xFF00) >> 8};
 +
 +	/* Write the desired voltage code to the regulator */
-+	ret = I2C_WRITE(dev, PMBUS_CMD_PAGE_PLUS_WRITE, (void *)&buffer[0],
-+			sizeof(buffer));
++#ifndef CONFIG_DM_I2C
++	ret = i2c_write(I2C_VOL_MONITOR_ADDR,
++			PMBUS_CMD_PAGE_PLUS_WRITE, 1, (void *)&buff, 5);
++#else
++	struct udevice *dev;
++
++	ret = i2c_get_chip_for_busnum(0, I2C_VOL_MONITOR_ADDR, 1, &dev);
++	if (!ret)
++		ret = dm_i2c_write(dev, PMBUS_CMD_PAGE_PLUS_WRITE,
++				   (void *)&buff, 5);
++#endif
 +	if (ret) {
-+		printf("VID: I2C failed to write to the voltage regulator\n");
++		printf("VID: I2C failed to write to the volatge regulator\n");
 +		return -1;
 +	}
 +
-+exit:
-+	/* Wait for the voltage to get to the desired value */
++	/* Wait for the volatge to get to the desired value */
 +	do {
-+		vdd_last = read_voltage_from_pmbus(i2caddress);
++		vdd_last = read_voltage_from_LTC(i2caddress);
 +		if (vdd_last < 0) {
 +			printf("VID: Couldn't read sensor abort VID adjust\n");
 +			return -1;
@@ -9980,37 +9998,371 @@ index 0000000000..d2c9bbbfe9
 +
 +#ifdef CONFIG_VOL_MONITOR_IR36021_SET
 +	vdd_last = set_voltage_to_IR(i2caddress, vdd);
-+#elif defined(CONFIG_VOL_MONITOR_ISL68233_SET) || \
-+	  defined(CONFIG_VOL_MONITOR_LTC3882_SET)
-+	vdd_last = set_voltage_to_pmbus(i2caddress, vdd);
++#elif defined CONFIG_VOL_MONITOR_LTC3882_SET
++	vdd_last = set_voltage_to_LTC(i2caddress, vdd);
 +#else
 +	#error Specific voltage monitor must be defined
 +#endif
 +	return vdd_last;
 +}
 +
++#ifdef CONFIG_FSL_LSCH3
 +int adjust_vdd(ulong vdd_override)
 +{
 +	int re_enable = disable_interrupts();
-+#if defined(CONFIG_FSL_LSCH2) || defined(CONFIG_FSL_LSCH3)
++	struct ccsr_gur *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
++	u32 fusesr;
++#if defined(CONFIG_VOL_MONITOR_IR36021_SET) || \
++	defined(CONFIG_VOL_MONITOR_IR36021_READ)
++	u8 vid, buf;
++#else
++	u8 vid;
++#endif
++	int vdd_target, vdd_current, vdd_last;
++	int ret, i2caddress;
++	unsigned long vdd_string_override;
++	char *vdd_string;
++#ifdef CONFIG_ARCH_LX2160A
++	static const u16 vdd[32] = {
++		8250,
++		7875,
++		7750,
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		8000,
++		8125,
++		8250,
++		0,      /* reserved */
++		8500,
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++	};
++#else
++#ifdef CONFIG_ARCH_LS1088A
++	static const uint16_t vdd[32] = {
++		10250,
++		9875,
++		9750,
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		9000,
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		10000,  /* 1.0000V */
++		10125,
++		10250,
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++	};
++
++#else
++	static const uint16_t vdd[32] = {
++		10500,
++		0,      /* reserved */
++		9750,
++		0,      /* reserved */
++		9500,
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		9000,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		10000,  /* 1.0000V */
++		0,      /* reserved */
++		10250,
++		0,      /* reserved */
++		10500,
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++		0,      /* reserved */
++	};
++#endif
++#endif
++	struct vdd_drive {
++		u8 vid;
++		unsigned voltage;
++	};
++
++	ret = i2c_multiplexer_select_vid_channel(I2C_MUX_CH_VOL_MONITOR);
++	if (ret) {
++		debug("VID: I2C failed to switch channel\n");
++		ret = -1;
++		goto exit;
++	}
++#if defined(CONFIG_VOL_MONITOR_IR36021_SET) || \
++	defined(CONFIG_VOL_MONITOR_IR36021_READ)
++	ret = find_ir_chip_on_i2c();
++	if (ret < 0) {
++		printf("VID: Could not find voltage regulator on I2C.\n");
++		ret = -1;
++		goto exit;
++	} else {
++		i2caddress = ret;
++		debug("VID: IR Chip found on I2C address 0x%02x\n", i2caddress);
++	}
++
++	/* check IR chip work on Intel mode*/
++#ifndef CONFIG_DM_I2C
++	ret = i2c_read(i2caddress,
++		       IR36021_INTEL_MODE_OOFSET,
++		       1, (void *)&buf, 1);
++#else
++	struct udevice *dev;
++
++	ret = i2c_get_chip_for_busnum(0, i2caddress, 1, &dev);
++	if (!ret)
++		ret = dm_i2c_read(dev, IR36021_INTEL_MODE_OOFSET,
++				  (void *)&buf, 1);
++#endif
++	if (ret) {
++		printf("VID: failed to read IR chip mode.\n");
++		ret = -1;
++		goto exit;
++	}
++
++	if ((buf & IR36021_MODE_MASK) != IR36021_INTEL_MODE) {
++		printf("VID: IR Chip is not used in Intel mode.\n");
++		ret = -1;
++		goto exit;
++	}
++#endif
++
++	/* get the voltage ID from fuse status register */
++	fusesr = in_le32(&gur->dcfg_fusesr);
++	vid = (fusesr >> FSL_CHASSIS3_DCFG_FUSESR_ALTVID_SHIFT) &
++		FSL_CHASSIS3_DCFG_FUSESR_ALTVID_MASK;
++	if ((vid == 0) || (vid == FSL_CHASSIS3_DCFG_FUSESR_ALTVID_MASK)) {
++		vid = (fusesr >> FSL_CHASSIS3_DCFG_FUSESR_VID_SHIFT) &
++			FSL_CHASSIS3_DCFG_FUSESR_VID_MASK;
++	}
++	vdd_target = vdd[vid];
++
++	/* check override variable for overriding VDD */
++	vdd_string = env_get(CONFIG_VID_FLS_ENV);
++	if (vdd_override == 0 && vdd_string &&
++	    !strict_strtoul(vdd_string, 10, &vdd_string_override))
++		vdd_override = vdd_string_override;
++
++	if (vdd_override >= VDD_MV_MIN && vdd_override <= VDD_MV_MAX) {
++		vdd_target = vdd_override * 10; /* convert to 1/10 mV */
++		debug("VDD override is %lu\n", vdd_override);
++	} else if (vdd_override != 0) {
++		printf("Invalid value.\n");
++	}
++
++	/* divide and round up by 10 to get a value in mV */
++	vdd_target = DIV_ROUND_UP(vdd_target, 10);
++	if (vdd_target == 0) {
++		debug("VID: VID not used\n");
++		ret = 0;
++		goto exit;
++	} else if (vdd_target < VDD_MV_MIN || vdd_target > VDD_MV_MAX) {
++		/* Check vdd_target is in valid range */
++		printf("VID: Target VID %d mV is not in range.\n",
++		       vdd_target);
++		ret = -1;
++		goto exit;
++	} else {
++		debug("VID: vid = %d mV\n", vdd_target);
++	}
++
++	/*
++	 * Read voltage monitor to check real voltage.
++	 */
++	vdd_last = read_voltage(i2caddress);
++	if (vdd_last < 0) {
++		printf("VID: Couldn't read sensor abort VID adjustment\n");
++		ret = -1;
++		goto exit;
++	}
++	vdd_current = vdd_last;
++	debug("VID: Core voltage is currently at %d mV\n", vdd_last);
++
++#ifdef CONFIG_VOL_MONITOR_LTC3882_SET
++	/* Set the target voltage */
++	vdd_last = vdd_current = set_voltage(i2caddress, vdd_target);
++#else
++	/*
++	  * Adjust voltage to at or one step above target.
++	  * As measurements are less precise than setting the values
++	  * we may run through dummy steps that cancel each other
++	  * when stepping up and then down.
++	  */
++	while (vdd_last > 0 &&
++	       vdd_last < vdd_target) {
++		vdd_current += IR_VDD_STEP_UP;
++		vdd_last = set_voltage(i2caddress, vdd_current);
++	}
++	while (vdd_last > 0 &&
++	       vdd_last > vdd_target + (IR_VDD_STEP_DOWN - 1)) {
++		vdd_current -= IR_VDD_STEP_DOWN;
++		vdd_last = set_voltage(i2caddress, vdd_current);
++	}
++
++#endif
++	if (board_adjust_vdd(vdd_target) < 0) {
++		ret = -1;
++		goto exit;
++	}
++
++	if (vdd_last > 0)
++		printf("VID: Core voltage after adjustment is at %d mV\n",
++		       vdd_last);
++	else
++		ret = -1;
++exit:
++	if (re_enable)
++		enable_interrupts();
++	i2c_multiplexer_select_vid_channel(I2C_MUX_CH_DEFAULT);
++	return ret;
++}
++#else /* !CONFIG_FSL_LSCH3 */
++int adjust_vdd(ulong vdd_override)
++{
++	int re_enable = disable_interrupts();
++#if defined(CONFIG_FSL_LSCH2)
 +	struct ccsr_gur *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
 +#else
 +	ccsr_gur_t __iomem *gur =
 +		(void __iomem *)(CONFIG_SYS_MPC85xx_GUTS_ADDR);
 +#endif
-+	u8 vid;
 +	u32 fusesr;
-+	int vdd_current, vdd_last, vdd_target;
-+	int ret, i2caddress = I2C_VOL_MONITOR_ADDR;
++	u8 vid, buf;
++	int vdd_target, vdd_current, vdd_last;
++	int ret, i2caddress;
 +	unsigned long vdd_string_override;
 +	char *vdd_string;
++	static const uint16_t vdd[32] = {
++		0,      /* unused */
++		9875,   /* 0.9875V */
++		9750,
++		9625,
++		9500,
++		9375,
++		9250,
++		9125,
++		9000,
++		8875,
++		8750,
++		8625,
++		8500,
++		8375,
++		8250,
++		8125,
++		10000,  /* 1.0000V */
++		10125,
++		10250,
++		10375,
++		10500,
++		10625,
++		10750,
++		10875,
++		11000,
++		0,      /* reserved */
++	};
++	struct vdd_drive {
++		u8 vid;
++		unsigned voltage;
++	};
 +
++	ret = i2c_multiplexer_select_vid_channel(I2C_MUX_CH_VOL_MONITOR);
++	if (ret) {
++		debug("VID: I2C failed to switch channel\n");
++		ret = -1;
++		goto exit;
++	}
 +#if defined(CONFIG_VOL_MONITOR_IR36021_SET) || \
 +	defined(CONFIG_VOL_MONITOR_IR36021_READ)
-+	u8 buf;
-+	DEVICE_HANDLE_T dev;
++	ret = find_ir_chip_on_i2c();
++	if (ret < 0) {
++		printf("VID: Could not find voltage regulator on I2C.\n");
++		ret = -1;
++		goto exit;
++	} else {
++		i2caddress = ret;
++		debug("VID: IR Chip found on I2C address 0x%02x\n", i2caddress);
++	}
++
++	/* check IR chip work on Intel mode*/
++#ifndef CONFIG_DM_I2C
++	ret = i2c_read(i2caddress,
++		       IR36021_INTEL_MODE_OOFSET,
++		       1, (void *)&buf, 1);
++#else
++	struct udevice *dev;
++
++	ret = i2c_get_chip_for_busnum(0, i2caddress, 1, &dev);
++	if (!ret)
++		ret = dm_i2c_read(dev, IR36021_INTEL_MODE_OOFSET,
++				  (void *)&buf, 1);
++#endif
++	if (ret) {
++		printf("VID: failed to read IR chip mode.\n");
++		ret = -1;
++		goto exit;
++	}
++	if ((buf & IR36021_MODE_MASK) != IR36021_INTEL_MODE) {
++		printf("VID: IR Chip is not used in Intel mode.\n");
++		ret = -1;
++		goto exit;
++	}
 +#endif
 +
++	/* get the voltage ID from fuse status register */
++	fusesr = in_be32(&gur->dcfg_fusesr);
 +	/*
 +	 * VID is used according to the table below
 +	 *                ---------------------------------------
@@ -10028,83 +10380,33 @@ index 0000000000..d2c9bbbfe9
 +	 * | T |          |         |                 |         |
 +	 * ------------------------------------------------------
 +	 */
-+#if defined(CONFIG_FSL_LSCH3)
-+	fusesr = in_le32(&gur->dcfg_fusesr);
-+	vid = (fusesr >> FSL_CHASSIS3_DCFG_FUSESR_ALTVID_SHIFT) &
-+	       FSL_CHASSIS3_DCFG_FUSESR_ALTVID_MASK;
-+	if (vid == 0 || vid == FSL_CHASSIS3_DCFG_FUSESR_ALTVID_MASK) {
-+		vid = (fusesr >> FSL_CHASSIS3_DCFG_FUSESR_VID_SHIFT) &
-+		       FSL_CHASSIS3_DCFG_FUSESR_VID_MASK;
-+	}
-+#elif defined(CONFIG_FSL_LSCH2)
-+	fusesr = in_be32(&gur->dcfg_fusesr);
++#ifdef CONFIG_FSL_LSCH2
 +	vid = (fusesr >> FSL_CHASSIS2_DCFG_FUSESR_ALTVID_SHIFT) &
-+	       FSL_CHASSIS2_DCFG_FUSESR_ALTVID_MASK;
-+	if (vid == 0 || vid == FSL_CHASSIS2_DCFG_FUSESR_ALTVID_MASK) {
++		FSL_CHASSIS2_DCFG_FUSESR_ALTVID_MASK;
++	if ((vid == 0) || (vid == FSL_CHASSIS2_DCFG_FUSESR_ALTVID_MASK)) {
 +		vid = (fusesr >> FSL_CHASSIS2_DCFG_FUSESR_VID_SHIFT) &
-+		       FSL_CHASSIS2_DCFG_FUSESR_VID_MASK;
++			FSL_CHASSIS2_DCFG_FUSESR_VID_MASK;
 +	}
 +#else
-+	fusesr = in_be32(&gur->dcfg_fusesr);
 +	vid = (fusesr >> FSL_CORENET_DCFG_FUSESR_ALTVID_SHIFT) &
-+	       FSL_CORENET_DCFG_FUSESR_ALTVID_MASK;
-+	if (vid == 0 || vid == FSL_CORENET_DCFG_FUSESR_ALTVID_MASK) {
++		FSL_CORENET_DCFG_FUSESR_ALTVID_MASK;
++	if ((vid == 0) || (vid == FSL_CORENET_DCFG_FUSESR_ALTVID_MASK)) {
 +		vid = (fusesr >> FSL_CORENET_DCFG_FUSESR_VID_SHIFT) &
-+		       FSL_CORENET_DCFG_FUSESR_VID_MASK;
++			FSL_CORENET_DCFG_FUSESR_VID_MASK;
 +	}
 +#endif
-+	vdd_target = soc_get_fuse_vid((int)vid);
-+
-+	ret = i2c_multiplexer_select_vid_channel(I2C_MUX_CH_VOL_MONITOR);
-+	if (ret) {
-+		debug("VID: I2C failed to switch channel\n");
-+		ret = -1;
-+		goto exit;
-+	}
-+
-+#if defined(CONFIG_VOL_MONITOR_IR36021_SET) || \
-+	defined(CONFIG_VOL_MONITOR_IR36021_READ)
-+	ret = find_ir_chip_on_i2c();
-+	if (ret < 0) {
-+		printf("VID: Could not find voltage regulator on I2C.\n");
-+		ret = -1;
-+		goto exit;
-+	} else {
-+		i2caddress = ret;
-+		debug("VID: IR Chip found on I2C address 0x%02x\n", i2caddress);
-+	}
-+
-+	ret = fsl_i2c_get_device(i2caddress, I2C_VOL_MONITOR_BUS, &dev);
-+	if (ret)
-+		return ret;
-+
-+	/* check IR chip work on Intel mode */
-+	ret = I2C_READ(dev, IR36021_INTEL_MODE_OFFSET, (void *)&buf,
-+		       sizeof(buf));
-+	if (ret) {
-+		printf("VID: failed to read IR chip mode.\n");
-+		ret = -1;
-+		goto exit;
-+	}
-+	if ((buf & IR36021_MODE_MASK) != IR36021_INTEL_MODE) {
-+		printf("VID: IR Chip is not used in Intel mode.\n");
-+		ret = -1;
-+		goto exit;
-+	}
-+#endif
++	vdd_target = vdd[vid];
 +
 +	/* check override variable for overriding VDD */
 +	vdd_string = env_get(CONFIG_VID_FLS_ENV);
-+	debug("VID: Initial VDD value is %d mV\n",
-+	      DIV_ROUND_UP(vdd_target, 10));
 +	if (vdd_override == 0 && vdd_string &&
 +	    !strict_strtoul(vdd_string, 10, &vdd_string_override))
 +		vdd_override = vdd_string_override;
 +	if (vdd_override >= VDD_MV_MIN && vdd_override <= VDD_MV_MAX) {
 +		vdd_target = vdd_override * 10; /* convert to 1/10 mV */
-+		debug("VID: VDD override is %lu\n", vdd_override);
++		debug("VDD override is %lu\n", vdd_override);
 +	} else if (vdd_override != 0) {
-+		printf("VID: Invalid VDD value.\n");
++		printf("Invalid value.\n");
 +	}
 +	if (vdd_target == 0) {
 +		debug("VID: VID not used\n");
@@ -10127,13 +10429,6 @@ index 0000000000..d2c9bbbfe9
 +	}
 +	vdd_current = vdd_last;
 +	debug("VID: Core voltage is currently at %d mV\n", vdd_last);
-+
-+#if defined(CONFIG_VOL_MONITOR_LTC3882_SET) || \
-+	defined(CONFIG_VOL_MONITOR_ISL68233_SET)
-+	/* Set the target voltage */
-+	vdd_current = set_voltage(i2caddress, vdd_target);
-+	vdd_last = vdd_current;
-+#else
 +	/*
 +	  * Adjust voltage to at or one step above target.
 +	  * As measurements are less precise than setting the values
@@ -10150,13 +10445,6 @@ index 0000000000..d2c9bbbfe9
 +		vdd_current -= IR_VDD_STEP_DOWN;
 +		vdd_last = set_voltage(i2caddress, vdd_current);
 +	}
-+#endif
-+
-+	/* Board specific adjustments */
-+	if (board_adjust_vdd(vdd_target) < 0) {
-+		ret = -1;
-+		goto exit;
-+	}
 +
 +	if (vdd_last > 0)
 +		printf("VID: Core voltage after adjustment is at %d mV\n",
@@ -10171,10 +10459,11 @@ index 0000000000..d2c9bbbfe9
 +
 +	return ret;
 +}
++#endif
 +
 +static int print_vdd(void)
 +{
-+	int vdd_last, ret, i2caddress = I2C_VOL_MONITOR_ADDR;
++	int vdd_last, ret, i2caddress;
 +
 +	ret = i2c_multiplexer_select_vid_channel(I2C_MUX_CH_VOL_MONITOR);
 +	if (ret) {
@@ -10206,29 +10495,28 @@ index 0000000000..d2c9bbbfe9
 +	i2c_multiplexer_select_vid_channel(I2C_MUX_CH_DEFAULT);
 +
 +	return ret < 0 ? -1 : 0;
++
 +}
 +
-+static int do_vdd_override(struct cmd_tbl *cmdtp,
++static int do_vdd_override(cmd_tbl_t *cmdtp,
 +			   int flag, int argc,
-+			   char *const argv[])
++			   char * const argv[])
 +{
 +	ulong override;
-+	int ret = 0;
 +
 +	if (argc < 2)
 +		return CMD_RET_USAGE;
 +
-+	if (!strict_strtoul(argv[1], 10, &override)) {
-+		ret = adjust_vdd(override);
-+		if (ret < 0)
-+			return CMD_RET_FAILURE;
-+	} else
++	if (!strict_strtoul(argv[1], 10, &override))
++		adjust_vdd(override);   /* the value is checked by callee */
++	else
 +		return CMD_RET_USAGE;
 +	return 0;
 +}
 +
-+static int do_vdd_read(struct cmd_tbl *cmdtp, int flag, int argc,
-+		       char *const argv[])
++static int do_vdd_read(cmd_tbl_t *cmdtp,
++			 int flag, int argc,
++			 char * const argv[])
 +{
 +	if (argc < 1)
 +		return CMD_RET_USAGE;
@@ -10250,99 +10538,45 @@ index 0000000000..d2c9bbbfe9
 +)
 diff --git a/board/icop/common/vid.h b/board/icop/common/vid.h
 new file mode 100644
-index 0000000000..b34c080b4b
+index 0000000000..99778e9a93
 --- /dev/null
 +++ b/board/icop/common/vid.h
-@@ -0,0 +1,75 @@
+@@ -0,0 +1,23 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
 + * Copyright 2014 Freescale Semiconductor, Inc.
-+ * Copyright 2020 NXP
 + */
 +
 +#ifndef __VID_H_
 +#define __VID_H_
 +
-+/* IR36021 command codes */
 +#define IR36021_LOOP1_MANUAL_ID_OFFSET	0x6A
 +#define IR36021_LOOP1_VOUT_OFFSET	0x9A
 +#define IR36021_MFR_ID_OFFSET		0x92
 +#define IR36021_MFR_ID			0x43
-+#define IR36021_INTEL_MODE_OFFSET	0x14
++#define IR36021_INTEL_MODE_OOFSET	0x14
 +#define IR36021_MODE_MASK		0x20
 +#define IR36021_INTEL_MODE		0x00
 +#define IR36021_AMD_MODE		0x20
 +
-+/* Step the IR regulator in 5mV increments */
++/* step the IR regulator in 5mV increments */
 +#define IR_VDD_STEP_DOWN		5
 +#define IR_VDD_STEP_UP			5
-+
-+/* LTC3882 */
-+#define PMBUS_CMD_WRITE_PROTECT         0x10
-+/*
-+ * WRITE_PROTECT command supported values
-+ * 0x80: Disable all writes except WRITE_PROTECT, PAGE,
-+ *       STORE_USER_ALL and MFR_EE_UNLOCK commands.
-+ * 0x40: Disable all writes except WRITE_PROTECT, PAGE, STORE_USER_ALL,
-+ *       MFR_EE_UNLOCK, OPERATION, CLEAR_PEAKS and CLEAR_FAULTS commands.
-+ *       Individual faults can also be cleared by writing a 1 to the
-+ *       respective status bit.
-+ * 0x20: Disable all writes except WRITE_PROTECT, PAGE, STORE_USER_ ALL,
-+ *       MFR_EE_UNLOCK, OPERATION, CLEAR_PEAKS, CLEAR_FAULTS, ON_OFF_CONFIG
-+ *       and VOUT_COMMAND commands. Individual faults can be cleared by
-+ *       writing a 1 to the respective status bit.
-+ * 0x00: Enables write to all commands
-+ */
-+#define EN_WRITE_ALL_CMD (0)
-+
-+#ifdef CONFIG_TARGET_LX2160ARDB
-+/* The lowest and highest voltage allowed*/
-+#define VDD_MV_MIN			775
-+#define VDD_MV_MAX			855
-+#endif
-+
-+#if defined(CONFIG_TARGET_LX2160AQDS) || defined(CONFIG_TARGET_LX2162AQDS)
-+/* The lowest and highest voltage allowed*/
-+#define VDD_MV_MIN			775
-+#define VDD_MV_MAX			925
-+#endif
-+
-+/* PM Bus commands code for LTC3882*/
-+#define PWM_CHANNEL0                    0x0
-+#define PMBUS_CMD_PAGE                  0x0
-+#define PMBUS_CMD_READ_VOUT             0x8B
-+#define PMBUS_CMD_VOUT_MODE			0x20
-+#define PMBUS_CMD_VOUT_COMMAND          0x21
-+#define PMBUS_CMD_PAGE_PLUS_WRITE       0x05
-+
-+#if defined(CONFIG_TARGET_LX2160AQDS) || defined(CONFIG_TARGET_LX2162AQDS) || \
-+defined(CONFIG_TARGET_LX2160ARDB)
-+/* Voltage monitor on channel 2*/
-+#define I2C_VOL_MONITOR_BUS_V_OFFSET	0x2
-+#define I2C_VOL_MONITOR_BUS_V_OVF	0x1
-+#define I2C_VOL_MONITOR_BUS_V_SHIFT	3
-+#define I2C_VOL_MONITOR_ADDR            0x63
-+#define I2C_MUX_CH_VOL_MONITOR		0xA
-+#endif
-+
 +int adjust_vdd(ulong vdd_override);
-+u16 soc_get_fuse_vid(int vid_index);
 +
 +#endif  /* __VID_H_ */
 diff --git a/board/icop/common/vsc3316_3308.c b/board/icop/common/vsc3316_3308.c
 new file mode 100644
-index 0000000000..c51f3c5aca
+index 0000000000..033fae020f
 --- /dev/null
 +++ b/board/icop/common/vsc3316_3308.c
-@@ -0,0 +1,530 @@
+@@ -0,0 +1,275 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2012 Freescale Semiconductor, Inc.
-+ * Copyright 2020 NXP
 + */
 +
 +#include "vsc3316_3308.h"
-+#include <log.h>
 +
 +#define REVISION_ID_REG		0x7E
 +#define INTERFACE_MODE_REG		0x79
@@ -10371,22 +10605,7 @@ index 0000000000..c51f3c5aca
 +
 +	/* enable 2-wire Serial InterFace (I2C) */
 +	data = 0x02;
-+#if CONFIG_IS_ENABLED(DM_I2C)
-+	int ret, bus_num = 0;
-+	struct udevice *dev;
-+
-+	ret = i2c_get_chip_for_busnum(bus_num, vsc_addr,
-+				      1, &dev);
-+	if (ret) {
-+		printf("%s: Cannot find udev for a bus %d\n", __func__,
-+		       bus_num);
-+		return ret;
-+	}
-+
-+	return dm_i2c_write(dev, INTERFACE_MODE_REG, &data, 1);
-+#else
 +	return i2c_write(vsc_addr, INTERFACE_MODE_REG, 1, &data, 1);
-+#endif
 +}
 +
 +int vsc3316_config(unsigned int vsc_addr, int8_t con_arr[][2],
@@ -10399,66 +10618,6 @@ index 0000000000..c51f3c5aca
 +	debug("VSC:Initializing VSC3316 at I2C address 0x%2x"
 +		" for Tx\n", vsc_addr);
 +
-+#if CONFIG_IS_ENABLED(DM_I2C)
-+	int bus_num = 0;
-+	struct udevice *dev;
-+
-+	ret = i2c_get_chip_for_busnum(bus_num, vsc_addr,
-+				      1, &dev);
-+	if (ret) {
-+		printf("%s: Cannot find udev for a bus %d\n", __func__,
-+		       bus_num);
-+		return ret;
-+	}
-+
-+	ret = dm_i2c_read(dev, REVISION_ID_REG, &rev_id, 1);
-+	if (ret < 0) {
-+		printf("VSC:0x%x could not read REV_ID from device.\n",
-+		       vsc_addr);
-+		return ret;
-+	}
-+
-+	if (rev_id != 0xab) {
-+		printf("VSC: device at address 0x%x is not VSC3316/3308.\n",
-+		       vsc_addr);
-+		return -ENODEV;
-+	}
-+
-+	ret = vsc_if_enable(vsc_addr);
-+	if (ret) {
-+		printf("VSC:0x%x could not configured for 2-wire I/F.\n",
-+		       vsc_addr);
-+		return ret;
-+	}
-+
-+	/* config connections - page 0x00 */
-+	dm_i2c_reg_write(dev, CURRENT_PAGE_REGISTER, CONNECTION_CONFIG_PAGE);
-+
-+	/* Making crosspoint connections, by connecting required
-+	 * input to output
-+	 */
-+	for (i = 0; i < num_con ; i++)
-+		dm_i2c_reg_write(dev, con_arr[i][1], con_arr[i][0]);
-+
-+	/* input state - page 0x13 */
-+	dm_i2c_reg_write(dev, CURRENT_PAGE_REGISTER, INPUT_STATE_REG);
-+	/* Configuring the required input of the switch */
-+	for (i = 0; i < num_con ; i++)
-+		dm_i2c_reg_write(dev, con_arr[i][0], 0x80);
-+
-+	/* Setting Global Input LOS threshold value */
-+	dm_i2c_reg_write(dev, GLOBAL_INPUT_LOS, 0x60);
-+
-+	/* config output mode - page 0x23 */
-+	dm_i2c_reg_write(dev, CURRENT_PAGE_REGISTER, OUTPUT_MODE_PAGE);
-+	/* Turn ON the Output driver correspond to required output*/
-+	for (i = 0; i < num_con ; i++)
-+		dm_i2c_reg_write(dev,  con_arr[i][1], 0);
-+
-+	/* configure global core control register, Turn on Global core power */
-+	dm_i2c_reg_write(dev, GLOBAL_CORE_CNTRL, 0);
-+
-+#else
 +	ret = i2c_read(vsc_addr, REVISION_ID_REG, 1, &rev_id, 1);
 +	if (ret < 0) {
 +		printf("VSC:0x%x could not read REV_ID from device.\n",
@@ -10504,7 +10663,6 @@ index 0000000000..c51f3c5aca
 +
 +	/* configure global core control register, Turn on Global core power */
 +	i2c_reg_write(vsc_addr, GLOBAL_CORE_CNTRL, 0);
-+#endif
 +
 +	vsc_wp_config(vsc_addr);
 +
@@ -10522,105 +10680,6 @@ index 0000000000..c51f3c5aca
 +	debug("VSC:Initializing VSC3308 at I2C address 0x%x for Tx\n",
 +	      vsc_addr);
 +
-+#if CONFIG_IS_ENABLED(DM_I2C)
-+	int bus_num = 0;
-+	struct udevice *dev;
-+
-+	ret = i2c_get_chip_for_busnum(bus_num, vsc_addr,
-+				      1, &dev);
-+	if (ret) {
-+		printf("%s: Cannot find udev for a bus %d\n", __func__,
-+		       bus_num);
-+		return ret;
-+	}
-+
-+	ret = dm_i2c_read(dev, REVISION_ID_REG, &rev_id, 1);
-+	if (ret < 0) {
-+		printf("VSC:0x%x could not read REV_ID from device.\n",
-+		       vsc_addr);
-+		return ret;
-+	}
-+
-+	if (rev_id != 0xab) {
-+		printf("VSC: device at address 0x%x is not VSC3316/3308.\n",
-+		       vsc_addr);
-+		return -ENODEV;
-+	}
-+
-+	ret = vsc_if_enable(vsc_addr);
-+	if (ret) {
-+		printf("VSC:0x%x could not configured for 2-wire I/F.\n",
-+		       vsc_addr);
-+		return ret;
-+	}
-+
-+	/* config connections - page 0x00 */
-+	dm_i2c_reg_write(dev, CURRENT_PAGE_REGISTER, CONNECTION_CONFIG_PAGE);
-+
-+	/* Configure Global Input ISE */
-+	dm_i2c_reg_write(dev, GLOBAL_INPUT_ISE1, 0);
-+	dm_i2c_reg_write(dev, GLOBAL_INPUT_ISE2, 0);
-+
-+	/* Configure Tx/Rx Global Output PE1 */
-+	dm_i2c_reg_write(dev, GLOBAL_OUTPUT_PE1, 0);
-+
-+	/* Configure Tx/Rx Global Output PE2 */
-+	dm_i2c_reg_write(dev, GLOBAL_OUTPUT_PE2, 0);
-+
-+	/* Configure Tx/Rx Global Input GAIN */
-+	dm_i2c_reg_write(dev, GLOBAL_INPUT_GAIN, 0x3F);
-+
-+	/* Setting Global Input LOS threshold value */
-+	dm_i2c_reg_write(dev, GLOBAL_INPUT_LOS, 0xE0);
-+
-+	/* Setting Global output termination */
-+	dm_i2c_reg_write(dev, GLOBAL_OUTPUT_TERMINATION, 0);
-+
-+	/* Configure Tx/Rx Global Output level */
-+	if (vsc_addr == VSC3308_TX_ADDRESS)
-+		dm_i2c_reg_write(dev, GLOBAL_OUTPUT_LEVEL, 4);
-+	else
-+		dm_i2c_reg_write(dev, GLOBAL_OUTPUT_LEVEL, 2);
-+
-+	/* Making crosspoint connections, by connecting required
-+	 * input to output
-+	 */
-+	for (i = 0; i < num_con ; i++)
-+		dm_i2c_reg_write(dev, con_arr[i][1], con_arr[i][0]);
-+
-+	/* input state - page 0x13 */
-+	dm_i2c_reg_write(dev, CURRENT_PAGE_REGISTER, INPUT_STATE_REG);
-+	/* Turning off all the required input of the switch */
-+	for (i = 0; i < num_con; i++)
-+		dm_i2c_reg_write(dev, con_arr[i][0], 1);
-+
-+	/* only turn on specific Tx/Rx requested by the XFI erratum */
-+	if (vsc_addr == VSC3308_TX_ADDRESS) {
-+		dm_i2c_reg_write(dev, 2, 0);
-+		dm_i2c_reg_write(dev, 3, 0);
-+	} else {
-+		dm_i2c_reg_write(dev, 0, 0);
-+		dm_i2c_reg_write(dev, 1, 0);
-+	}
-+
-+	/* config output mode - page 0x23 */
-+	dm_i2c_reg_write(dev, CURRENT_PAGE_REGISTER, OUTPUT_MODE_PAGE);
-+	/* Turn off the Output driver correspond to required output*/
-+	for (i = 0; i < num_con ; i++)
-+		dm_i2c_reg_write(dev,  con_arr[i][1], 1);
-+
-+	/* only turn on specific Tx/Rx requested by the XFI erratum */
-+	if (vsc_addr == VSC3308_TX_ADDRESS) {
-+		dm_i2c_reg_write(dev, 0, 0);
-+		dm_i2c_reg_write(dev, 1, 0);
-+	} else {
-+		dm_i2c_reg_write(dev, 3, 0);
-+		dm_i2c_reg_write(dev, 4, 0);
-+	}
-+
-+	/* configure global core control register, Turn on Global core power */
-+	dm_i2c_reg_write(dev, GLOBAL_CORE_CNTRL, 0);
-+#else
 +	ret = i2c_read(vsc_addr, REVISION_ID_REG, 1, &rev_id, 1);
 +	if (ret < 0) {
 +		printf("VSC:0x%x could not read REV_ID from device.\n",
@@ -10706,7 +10765,7 @@ index 0000000000..c51f3c5aca
 +
 +	/* configure global core control register, Turn on Global core power */
 +	i2c_reg_write(vsc_addr, GLOBAL_CORE_CNTRL, 0);
-+#endif
++
 +	vsc_wp_config(vsc_addr);
 +
 +	return 0;
@@ -10722,69 +10781,7 @@ index 0000000000..c51f3c5aca
 +
 +	debug("VSC:Initializing VSC3308 at I2C address 0x%x"
 +		" for Tx\n", vsc_addr);
-+#if CONFIG_IS_ENABLED(DM_I2C)
-+	int bus_num = 0;
-+	struct udevice *dev;
 +
-+	ret = i2c_get_chip_for_busnum(bus_num, vsc_addr,
-+				      1, &dev);
-+	if (ret) {
-+		printf("%s: Cannot find udev for a bus %d\n", __func__,
-+		       bus_num);
-+		return ret;
-+	}
-+
-+	ret = dm_i2c_read(dev, REVISION_ID_REG, &rev_id, 1);
-+	if (ret < 0) {
-+		printf("VSC:0x%x could not read REV_ID from device.\n",
-+		       vsc_addr);
-+		return ret;
-+	}
-+
-+	if (rev_id != 0xab) {
-+		printf("VSC: device at address 0x%x is not VSC3316/3308.\n",
-+		       vsc_addr);
-+		return -ENODEV;
-+	}
-+
-+	ret = vsc_if_enable(vsc_addr);
-+	if (ret) {
-+		printf("VSC:0x%x could not configured for 2-wire I/F.\n",
-+		       vsc_addr);
-+		return ret;
-+	}
-+
-+	/* config connections - page 0x00 */
-+	dm_i2c_reg_write(dev, CURRENT_PAGE_REGISTER, CONNECTION_CONFIG_PAGE);
-+
-+	/* Making crosspoint connections, by connecting required
-+	 * input to output
-+	 */
-+	for (i = 0; i < num_con ; i++)
-+		dm_i2c_reg_write(dev, con_arr[i][1], con_arr[i][0]);
-+
-+	/*Configure Global Input ISE and gain */
-+	dm_i2c_reg_write(dev, GLOBAL_INPUT_ISE1, 0x12);
-+	dm_i2c_reg_write(dev, GLOBAL_INPUT_ISE2, 0x12);
-+
-+	/* input state - page 0x13 */
-+	dm_i2c_reg_write(dev, CURRENT_PAGE_REGISTER, INPUT_STATE_REG);
-+	/* Turning ON the required input of the switch */
-+	for (i = 0; i < num_con ; i++)
-+		dm_i2c_reg_write(dev, con_arr[i][0], 0);
-+
-+	/* Setting Global Input LOS threshold value */
-+	dm_i2c_reg_write(dev, GLOBAL_INPUT_LOS, 0x60);
-+
-+	/* config output mode - page 0x23 */
-+	dm_i2c_reg_write(dev, CURRENT_PAGE_REGISTER, OUTPUT_MODE_PAGE);
-+	/* Turn ON the Output driver correspond to required output*/
-+	for (i = 0; i < num_con ; i++)
-+		dm_i2c_reg_write(dev,  con_arr[i][1], 0);
-+
-+	/* configure global core control register, Turn on Global core power */
-+	dm_i2c_reg_write(dev, GLOBAL_CORE_CNTRL, 0);
-+#else
 +	ret = i2c_read(vsc_addr, REVISION_ID_REG, 1, &rev_id, 1);
 +	if (ret < 0) {
 +		printf("VSC:0x%x could not read REV_ID from device.\n",
@@ -10834,7 +10831,7 @@ index 0000000000..c51f3c5aca
 +
 +	/* configure global core control register, Turn on Global core power */
 +	i2c_reg_write(vsc_addr, GLOBAL_CORE_CNTRL, 0);
-+#endif
++
 +	vsc_wp_config(vsc_addr);
 +
 +	return 0;
@@ -10846,24 +10843,8 @@ index 0000000000..c51f3c5aca
 +
 +	/* For new crosspoint configuration to occur, WP bit of
 +	 * CORE_CONFIG_REG should be set 1 and then reset to 0 */
-+#if CONFIG_IS_ENABLED(DM_I2C)
-+	int ret, bus_num = 0;
-+	struct udevice *dev;
-+
-+	ret = i2c_get_chip_for_busnum(bus_num, vsc_addr,
-+				      1, &dev);
-+	if (ret) {
-+		printf("%s: Cannot find udev for a bus %d\n", __func__,
-+		       bus_num);
-+		return;
-+	}
-+
-+	dm_i2c_reg_write(dev, CORE_CONFIG_REG, 0x01);
-+	dm_i2c_reg_write(dev, CORE_CONFIG_REG, 0x0);
-+#else
 +	i2c_reg_write(vsc_addr, CORE_CONFIG_REG, 0x01);
 +	i2c_reg_write(vsc_addr, CORE_CONFIG_REG, 0x0);
-+#endif
 +}
 diff --git a/board/icop/common/vsc3316_3308.h b/board/icop/common/vsc3316_3308.h
 new file mode 100644
@@ -10897,7 +10878,7 @@ index 0000000000..49a684f9f4
 +#endif	/* __VSC_CROSSBAR_H_ */
 diff --git a/board/icop/common/zm7300.c b/board/icop/common/zm7300.c
 new file mode 100644
-index 0000000000..e8c2fc85c8
+index 0000000000..acd5343b21
 --- /dev/null
 +++ b/board/icop/common/zm7300.c
 @@ -0,0 +1,232 @@
@@ -10908,7 +10889,6 @@ index 0000000000..e8c2fc85c8
 +
 +/* Power-One ZM7300 DPM */
 +#include "zm7300.h"
-+#include <log.h>
 +
 +#define DPM_WP 0x96
 +#define WRP_OPCODE 0x01
@@ -11133,6 +11113,7 @@ index 0000000000..e8c2fc85c8
 +	}
 +	return 0;
 +}
++
 diff --git a/board/icop/common/zm7300.h b/board/icop/common/zm7300.h
 new file mode 100644
 index 0000000000..9ce24afc17
@@ -11162,10 +11143,10 @@ index 0000000000..9ce24afc17
 +#endif	/* __ZM7300_H_ */
 diff --git a/board/icop/imx8mm_dm421/Kconfig b/board/icop/imx8mm_dm421/Kconfig
 new file mode 100644
-index 0000000000..d78c89c542
+index 0000000000..ebf169a665
 --- /dev/null
 +++ b/board/icop/imx8mm_dm421/Kconfig
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,14 @@
 +if TARGET_IMX8MM_DM421
 +
 +config SYS_BOARD
@@ -11176,9 +11157,6 @@ index 0000000000..d78c89c542
 +
 +config SYS_CONFIG_NAME
 +	default "imx8mm_dm421"
-+
-+config IMX_CONFIG
-+        default "board/icop/imx8mm_dm421/imximage-8mm.cfg"
 +
 +source "board/freescale/common/Kconfig"
 +
@@ -11197,7 +11175,7 @@ index 0000000000..b031bb0674
 +F:	configs/imx8mm_evk_defconfig
 diff --git a/board/icop/imx8mm_dm421/Makefile b/board/icop/imx8mm_dm421/Makefile
 new file mode 100644
-index 0000000000..6bed69e980
+index 0000000000..cccbcd6750
 --- /dev/null
 +++ b/board/icop/imx8mm_dm421/Makefile
 @@ -0,0 +1,17 @@
@@ -11218,6 +11196,49 @@ index 0000000000..6bed69e980
 +obj-$(CONFIG_IMX8M_DDR4) += ddr4_timing.o
 +endif
 +endif
+diff --git a/board/icop/imx8mm_dm421/README b/board/icop/imx8mm_dm421/README
+new file mode 100644
+index 0000000000..fa3f079f31
+--- /dev/null
++++ b/board/icop/imx8mm_dm421/README
+@@ -0,0 +1,37 @@
++U-Boot for the NXP i.MX8MM EVK board
++
++Quick Start
++===========
++- Build the ARM Trusted firmware binary
++- Get ddr firmware
++- Build U-Boot
++- Boot
++
++Get and Build the ARM Trusted firmware
++======================================
++Note: builddir is U-Boot build directory (source directory for in-tree builds)
++Get ATF from: https://source.codeaurora.org/external/imx/imx-atf
++branch: imx_4.19.35_1.0.0
++$ make PLAT=imx8mm bl31
++$ cp build/imx8mm/release/bl31.bin $(builddir)
++
++Get the ddr firmware
++=============================
++$ wget https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-imx-8.0.bin
++$ chmod +x firmware-imx-8.0.bin
++$ ./firmware-imx-8.0
++$ cp firmware-imx-8.0/firmware/ddr/synopsys/lpddr4*.bin $(builddir)
++
++Build U-Boot
++============
++$ export CROSS_COMPILE=aarch64-poky-linux-
++$ make imx8mm_evk_defconfig
++$ export ATF_LOAD_ADDR=0x920000
++$ make flash.bin
++
++Burn the flash.bin to MicroSD card offset 33KB
++$sudo dd if=flash.bin of=/dev/sd[x] bs=1024 seek=33
++
++Boot
++====
++Set Boot switch to SD boot
 diff --git a/board/icop/imx8mm_dm421/ddr4_timing.c b/board/icop/imx8mm_dm421/ddr4_timing.c
 new file mode 100644
 index 0000000000..2f80b9832b
@@ -12491,21 +12512,17 @@ index 0000000000..2f80b9832b
 +};
 diff --git a/board/icop/imx8mm_dm421/imx8mm_dm421.c b/board/icop/imx8mm_dm421/imx8mm_dm421.c
 new file mode 100644
-index 0000000000..46d5c4dec8
+index 0000000000..5fed5f3b98
 --- /dev/null
 +++ b/board/icop/imx8mm_dm421/imx8mm_dm421.c
-@@ -0,0 +1,364 @@
+@@ -0,0 +1,338 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2018 NXP
 + */
 +#include <common.h>
-+#include <efi_loader.h>
-+#include <env.h>
-+#include <init.h>
 +#include <miiphy.h>
 +#include <netdev.h>
-+#include <asm/global_data.h>
 +#include <asm/mach-imx/iomux-v3.h>
 +#include <asm-generic/gpio.h>
 +#include <asm/arch/imx8mm_pins.h>
@@ -12517,8 +12534,6 @@ index 0000000000..46d5c4dec8
 +#include <asm/io.h>
 +#include "../common/tcpc.h"
 +#include <usb.h>
-+#include <imx_sip.h>
-+#include <linux/arm-smccc.h>
 +
 +DECLARE_GLOBAL_DATA_PTR;
 +
@@ -12528,8 +12543,8 @@ index 0000000000..46d5c4dec8
 +static iomux_v3_cfg_t const uart_pads[] = {
 +	//IMX8MM_PAD_UART2_RXD_UART2_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
 +	//IMX8MM_PAD_UART2_TXD_UART2_TX | MUX_PAD_CTRL(UART_PAD_CTRL),
-+        IMX8MM_PAD_SAI3_TXFS_UART2_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
-+        IMX8MM_PAD_SAI3_TXC_UART2_TX | MUX_PAD_CTRL(UART_PAD_CTRL),
++	IMX8MM_PAD_SAI3_TXFS_UART2_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
++	IMX8MM_PAD_SAI3_TXC_UART2_TX | MUX_PAD_CTRL(UART_PAD_CTRL),
 +};
 +
 +static iomux_v3_cfg_t const wdog_pads[] = {
@@ -12569,23 +12584,6 @@ index 0000000000..46d5c4dec8
 +	init_nand_clk();
 +}
 +#endif
-+
-+#if CONFIG_IS_ENABLED(EFI_HAVE_CAPSULE_SUPPORT)
-+struct efi_fw_image fw_images[] = {
-+        {
-+                .image_type_id = IMX_BOOT_IMAGE_GUID,
-+                .fw_name = u"IMX8MM-EVK-RAW",
-+                .image_index = 1,
-+        },
-+};
-+
-+struct efi_capsule_update_info update_info = {
-+        .dfu_string = "mmc 2=flash-bin raw 0x42 0x2000 mmcpart 1",
-+        .images = fw_images,
-+};
-+
-+u8 num_image_type_guids = ARRAY_SIZE(fw_images);
-+#endif /* EFI_HAVE_CAPSULE_SUPPORT */
 +
 +int board_early_init_f(void)
 +{
@@ -12629,8 +12627,8 @@ index 0000000000..46d5c4dec8
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x1d, 0x05);
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x1e, 0x100);
 +
-+        if (phydev->drv->config)
-+                phydev->drv->config(phydev);
++	if (phydev->drv->config)
++		phydev->drv->config(phydev);
 +	return 0;
 +}
 +#endif
@@ -12791,7 +12789,7 @@ index 0000000000..46d5c4dec8
 +	enum typec_cc_state state;
 +	struct tcpc_port *port_ptr;
 +
-+	if (dev_seq(dev) == 0)
++	if (dev->req_seq == 0)
 +		port_ptr = &port1;
 +	else
 +		port_ptr = &port2;
@@ -12809,13 +12807,13 @@ index 0000000000..46d5c4dec8
 +
 +#endif
 +
++#define FSL_SIP_GPC			0xC2000000
++#define FSL_SIP_CONFIG_GPC_PM_DOMAIN	0x3
 +#define DISPMIX				9
 +#define MIPI				10
 +
 +int board_init(void)
 +{
-+	struct arm_smccc_res res;
-+
 +#ifdef CONFIG_USB_TCPC
 +	setup_typec();
 +#endif
@@ -12823,10 +12821,8 @@ index 0000000000..46d5c4dec8
 +	if (IS_ENABLED(CONFIG_FEC_MXC))
 +		setup_fec();
 +
-+	arm_smccc_smc(IMX_SIP_GPC, IMX_SIP_GPC_PM_DOMAIN,
-+		      DISPMIX, true, 0, 0, 0, 0, &res);
-+	arm_smccc_smc(IMX_SIP_GPC, IMX_SIP_GPC_PM_DOMAIN,
-+		      MIPI, true, 0, 0, 0, 0, &res);
++	call_imx_sip(FSL_SIP_GPC, FSL_SIP_CONFIG_GPC_PM_DOMAIN, DISPMIX, true, 0);
++	call_imx_sip(FSL_SIP_GPC, FSL_SIP_CONFIG_GPC_PM_DOMAIN, MIPI, true, 0);
 +
 +	return 0;
 +}
@@ -12837,61 +12833,33 @@ index 0000000000..46d5c4dec8
 +	board_late_mmc_env_init();
 +#endif
 +
-+	if (IS_ENABLED(CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG)) {
-+		env_set("board_name", "DM421");
-+		env_set("board_rev", "iMX8MM");
-+	}
-+
++#ifdef CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
++	env_set("board_name", "DM421");
++	env_set("board_rev", "iMX8MM");
++#endif
 +	return 0;
 +}
++
++#ifdef CONFIG_FSL_FASTBOOT
++#ifdef CONFIG_ANDROID_RECOVERY
++int is_recovery_key_pressing(void)
++{
++	return 0; /*TODO*/
++}
++#endif /*CONFIG_ANDROID_RECOVERY*/
++#endif /*CONFIG_FSL_FASTBOOT*/
 +
 +#ifdef CONFIG_ANDROID_SUPPORT
 +bool is_power_key_pressed(void) {
 +	return (bool)(!!(readl(SNVS_HPSR) & (0x1 << 6)));
 +}
 +#endif
-+
-+#ifdef CONFIG_FSL_FASTBOOT
-+#ifdef CONFIG_ANDROID_RECOVERY
-+int is_recovery_key_pressing(void)
-+{
-+	return 0; /* TODO */
-+}
-+#endif /* CONFIG_ANDROID_RECOVERY */
-+#endif /* CONFIG_FSL_FASTBOOT */
-diff --git a/board/icop/imx8mm_dm421/imximage-8mm-fspi.cfg b/board/icop/imx8mm_dm421/imximage-8mm-fspi.cfg
-new file mode 100644
-index 0000000000..fcace8a93a
---- /dev/null
-+++ b/board/icop/imx8mm_dm421/imximage-8mm-fspi.cfg
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright 2021 NXP
-+ */
-+
-+BOOT_FROM	fspi
-+LOADER		u-boot-spl-ddr.bin	0x7E2000
-diff --git a/board/icop/imx8mm_dm421/imximage-8mm.cfg b/board/icop/imx8mm_dm421/imximage-8mm.cfg
-new file mode 100644
-index 0000000000..20061521f2
---- /dev/null
-+++ b/board/icop/imx8mm_dm421/imximage-8mm.cfg
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright 2021 NXP
-+ */
-+
-+
-+BOOT_FROM	sd
-+LOADER		u-boot-spl-ddr.bin	0x7E1000
 diff --git a/board/icop/imx8mm_dm421/lpddr4_timing.c b/board/icop/imx8mm_dm421/lpddr4_timing.c
 new file mode 100644
-index 0000000000..3495b9c931
+index 0000000000..5068fa7a32
 --- /dev/null
 +++ b/board/icop/imx8mm_dm421/lpddr4_timing.c
-@@ -0,0 +1,1852 @@
+@@ -0,0 +1,1855 @@
 +/*
 + * Copyright 2018-2019 NXP
 + *
@@ -13954,6 +13922,7 @@ index 0000000000..3495b9c931
 +	{ 0x54008, 0x131f },
 +	{ 0x54009, 0xc8 },
 +	{ 0x5400b, 0x2 },
++	{ 0x5400d, 0x100 },
 +	{ 0x54012, 0x110 },
 +	{ 0x54019, 0x2dd4 },
 +	{ 0x5401a, 0x31 },
@@ -13994,6 +13963,7 @@ index 0000000000..3495b9c931
 +	{ 0x54008, 0x121f },
 +	{ 0x54009, 0xc8 },
 +	{ 0x5400b, 0x2 },
++	{ 0x5400d, 0x100 },
 +	{ 0x54012, 0x110 },
 +	{ 0x54019, 0x84 },
 +	{ 0x5401a, 0x31 },
@@ -14034,6 +14004,7 @@ index 0000000000..3495b9c931
 +	{ 0x54008, 0x121f },
 +	{ 0x54009, 0xc8 },
 +	{ 0x5400b, 0x2 },
++	{ 0x5400d, 0x100 },
 +	{ 0x54012, 0x110 },
 +	{ 0x54019, 0x84 },
 +	{ 0x5401a, 0x31 },
@@ -14745,11 +14716,11 @@ index 0000000000..3495b9c931
 +	.fsp_table = { 3000, 400, 100, },
 +};
 diff --git a/board/icop/imx8mm_dm421/lpddr4_timing_4g.c b/board/icop/imx8mm_dm421/lpddr4_timing_4g.c
-new file mode 100755
-index 0000000000..d32ecbf905
+new file mode 100644
+index 0000000000..af640972f6
 --- /dev/null
 +++ b/board/icop/imx8mm_dm421/lpddr4_timing_4g.c
-@@ -0,0 +1,1842 @@
+@@ -0,0 +1,1845 @@
 +/*
 + * Copyright 2018 NXP
 + *
@@ -15804,6 +15775,7 @@ index 0000000000..d32ecbf905
 +	{0x54008,0x131f},
 +	{0x54009,0xc8},
 +	{0x5400b,0x2},
++	{0x5400d,0x100},
 +	{0x54012,0x310},
 +	{0x54019,0x2dd4},
 +	{0x5401a,0x31},
@@ -15843,6 +15815,7 @@ index 0000000000..d32ecbf905
 +	{0x54008,0x121f},
 +	{0x54009,0xc8},
 +	{0x5400b,0x2},
++	{0x5400d,0x100},
 +	{0x54012,0x310},
 +	{0x54019,0x84},
 +	{0x5401a,0x31},
@@ -15882,6 +15855,7 @@ index 0000000000..d32ecbf905
 +	{0x54008,0x121f},
 +	{0x54009,0xc8},
 +	{0x5400b,0x2},
++	{0x5400d,0x100},
 +	{0x54012,0x310},
 +	{0x54019,0x84},
 +	{0x5401a,0x31},
@@ -16594,24 +16568,19 @@ index 0000000000..d32ecbf905
 +
 diff --git a/board/icop/imx8mm_dm421/spl.c b/board/icop/imx8mm_dm421/spl.c
 new file mode 100644
-index 0000000000..c93fbd42ed
+index 0000000000..38d29ef5f6
 --- /dev/null
 +++ b/board/icop/imx8mm_dm421/spl.c
-@@ -0,0 +1,328 @@
+@@ -0,0 +1,325 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright 2019, 2021 NXP
++ * Copyright 2019 NXP
 + */
 +
 +#include <common.h>
-+#include <command.h>
 +#include <cpu_func.h>
 +#include <hang.h>
-+#include <image.h>
-+#include <init.h>
-+#include <log.h>
 +#include <spl.h>
-+#include <asm/global_data.h>
 +#include <asm/io.h>
 +#include <asm/mach-imx/iomux-v3.h>
 +#include <asm/arch/clock.h>
@@ -16630,8 +16599,6 @@ index 0000000000..c93fbd42ed
 +#include <asm/mach-imx/mxc_i2c.h>
 +#include <fsl_esdhc_imx.h>
 +#include <mmc.h>
-+#include <linux/delay.h>
-+#include <fsl_sec.h>
 +
 +DECLARE_GLOBAL_DATA_PTR;
 +
@@ -16722,7 +16689,7 @@ index 0000000000..c93fbd42ed
 +	{USDHC3_BASE_ADDR, 0, 8},
 +};
 +
-+int board_mmc_init(struct bd_info *bis)
++int board_mmc_init(bd_t *bis)
 +{
 +	int i, ret;
 +	/*
@@ -16790,7 +16757,7 @@ index 0000000000..c93fbd42ed
 +	return 1;
 +}
 +
-+#if CONFIG_IS_ENABLED(POWER_LEGACY)
++#ifdef CONFIG_POWER
 +#define I2C_PMIC	0
 +#ifdef CONFIG_POWER_PCA9450
 +int power_init_board(void)
@@ -16798,7 +16765,7 @@ index 0000000000..c93fbd42ed
 +	struct pmic *p;
 +	int ret;
 +
-+	ret = power_pca9450_init(I2C_PMIC, 0x25);
++	ret = power_pca9450b_init(I2C_PMIC);
 +	if (ret)
 +		printf("power init failed");
 +	p = pmic_get("PCA9450");
@@ -16842,24 +16809,24 @@ index 0000000000..c93fbd42ed
 +
 +
 +	/* decrease RESET key long push time from the default 10s to 10ms */
-+	pmic_reg_write(p, BD718XX_PWRONCONFIG1, 0x0);
++	pmic_reg_write(p, BD71837_PWRONCONFIG1, 0x0);
 +
 +	/* unlock the PMIC regs */
-+	pmic_reg_write(p, BD718XX_REGLOCK, 0x1);
++	pmic_reg_write(p, BD71837_REGLOCK, 0x1);
 +
 +	/* increase VDD_SOC to typical value 0.85v before first DRAM access */
-+	pmic_reg_write(p, BD718XX_BUCK1_VOLT_RUN, 0x0f);
++	pmic_reg_write(p, BD71837_BUCK1_VOLT_RUN, 0x0f);
 +
 +	/* increase VDD_DRAM to 0.975v for 3Ghz DDR */
-+	pmic_reg_write(p, BD718XX_1ST_NODVS_BUCK_VOLT, 0x83);
++	pmic_reg_write(p, BD71837_BUCK5_VOLT, 0x83);
 +
 +#ifndef CONFIG_IMX8M_LPDDR4
 +	/* increase NVCC_DRAM_1V2 to 1.2v for DDR4 */
-+	pmic_reg_write(p, BD718XX_4TH_NODVS_BUCK_VOLT, 0x28);
++	pmic_reg_write(p, BD71837_BUCK8_VOLT, 0x28);
 +#endif
 +
 +	/* lock the PMIC regs */
-+	pmic_reg_write(p, BD718XX_REGLOCK, 0x11);
++	pmic_reg_write(p, BD71837_REGLOCK, 0x11);
 +
 +	return 0;
 +}
@@ -16868,11 +16835,6 @@ index 0000000000..c93fbd42ed
 +
 +void spl_board_init(void)
 +{
-+	if (IS_ENABLED(CONFIG_FSL_CAAM)) {
-+		if (sec_init())
-+			printf("\nsec_init failed!\n");
-+	}
-+
 +#ifndef CONFIG_SPL_USB_SDP_SUPPORT
 +	/* Serial download mode */
 +	if (is_usb_boot()) {
@@ -16926,105 +16888,87 @@ index 0000000000..c93fbd42ed
 +
 +	board_init_r(NULL, 0);
 +}
++
++int do_reset(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
++{
++	puts ("resetting ...\n");
++
++	reset_cpu(WDOG1_BASE_ADDR);
++
++	return 0;
++}
 diff --git a/configs/imx8mm_dm421_defconfig b/configs/imx8mm_dm421_defconfig
 new file mode 100644
-index 0000000000..b6f0dd0e7c
+index 0000000000..b12cb9571e
 --- /dev/null
 +++ b/configs/imx8mm_dm421_defconfig
-@@ -0,0 +1,208 @@
+@@ -0,0 +1,141 @@
 +CONFIG_ARM=y
++CONFIG_SPL_SYS_ICACHE_OFF=y
++CONFIG_SPL_SYS_DCACHE_OFF=y
 +CONFIG_ARCH_IMX8M=y
 +CONFIG_SYS_TEXT_BASE=0x40200000
-+CONFIG_SYS_MALLOC_LEN=0x2000000
-+CONFIG_SYS_MALLOC_F_LEN=0x10000
-+CONFIG_SPL_GPIO=y
++CONFIG_SPL_GPIO_SUPPORT=y
 +CONFIG_SPL_LIBCOMMON_SUPPORT=y
 +CONFIG_SPL_LIBGENERIC_SUPPORT=y
-+CONFIG_ENV_SIZE=0x4000
-+CONFIG_ENV_OFFSET=0x400000
-+CONFIG_SYS_MEMTEST_START=0x40000000
-+CONFIG_SYS_MEMTEST_END=0x80000000
++CONFIG_SYS_MALLOC_F_LEN=0x2000
 +CONFIG_SYS_I2C_MXC_I2C1=y
 +CONFIG_SYS_I2C_MXC_I2C2=y
 +CONFIG_SYS_I2C_MXC_I2C3=y
++CONFIG_ENV_SIZE=0x1000
++CONFIG_ENV_OFFSET=0x400000
 +CONFIG_DM_GPIO=y
-+CONFIG_SPL_TEXT_BASE=0x7E1000
 +CONFIG_TARGET_IMX8MM_DM421=y
 +CONFIG_ARCH_MISC_INIT=y
-+CONFIG_SPL_MMC=y
-+CONFIG_SPL_SERIAL=y
-+CONFIG_SPL_DRIVERS_MISC=y
++CONFIG_SPL_MMC_SUPPORT=y
++CONFIG_SPL_SERIAL_SUPPORT=y
++CONFIG_SPL_DRIVERS_MISC_SUPPORT=y
 +CONFIG_SPL=y
-+CONFIG_DEFAULT_DEVICE_TREE="imx8mm-dm421"
 +CONFIG_CSF_SIZE=0x2000
-+CONFIG_DISTRO_DEFAULTS=y
-+CONFIG_BOOTCOMMAND="run distro_bootcmd;run bsp_bootcmd"
-+CONFIG_SYS_LOAD_ADDR=0x40400000
++CONFIG_SPL_TEXT_BASE=0x7E1000
 +CONFIG_FIT=y
 +CONFIG_FIT_EXTERNAL_OFFSET=0x3000
 +CONFIG_SPL_LOAD_FIT=y
-+# CONFIG_USE_SPL_FIT_GENERATOR is not set
++CONFIG_SPL_FIT_GENERATOR="arch/arm/mach-imx/mkimage_fit_atf.sh"
 +CONFIG_OF_SYSTEM_SETUP=y
++CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=arch/arm/mach-imx/imx8m/imximage-8mm-lpddr4.cfg"
 +CONFIG_BOARD_LATE_INIT=y
 +CONFIG_BOARD_EARLY_INIT_F=y
 +CONFIG_SPL_BOARD_INIT=y
 +CONFIG_SPL_SEPARATE_BSS=y
-+CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_USE_SECTOR=y
-+CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR=0x300
-+CONFIG_SPL_I2C=y
-+CONFIG_SPL_POWER=y
-+CONFIG_SPL_WATCHDOG=y
++CONFIG_SPL_I2C_SUPPORT=y
++CONFIG_SPL_POWER_SUPPORT=y
 +CONFIG_NR_DRAM_BANKS=2
++CONFIG_HUSH_PARSER=y
 +CONFIG_SYS_PROMPT="u-boot=> "
 +# CONFIG_CMD_EXPORTENV is not set
 +# CONFIG_CMD_IMPORTENV is not set
-+CONFIG_CMD_CRC32=y
-+CONFIG_CRC32_VERIFY=y
++# CONFIG_CMD_CRC32 is not set
 +# CONFIG_BOOTM_NETBSD is not set
-+CONFIG_CMD_NVEDIT_EFI=y
 +CONFIG_CMD_CLK=y
-+CONFIG_CMD_DFU=y
 +CONFIG_CMD_FUSE=y
 +CONFIG_CMD_GPIO=y
-+CONFIG_CMD_GPT=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_MMC=y
-+CONFIG_CMD_POWEROFF=y
-+CONFIG_CMD_PART=y
 +CONFIG_CMD_DHCP=y
 +CONFIG_CMD_MII=y
 +CONFIG_CMD_PING=y
-+CONFIG_CMD_SNTP=y
 +CONFIG_CMD_CACHE=y
-+CONFIG_CMD_EFIDEBUG=y
-+CONFIG_CMD_RTC=y
-+CONFIG_CMD_TIME=y
-+CONFIG_CMD_GETTIME=y
-+CONFIG_CMD_TIMER=y
 +CONFIG_CMD_REGULATOR=y
 +CONFIG_CMD_MEMTEST=y
 +CONFIG_CMD_EXT2=y
 +CONFIG_CMD_EXT4=y
-+CONFIG_CMD_HASH=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FAT=y
 +CONFIG_CMD_SF=y
-+CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_USB=y
 +CONFIG_OF_CONTROL=y
-+CONFIG_ENV_OVERWRITE=y
++CONFIG_DEFAULT_DEVICE_TREE="imx8mm-dm421"
 +CONFIG_DEFAULT_FDT_FILE="imx8mm-dm421.dtb"
 +CONFIG_ENV_IS_IN_MMC=y
 +CONFIG_SYS_RELOC_GD_ENV_ADDR=y
-+CONFIG_SYS_MMC_ENV_DEV=1
 +CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG=y
-+CONFIG_NET_RANDOM_ETHADDR=y
 +CONFIG_CLK_COMPOSITE_CCF=y
 +CONFIG_CLK_IMX8MM=y
-+CONFIG_DFU_TFTP=y
-+CONFIG_DFU_MMC=y
-+CONFIG_DFU_RAM=y
-+CONFIG_UDP_FUNCTION_FASTBOOT=y
 +CONFIG_MXC_GPIO=y
 +CONFIG_FASTBOOT=y
 +CONFIG_USB_FUNCTION_FASTBOOT=y
@@ -17036,21 +16980,18 @@ index 0000000000..b6f0dd0e7c
 +CONFIG_FASTBOOT_FLASH=y
 +
 +CONFIG_DM_I2C=y
-+CONFIG_SPL_SYS_I2C_LEGACY=y
 +CONFIG_SYS_I2C_MXC=y
 +CONFIG_DM_MMC=y
-+CONFIG_EFI_PARTITION=y
-+CONFIG_SUPPORT_EMMC_RPMB=y
-+CONFIG_SUPPORT_EMMC_BOOT=y
 +CONFIG_MMC_IO_VOLTAGE=y
 +CONFIG_MMC_UHS_SUPPORT=y
-+CONFIG_MMC_HS400_ES_SUPPORT=y
 +CONFIG_MMC_HS400_SUPPORT=y
-+CONFIG_FSL_USDHC=y
++CONFIG_MMC_HS400_ES_SUPPORT=y
++CONFIG_EFI_PARTITION=y
++CONFIG_SUPPORT_EMMC_BOOT=y
 +CONFIG_FSL_ESDHC_IMX=y
 +CONFIG_DM_SPI_FLASH=y
 +CONFIG_DM_SPI=y
-+
++CONFIG_FSL_FSPI=y
 +CONFIG_SPI=y
 +CONFIG_SPI_FLASH=y
 +CONFIG_SPI_FLASH_BAR=y
@@ -17059,6 +17000,7 @@ index 0000000000..b6f0dd0e7c
 +CONFIG_SF_DEFAULT_CS=0
 +CONFIG_SF_DEFAULT_SPEED=40000000
 +CONFIG_SF_DEFAULT_MODE=0
++
 +CONFIG_PHYLIB=y
 +CONFIG_PHY_ATHEROS=y
 +CONFIG_DM_ETH=y
@@ -17067,33 +17009,26 @@ index 0000000000..b6f0dd0e7c
 +CONFIG_MII=y
 +CONFIG_PINCTRL=y
 +CONFIG_PINCTRL_IMX8M=y
-+CONFIG_SPL_POWER_LEGACY=y
 +CONFIG_DM_REGULATOR=y
 +CONFIG_DM_REGULATOR_FIXED=y
 +CONFIG_DM_REGULATOR_GPIO=y
-+CONFIG_SPL_POWER_I2C=y
-+CONFIG_DM_RTC=y
-+CONFIG_RTC_EMULATION=y
 +CONFIG_MXC_UART=y
 +CONFIG_SYSRESET=y
 +CONFIG_SYSRESET_PSCI=y
 +CONFIG_DM_THERMAL=y
-+CONFIG_IMX_TMU=y
++CONFIG_NXP_TMU=y
 +CONFIG_USB_TCPC=y
 +CONFIG_USB=y
 +CONFIG_USB_GADGET=y
 +CONFIG_DM_USB=y
 +CONFIG_CI_UDC=y
 +CONFIG_USB_EHCI_HCD=y
-+CONFIG_USB_HOST_ETHER=y
-+CONFIG_USB_ETHER_ASIX=y
-+CONFIG_USB_ETHER_RTL8152=y
 +
 +CONFIG_USB_GADGET_MANUFACTURER="FSL"
-+CONFIG_USB_GADGET_VENDOR_NUM=0x1fc9
-+CONFIG_USB_GADGET_PRODUCT_NUM=0x0152
++CONFIG_USB_GADGET_VENDOR_NUM=0x0525
++CONFIG_USB_GADGET_PRODUCT_NUM=0xa4a5
 +
-+CONFIG_SPL_USB_HOST=y
++CONFIG_SPL_USB_HOST_SUPPORT=y
 +CONFIG_SPL_USB_GADGET=y
 +CONFIG_SPL_USB_SDP_SUPPORT=y
 +CONFIG_SDP_LOADADDR=0x40400000
@@ -17106,46 +17041,15 @@ index 0000000000..b6f0dd0e7c
 +CONFIG_RESET_DISPMIX=y
 +CONFIG_VIDEO_IMX_SEC_DSI=y
 +CONFIG_DM_VIDEO=y
-+CONFIG_BMP_16BPP=y
-+CONFIG_BMP_24BPP=y
-+CONFIG_BMP_32BPP=y
-+CONFIG_VIDEO_MXS=y
-+CONFIG_VIDEO_LOGO=y
 +CONFIG_VIDEO_LCD_RAYDIUM_RM67191=y
 +CONFIG_VIDEO_ADV7535=y
 +CONFIG_SYS_WHITE_ON_BLACK=y
-+CONFIG_SPLASH_SCREEN=y
-+CONFIG_SPLASH_SCREEN_ALIGN=y
-+CONFIG_CMD_BMP=y
-+
-+CONFIG_LEGACY_IMAGE_FORMAT=y
-+CONFIG_LZO=y
-+CONFIG_BZIP2=y
-+CONFIG_EFI_SET_TIME=y
-+CONFIG_EFI_RUNTIME_UPDATE_CAPSULE=y
-+CONFIG_EFI_CAPSULE_ON_DISK=y
-+CONFIG_EFI_CAPSULE_FIRMWARE_RAW=y
-+CONFIG_EFI_SECURE_BOOT=y
-+CONFIG_SPL_RSA=y
-+CONFIG_SHA384=y
-+CONFIG_EFI_VAR_BUF_SIZE=139264
-+CONFIG_EFI_IGNORE_OSINDICATIONS=y
-+CONFIG_EFI_CAPSULE_AUTHENTICATE=y
-+CONFIG_OPTEE=y
-+CONFIG_CMD_OPTEE_RPMB=y
-+CONFIG_EFI_MM_COMM_TEE=y
-+CONFIG_TEE=y
-+CONFIG_EFI_ESRT=y
-+CONFIG_EFI_HAVE_CAPSULE_UPDATE=y
-+CONFIG_FIT_SIGNATURE=y
-+CONFIG_CMD_USB_MASS_STORAGE=y
-+
 diff --git a/include/configs/imx8mm_dm421.h b/include/configs/imx8mm_dm421.h
 new file mode 100644
-index 0000000000..22b1ff4f13
+index 0000000000..21f252e5cc
 --- /dev/null
 +++ b/include/configs/imx8mm_dm421.h
-@@ -0,0 +1,258 @@
+@@ -0,0 +1,291 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
 + * Copyright 2019 NXP
@@ -17155,13 +17059,14 @@ index 0000000000..22b1ff4f13
 +#define __IMX8MM_DM421_H
 +
 +#include <linux/sizes.h>
-+#include <linux/stringify.h>
 +#include <asm/arch/imx-regs.h>
 +#include "imx_env.h"
 +
-+#define CONFIG_SYS_BOOTM_LEN            (64 * SZ_1M)
 +#define CONFIG_SPL_MAX_SIZE		(148 * 1024)
 +#define CONFIG_SYS_MONITOR_LEN		SZ_512K
++#define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_USE_SECTOR
++#define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR	(0x300 + CONFIG_SECONDARY_BOOT_SECTOR_OFFSET)
++#define CONFIG_SYS_MMCSD_FS_BOOT_PARTITION	1
 +#define CONFIG_SYS_UBOOT_BASE	\
 +	(QSPI0_AMBA_BASE + CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR * 512)
 +
@@ -17173,13 +17078,20 @@ index 0000000000..22b1ff4f13
 +#define CONFIG_SYS_SPL_MALLOC_SIZE	SZ_512K	/* 512 KB */
 +
 +/* malloc f used before GD_FLG_FULL_MALLOC_INIT set */
-+#define CONFIG_MALLOC_F_ADDR		0x930000
++#define CONFIG_MALLOC_F_ADDR		0x912000
 +/* For RAW image gives a error info not panic */
 +#define CONFIG_SPL_ABORT_ON_RAW_IMAGE
 +
-+
++#define CONFIG_POWER
++#define CONFIG_POWER_I2C
 +#define CONFIG_POWER_BD71837
 +
++#define CONFIG_SYS_I2C
++
++#if defined(CONFIG_NAND_BOOT)
++#define CONFIG_SPL_NAND_SUPPORT
++#define CONFIG_SPL_DMA
++#define CONFIG_SPL_NAND_MXS
 +#define CONFIG_SPL_NAND_BASE
 +#define CONFIG_SPL_NAND_IDENT
 +#define CONFIG_SYS_NAND_U_BOOT_OFFS 	0x4000000 /* Put the FIT out of first 64MB boot area */
@@ -17187,6 +17099,8 @@ index 0000000000..22b1ff4f13
 +/* Set a redundant offset in nand FIT mtdpart. The new uuu will burn full boot image (not only FIT part) to the mtdpart, so we check both two offsets */
 +#define CONFIG_SYS_NAND_U_BOOT_OFFS_REDUND \
 +	(CONFIG_SYS_NAND_U_BOOT_OFFS + CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR * 512 - 0x8400)
++#endif
++
 +#endif
 +
 +#define CONFIG_CMD_READ
@@ -17211,46 +17125,31 @@ index 0000000000..22b1ff4f13
 +#define MFG_NAND_PARTITION "mtdparts=gpmi-nand:64m(nandboot),16m(nandfit),32m(nandkernel),16m(nanddtb),8m(nandtee),-(nandrootfs)"
 +#endif
 +
-+#ifdef CONFIG_DISTRO_DEFAULTS
-+#define BOOT_TARGET_DEVICES(func) \
-+        func(USB, usb, 0) \
-+        func(MMC, mmc, 1) \
-+        func(MMC, mmc, 2)
-+
-+#include <config_distro_bootcmd.h>
-+#else
-+#define BOOTENV
-+#endif
-+
 +/*
 + * Another approach is add the clocks for inmates into clks_init_on
 + * in clk-imx8mm.c, then clk_ingore_unused could be removed.
 + */
-+#define JH_ROOT_DTB    "imx8mm-evk-root.dtb"
-+
 +#define JAILHOUSE_ENV \
 +	"jh_clk= \0 " \
-+	"jh_root_dtb=" JH_ROOT_DTB "\0" \
-+	"jh_mmcboot=mw 0x303d0518 0xff; setenv fdtfile ${jh_root_dtb};" \
-+		"setenv jh_clk clk_ignore_unused mem=1212MB; " \
++	"jh_mmcboot=mw 0x303d0518 0xff; setenv fdt_file imx8mm-evk-root.dtb;" \
++		"setenv jh_clk clk_ignore_unused; " \
 +			   "if run loadimage; then " \
 +				   "run mmcboot; " \
 +			   "else run jh_netboot; fi; \0" \
-+	"jh_netboot=mw 0x303d0518 0xff; setenv fdtfile ${jh_root_dtb}; setenv jh_clk clk_ignore_unused mem=1212MB; run netboot; \0 "
++	"jh_netboot=mw 0x303d0518 0xff; setenv fdt_file imx8mm-evk-root.dtb; setenv jh_clk clk_ignore_unused; run netboot; \0 "
++
 +
 +#define CONFIG_MFG_ENV_SETTINGS \
 +	CONFIG_MFG_ENV_SETTINGS_DEFAULT \
 +	"initrd_addr=0x43800000\0" \
 +	"initrd_high=0xffffffffffffffff\0" \
-+	"emmc_dev=2\0"\
-+	"sd_dev=1\0" \
++	"emmc_dev=0\0"\
 +
 +/* Initial environment variables */
 +#if defined(CONFIG_NAND_BOOT)
 +#define CONFIG_EXTRA_ENV_SETTINGS \
 +	CONFIG_MFG_ENV_SETTINGS \
 +	"splashimage=0x50000000\0" \
-+	"fdt_addr_r=0x43000000\0"			\
 +	"fdt_addr=0x43000000\0"			\
 +	"fdt_high=0xffffffffffffffff\0" \
 +	"mtdparts=" MFG_NAND_PARTITION "\0" \
@@ -17260,70 +17159,67 @@ index 0000000000..22b1ff4f13
 +		MFG_NAND_PARTITION \
 +		"\0" \
 +	"bootcmd=nand read ${loadaddr} 0x5000000 0x2000000;"\
-+		"nand read ${fdt_addr_r} 0x7000000 0x100000;"\
-+		"booti ${loadaddr} - ${fdt_addr_r}"
++		"nand read ${fdt_addr} 0x7000000 0x100000;"\
++		"booti ${loadaddr} - ${fdt_addr}"
 +
 +#else
 +#define CONFIG_EXTRA_ENV_SETTINGS		\
 +	CONFIG_MFG_ENV_SETTINGS \
-+	BOOTENV \
 +	JAILHOUSE_ENV \
-+        "prepare_mcore=setenv mcore_clk clk-imx8mm.mcore_booted;\0" \
-+        "scriptaddr=0x43500000\0" \
-+        "kernel_addr_r=" __stringify(CONFIG_SYS_LOAD_ADDR) "\0" \
-+	"bsp_script=boot.scr\0" \
++	"script=boot.scr\0" \
 +	"image=Image\0" \
 +	"splashimage=0x50000000\0" \
 +	"console=ttymxc1,115200\0" \
-+	"fdt_addr_r=0x43000000\0" \
 +	"fdt_addr=0x43000000\0"			\
 +	"fdt_high=0xffffffffffffffff\0"		\
 +	"boot_fit=no\0" \
-+	"fdtfile=" CONFIG_DEFAULT_FDT_FILE "\0" \
-+	"bootm_size=0x10000000\0" \
++	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
++	"initrd_addr=0x43800000\0"		\
++	"initrd_high=0xffffffffffffffff\0" \
 +	"mmcdev="__stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
-+	"mmcpart=1\0" \
++	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
 +	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
 +	"mmcautodetect=yes\0" \
-+	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot}\0 " \
-+	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bsp_script};\0" \
++	"mmcargs=setenv bootargs ${jh_clk} console=${console} root=${mmcroot}\0 " \
++	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
 +	"bootscript=echo Running bootscript from mmc ...; " \
 +		"source\0" \
 +	"loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
-+	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr_r} ${fdtfile}\0" \
++	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
 +	"mmcboot=echo Booting from mmc ...; " \
 +		"run mmcargs; " \
 +		"if test ${boot_fit} = yes || test ${boot_fit} = try; then " \
 +			"bootm ${loadaddr}; " \
 +		"else " \
 +			"if run loadfdt; then " \
-+				"booti ${loadaddr} - ${fdt_addr_r}; " \
++				"booti ${loadaddr} - ${fdt_addr}; " \
 +			"else " \
 +				"echo WARN: Cannot load the DT; " \
 +			"fi; " \
 +		"fi;\0" \
-+       "netargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} " \
-+               "root=/dev/nfs " \
-+               "ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
-+       "netboot=echo Booting from net ...; " \
-+               "run netargs;  " \
-+               "if test ${ip_dyn} = yes; then " \
-+                       "setenv get_cmd dhcp; " \
-+               "else " \
-+                       "setenv get_cmd tftp; " \
-+               "fi; " \
-+               "${get_cmd} ${loadaddr} ${image}; " \
-+               "if test ${boot_fit} = yes || test ${boot_fit} = try; then " \
-+                       "bootm ${loadaddr}; " \
-+               "else " \
-+                       "if ${get_cmd} ${fdt_addr_r} ${fdtfile}; then " \
-+                               "booti ${loadaddr} - ${fdt_addr_r}; " \
-+                       "else " \
-+                               "echo WARN: Cannot load the DT; " \
-+                       "fi; " \
-+               "fi;\0" \
-+	"bsp_bootcmd=echo Running BSP bootcmd ...; " \
-+		"mmc dev ${mmcdev}; if mmc rescan; then " \
++	"netargs=setenv bootargs ${jh_clk} console=${console} " \
++		"root=/dev/nfs " \
++		"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
++	"netboot=echo Booting from net ...; " \
++		"run netargs;  " \
++		"if test ${ip_dyn} = yes; then " \
++			"setenv get_cmd dhcp; " \
++		"else " \
++			"setenv get_cmd tftp; " \
++		"fi; " \
++		"${get_cmd} ${loadaddr} ${image}; " \
++		"if test ${boot_fit} = yes || test ${boot_fit} = try; then " \
++			"bootm ${loadaddr}; " \
++		"else " \
++			"if ${get_cmd} ${fdt_addr} ${fdt_file}; then " \
++				"booti ${loadaddr} - ${fdt_addr}; " \
++			"else " \
++				"echo WARN: Cannot load the DT; " \
++			"fi; " \
++		"fi;\0"
++
++#define CONFIG_BOOTCOMMAND \
++	   "mmc dev ${mmcdev}; if mmc rescan; then " \
 +		   "if run loadbootscript; then " \
 +			   "run bootscript; " \
 +		   "else " \
@@ -17336,6 +17232,9 @@ index 0000000000..22b1ff4f13
 +#endif
 +
 +/* Link Definitions */
++#define CONFIG_LOADADDR			0x40480000
++
++#define CONFIG_SYS_LOAD_ADDR		CONFIG_LOADADDR
 +
 +#define CONFIG_SYS_INIT_RAM_ADDR        0x40000000
 +#define CONFIG_SYS_INIT_RAM_SIZE        0x200000
@@ -17344,16 +17243,30 @@ index 0000000000..22b1ff4f13
 +#define CONFIG_SYS_INIT_SP_ADDR \
 +	(CONFIG_SYS_INIT_RAM_ADDR + CONFIG_SYS_INIT_SP_OFFSET)
 +
-+#define CONFIG_SYS_MMC_ENV_DEV		1   /* USDHC2 */
-+#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
++#define CONFIG_ENV_OVERWRITE
++#if defined(CONFIG_ENV_IS_IN_SPI_FLASH)
++#define CONFIG_ENV_SPI_BUS		CONFIG_SF_DEFAULT_BUS
++#define CONFIG_ENV_SPI_CS		CONFIG_SF_DEFAULT_CS
++#define CONFIG_ENV_SPI_MODE		CONFIG_SF_DEFAULT_MODE
++#define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
++#endif
++#define CONFIG_SYS_MMC_ENV_DEV		2   /* USDHC2 */
++#define CONFIG_MMCROOT			"/dev/mmcblk2p2"  /* USDHC2 */
++
++/* Size of malloc() pool */
++#define CONFIG_SYS_MALLOC_LEN		SZ_32M
 +
 +#define CONFIG_SYS_SDRAM_BASE           0x40000000
 +#define PHYS_SDRAM                      0x40000000
 +#define PHYS_SDRAM_SIZE			0x80000000 /* 2GB DDR */
 +
++#define CONFIG_SYS_MEMTEST_START	PHYS_SDRAM
++#define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + (PHYS_SDRAM_SIZE >> 1))
++
 +#define CONFIG_MXC_UART_BASE		UART2_BASE_ADDR
 +
 +/* Monitor Command Prompt */
++#define CONFIG_SYS_PROMPT_HUSH_PS2	"> "
 +#define CONFIG_SYS_CBSIZE		2048
 +#define CONFIG_SYS_MAXARGS		64
 +#define CONFIG_SYS_BARGSIZE		CONFIG_SYS_CBSIZE
@@ -17363,13 +17276,16 @@ index 0000000000..22b1ff4f13
 +#define CONFIG_IMX_BOOTAUX
 +
 +/* USDHC */
++#define CONFIG_FSL_USDHC
 +
 +/*#ifdef CONFIG_TARGET_IMX8MM_DDR4_EVK
 +#define CONFIG_SYS_FSL_USDHC_NUM	1
-+#else */
++#else*/
 +#define CONFIG_SYS_FSL_USDHC_NUM	2
-+/*#endif */
++/*#endif*/
 +#define CONFIG_SYS_FSL_ESDHC_ADDR       0
++
++#define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 +
 +#ifdef CONFIG_FSL_FSPI
 +#define FSL_FSPI_FLASH_SIZE		SZ_32M
@@ -17392,9 +17308,17 @@ index 0000000000..22b1ff4f13
 +#define CONFIG_SYS_NAND_USE_FLASH_BBT
 +#endif /* CONFIG_NAND_MXS */
 +
++#define CONFIG_SYS_I2C_SPEED		100000
++
 +/* USB configs */
 +#ifndef CONFIG_SPL_BUILD
++#define CONFIG_CMD_USB
++#define CONFIG_USB_STORAGE
 +#define CONFIG_USBD_HS
++
++#define CONFIG_CMD_USB_MASS_STORAGE
++#define CONFIG_USB_GADGET_MASS_STORAGE
++#define CONFIG_USB_FUNCTION_MASS_STORAGE
 +
 +#endif
 +
@@ -17402,6 +17326,19 @@ index 0000000000..22b1ff4f13
 +
 +#define CONFIG_MXC_USB_PORTSC  (PORT_PTS_UTMI | PORT_PTS_PTW)
 +#define CONFIG_USB_MAX_CONTROLLER_COUNT         2
++
++#ifdef CONFIG_DM_VIDEO
++#define CONFIG_VIDEO_MXS
++#define CONFIG_VIDEO_LOGO
++#define CONFIG_SPLASH_SCREEN
++#define CONFIG_SPLASH_SCREEN_ALIGN
++#define CONFIG_CMD_BMP
++#define CONFIG_BMP_16BPP
++#define CONFIG_BMP_24BPP
++#define CONFIG_BMP_32BPP
++#define CONFIG_VIDEO_BMP_RLE8
++#define CONFIG_VIDEO_BMP_LOGO
++#endif
 +
 +#endif
 -- 
