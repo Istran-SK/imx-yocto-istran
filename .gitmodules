@@ -33,9 +33,3 @@
 	path = sources/meta-dotnet-core
 	url = git@github.com:RDunkley/meta-dotnet-core.git
 	branch = kirkstone
-[submodule "sources/meta-python2"]
-	path = sources/meta-python2
-	url = git://git.openembedded.org/meta-python2
-[submodule "sources/meta-rust"]
-	path = sources/meta-rust
-	url = git@github.com:meta-rust/meta-rust.git
