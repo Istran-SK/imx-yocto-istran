@@ -5,9 +5,6 @@
 	path = sources/base
 	url = git@github.com:Freescale/fsl-community-bsp-base.git
 	branch = kirkstone
-[submodule "sources/meta-browser"]
-	path = sources/meta-browser
-	url = git@github.com:OSSystems/meta-browser.git
 [submodule "sources/meta-clang"]
 	path = sources/meta-clang
 	url = git@github.com:kraj/meta-clang.git
