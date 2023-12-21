@@ -30,3 +30,6 @@
 	path = sources/meta-dotnet-core
 	url = git@github.com:RDunkley/meta-dotnet-core.git
 	branch = kirkstone
+[submodule "sources/meta-virtualization"]
+	path = sources/meta-virtualization
+	url = git://git.yoctoproject.org/meta-virtualization
