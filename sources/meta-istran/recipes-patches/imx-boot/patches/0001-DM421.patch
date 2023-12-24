@@ -1,0 +1,25 @@
+From 3e87c051cd849af0dd3ea1c2760b75f9da1e499c Mon Sep 17 00:00:00 2001
+From: eldendiss <denis.voltmann@gmail.com>
+Date: Mon, 25 Dec 2023 00:37:49 +0100
+Subject: [PATCH] DM421
+
+---
+ iMX8M/soc.mak | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/iMX8M/soc.mak b/iMX8M/soc.mak
+index c505dea..17c505e 100644
+--- a/iMX8M/soc.mak
++++ b/iMX8M/soc.mak
+@@ -146,7 +146,7 @@ clean:
+ 
+ dtb = evk.dtb
+ $(dtb):
+-	./$(DTB_PREPROC) $(PLAT)-evk.dtb $(dtb) $(dtbs)
++	./$(DTB_PREPROC) $(PLAT)-dm421.dtb $(dtb) $(dtbs)
+ 
+ u-boot.itb: $(dtb)
+ 	./$(PAD_IMAGE) $(TEE)
+-- 
+2.39.2
+
