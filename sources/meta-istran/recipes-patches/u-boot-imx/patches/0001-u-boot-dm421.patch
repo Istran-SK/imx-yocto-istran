@@ -1,173 +1,5 @@
-From a5e4344c6419dcc4525f7a5952eaa55910b55f6f Mon Sep 17 00:00:00 2001
-From: eldendiss <denis.voltmann@gmail.com>
-Date: Fri, 22 Dec 2023 15:09:00 +0100
-Subject: [PATCH] Add dm421
-
----
- arch/arm/dts/Makefile                         |    1 +
- arch/arm/dts/imx8mm-dm421-u-boot.dtsi         |  201 ++
- arch/arm/dts/imx8mm-dm421.dts                 |  133 ++
- arch/arm/dts/imx8mm-dm421.dtsi                |  520 +++++
- arch/arm/mach-imx/imx8m/Kconfig               |    7 +
- board/icop/common/Kconfig                     |  101 +
- board/icop/common/Makefile                    |  101 +
- board/icop/common/arm_sleep.c                 |  131 ++
- board/icop/common/cadmus.c                    |   78 +
- board/icop/common/cadmus.h                    |   37 +
- board/icop/common/cds_pci_ft.c                |   18 +
- board/icop/common/cds_via.c                   |   92 +
- board/icop/common/cmd_esbc_validate.c         |   86 +
- board/icop/common/dcu_sii9022a.c              |  248 +++
- board/icop/common/dcu_sii9022a.h              |   12 +
- board/icop/common/diu_ch7301.c                |  217 ++
- board/icop/common/diu_ch7301.h                |   12 +
- board/icop/common/eeprom.h                    |   33 +
- board/icop/common/emc2305.c                   |   62 +
- board/icop/common/emc2305.h                   |   22 +
- board/icop/common/epdc_setup.c                |  226 ++
- board/icop/common/fman.c                      |   89 +
- board/icop/common/fman.h                      |   14 +
- board/icop/common/fsl_chain_of_trust.c        |  159 ++
- board/icop/common/fsl_validate.c              |  974 +++++++++
- board/icop/common/i2c_common.c                |   34 +
- board/icop/common/i2c_common.h                |   30 +
- board/icop/common/i2c_mux.c                   |   62 +
- board/icop/common/i2c_mux.h                   |   16 +
- board/icop/common/ics307_clk.c                |  149 ++
- board/icop/common/ics307_clk.h                |   14 +
- board/icop/common/ls102xa_stream_id.c         |   35 +
- board/icop/common/mc34vr500.c                 |   95 +
- board/icop/common/mmc.c                       |   51 +
- board/icop/common/mpc85xx_sleep.c             |   97 +
- board/icop/common/ngpixis.c                   |  250 +++
- board/icop/common/ngpixis.h                   |   60 +
- board/icop/common/ns_access.c                 |  241 +++
- board/icop/common/p_corenet/Makefile          |    7 +
- board/icop/common/p_corenet/law.c             |   36 +
- board/icop/common/p_corenet/tlb.c             |  160 ++
- board/icop/common/pfuze.c                     |  173 ++
- board/icop/common/pfuze.h                     |   17 +
- board/icop/common/pixis.c                     |  543 +++++
- board/icop/common/pixis.h                     |   54 +
- board/icop/common/pq-mds-pib.c                |   60 +
- board/icop/common/pq-mds-pib.h                |    9 +
- board/icop/common/qixis.c                     |  388 ++++
- board/icop/common/qixis.h                     |  169 ++
- board/icop/common/qsfp_eeprom.c               |   90 +
- board/icop/common/qsfp_eeprom.h               |   14 +
- board/icop/common/qspi_header                 |  128 ++
- board/icop/common/recovery_keypad.c           |   60 +
- board/icop/common/recovery_keypad.h           |   13 +
- board/icop/common/sdhc_boot.c                 |   79 +
- board/icop/common/sgmii_riser.c               |  130 ++
- board/icop/common/sgmii_riser.h               |   16 +
- board/icop/common/sleep.h                     |   20 +
- board/icop/common/spl.h                       |   12 +
- board/icop/common/sys_eeprom.c                |  625 ++++++
- board/icop/common/tcpc.c                      | 1053 ++++++++++
- board/icop/common/tcpc.h                      |  471 +++++
- board/icop/common/via.h                       |   18 +
- board/icop/common/vid.c                       |  796 +++++++
- board/icop/common/vid.h                       |   75 +
- board/icop/common/vsc3316_3308.c              |  530 +++++
- board/icop/common/vsc3316_3308.h              |   24 +
- board/icop/common/zm7300.c                    |  232 +++
- board/icop/common/zm7300.h                    |   21 +
- board/icop/imx8mm_dm421/Kconfig               |   17 +
- board/icop/imx8mm_dm421/MAINTAINERS           |    6 +
- board/icop/imx8mm_dm421/Makefile              |   17 +
- board/icop/imx8mm_dm421/ddr4_timing.c         | 1265 +++++++++++
- board/icop/imx8mm_dm421/imx8mm_dm421.c        |  364 ++++
- board/icop/imx8mm_dm421/imximage-8mm-fspi.cfg |    7 +
- board/icop/imx8mm_dm421/imximage-8mm.cfg      |    8 +
- board/icop/imx8mm_dm421/lpddr4_timing.c       | 1852 +++++++++++++++++
- board/icop/imx8mm_dm421/lpddr4_timing_4g.c    | 1842 ++++++++++++++++
- board/icop/imx8mm_dm421/spl.c                 |  328 +++
- configs/imx8mm_dm421_defconfig                |  208 ++
- include/configs/imx8mm_dm421.h                |  258 +++
- 81 files changed, 16903 insertions(+)
- create mode 100644 arch/arm/dts/imx8mm-dm421-u-boot.dtsi
- create mode 100644 arch/arm/dts/imx8mm-dm421.dts
- create mode 100644 arch/arm/dts/imx8mm-dm421.dtsi
- create mode 100644 board/icop/common/Kconfig
- create mode 100644 board/icop/common/Makefile
- create mode 100644 board/icop/common/arm_sleep.c
- create mode 100644 board/icop/common/cadmus.c
- create mode 100644 board/icop/common/cadmus.h
- create mode 100644 board/icop/common/cds_pci_ft.c
- create mode 100644 board/icop/common/cds_via.c
- create mode 100644 board/icop/common/cmd_esbc_validate.c
- create mode 100644 board/icop/common/dcu_sii9022a.c
- create mode 100644 board/icop/common/dcu_sii9022a.h
- create mode 100644 board/icop/common/diu_ch7301.c
- create mode 100644 board/icop/common/diu_ch7301.h
- create mode 100644 board/icop/common/eeprom.h
- create mode 100644 board/icop/common/emc2305.c
- create mode 100644 board/icop/common/emc2305.h
- create mode 100644 board/icop/common/epdc_setup.c
- create mode 100644 board/icop/common/fman.c
- create mode 100644 board/icop/common/fman.h
- create mode 100644 board/icop/common/fsl_chain_of_trust.c
- create mode 100644 board/icop/common/fsl_validate.c
- create mode 100644 board/icop/common/i2c_common.c
- create mode 100644 board/icop/common/i2c_common.h
- create mode 100644 board/icop/common/i2c_mux.c
- create mode 100644 board/icop/common/i2c_mux.h
- create mode 100644 board/icop/common/ics307_clk.c
- create mode 100644 board/icop/common/ics307_clk.h
- create mode 100644 board/icop/common/ls102xa_stream_id.c
- create mode 100644 board/icop/common/mc34vr500.c
- create mode 100644 board/icop/common/mmc.c
- create mode 100644 board/icop/common/mpc85xx_sleep.c
- create mode 100644 board/icop/common/ngpixis.c
- create mode 100644 board/icop/common/ngpixis.h
- create mode 100644 board/icop/common/ns_access.c
- create mode 100644 board/icop/common/p_corenet/Makefile
- create mode 100644 board/icop/common/p_corenet/law.c
- create mode 100644 board/icop/common/p_corenet/tlb.c
- create mode 100644 board/icop/common/pfuze.c
- create mode 100644 board/icop/common/pfuze.h
- create mode 100644 board/icop/common/pixis.c
- create mode 100644 board/icop/common/pixis.h
- create mode 100644 board/icop/common/pq-mds-pib.c
- create mode 100644 board/icop/common/pq-mds-pib.h
- create mode 100644 board/icop/common/qixis.c
- create mode 100644 board/icop/common/qixis.h
- create mode 100644 board/icop/common/qsfp_eeprom.c
- create mode 100644 board/icop/common/qsfp_eeprom.h
- create mode 100644 board/icop/common/qspi_header
- create mode 100644 board/icop/common/recovery_keypad.c
- create mode 100644 board/icop/common/recovery_keypad.h
- create mode 100644 board/icop/common/sdhc_boot.c
- create mode 100644 board/icop/common/sgmii_riser.c
- create mode 100644 board/icop/common/sgmii_riser.h
- create mode 100644 board/icop/common/sleep.h
- create mode 100644 board/icop/common/spl.h
- create mode 100644 board/icop/common/sys_eeprom.c
- create mode 100644 board/icop/common/tcpc.c
- create mode 100644 board/icop/common/tcpc.h
- create mode 100644 board/icop/common/via.h
- create mode 100644 board/icop/common/vid.c
- create mode 100644 board/icop/common/vid.h
- create mode 100644 board/icop/common/vsc3316_3308.c
- create mode 100644 board/icop/common/vsc3316_3308.h
- create mode 100644 board/icop/common/zm7300.c
- create mode 100644 board/icop/common/zm7300.h
- create mode 100644 board/icop/imx8mm_dm421/Kconfig
- create mode 100644 board/icop/imx8mm_dm421/MAINTAINERS
- create mode 100644 board/icop/imx8mm_dm421/Makefile
- create mode 100644 board/icop/imx8mm_dm421/ddr4_timing.c
- create mode 100644 board/icop/imx8mm_dm421/imx8mm_dm421.c
- create mode 100644 board/icop/imx8mm_dm421/imximage-8mm-fspi.cfg
- create mode 100644 board/icop/imx8mm_dm421/imximage-8mm.cfg
- create mode 100644 board/icop/imx8mm_dm421/lpddr4_timing.c
- create mode 100755 board/icop/imx8mm_dm421/lpddr4_timing_4g.c
- create mode 100644 board/icop/imx8mm_dm421/spl.c
- create mode 100644 configs/imx8mm_dm421_defconfig
- create mode 100644 include/configs/imx8mm_dm421.h
-
 diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
-index 5c32345b78..a4ac4d7f73 100644
+index 709fdaecd7..dc41447a72 100644
 --- a/arch/arm/dts/Makefile
 +++ b/arch/arm/dts/Makefile
 @@ -969,6 +969,7 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
@@ -387,7 +219,7 @@ index 0000000000..02fdc88e27
 +};
 diff --git a/arch/arm/dts/imx8mm-dm421.dts b/arch/arm/dts/imx8mm-dm421.dts
 new file mode 100644
-index 0000000000..39ef6c0a2c
+index 0000000000..8522329d3f
 --- /dev/null
 +++ b/arch/arm/dts/imx8mm-dm421.dts
 @@ -0,0 +1,133 @@
@@ -1051,7 +883,7 @@ index 0000000000..0459b47f04
 +};
 +
 diff --git a/arch/arm/mach-imx/imx8m/Kconfig b/arch/arm/mach-imx/imx8m/Kconfig
-index a225a9784f..b01b39eb75 100644
+index a225a9784f..aa6dfeb4c1 100644
 --- a/arch/arm/mach-imx/imx8m/Kconfig
 +++ b/arch/arm/mach-imx/imx8m/Kconfig
 @@ -110,6 +110,12 @@ config TARGET_IMX8MM_EVK
@@ -11330,7 +11162,7 @@ index 0000000000..9ce24afc17
 +#endif	/* __ZM7300_H_ */
 diff --git a/board/icop/imx8mm_dm421/Kconfig b/board/icop/imx8mm_dm421/Kconfig
 new file mode 100644
-index 0000000000..2d49531cd4
+index 0000000000..d78c89c542
 --- /dev/null
 +++ b/board/icop/imx8mm_dm421/Kconfig
 @@ -0,0 +1,17 @@
@@ -11365,7 +11197,7 @@ index 0000000000..b031bb0674
 +F:	configs/imx8mm_evk_defconfig
 diff --git a/board/icop/imx8mm_dm421/Makefile b/board/icop/imx8mm_dm421/Makefile
 new file mode 100644
-index 0000000000..cccbcd6750
+index 0000000000..6bed69e980
 --- /dev/null
 +++ b/board/icop/imx8mm_dm421/Makefile
 @@ -0,0 +1,17 @@
@@ -12659,7 +12491,7 @@ index 0000000000..2f80b9832b
 +};
 diff --git a/board/icop/imx8mm_dm421/imx8mm_dm421.c b/board/icop/imx8mm_dm421/imx8mm_dm421.c
 new file mode 100644
-index 0000000000..4a3de04556
+index 0000000000..46d5c4dec8
 --- /dev/null
 +++ b/board/icop/imx8mm_dm421/imx8mm_dm421.c
 @@ -0,0 +1,364 @@
@@ -17096,7 +16928,7 @@ index 0000000000..c93fbd42ed
 +}
 diff --git a/configs/imx8mm_dm421_defconfig b/configs/imx8mm_dm421_defconfig
 new file mode 100644
-index 0000000000..dcb1b849ca
+index 0000000000..b6f0dd0e7c
 --- /dev/null
 +++ b/configs/imx8mm_dm421_defconfig
 @@ -0,0 +1,208 @@
@@ -17310,7 +17142,7 @@ index 0000000000..dcb1b849ca
 +
 diff --git a/include/configs/imx8mm_dm421.h b/include/configs/imx8mm_dm421.h
 new file mode 100644
-index 0000000000..4ea1899fd3
+index 0000000000..22b1ff4f13
 --- /dev/null
 +++ b/include/configs/imx8mm_dm421.h
 @@ -0,0 +1,258 @@
@@ -17573,5 +17405,5 @@ index 0000000000..4ea1899fd3
 +
 +#endif
 -- 
-2.39.2
+2.17.1
 

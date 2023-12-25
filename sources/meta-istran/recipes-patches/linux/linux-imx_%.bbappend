@@ -1,7 +1,7 @@
-FILESEXTRAPATHS:prepend := "${THISDIR}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/patches:"
 
-SRC_URI:append:dm421 = " \
-    file://0001-Port-to-VOX.patch \
+SRC_URI += " \
+    file://0001-linux-dm421.patch \
     file://dm421_defconfig \
 "
 
