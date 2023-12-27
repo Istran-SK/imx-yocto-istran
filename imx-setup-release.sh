@@ -158,11 +158,19 @@ echo >> conf/local.conf
 echo "# Switch to Debian packaging and include package-management in the image" >> conf/local.conf
 echo "PACKAGE_CLASSES = \"package_deb\"" >> conf/local.conf
 echo "EXTRA_IMAGE_FEATURES += \"package-management\"" >> conf/local.conf
+echo "CORE_IMAGE_EXTRA_INSTALL += \"dotnet-core\"" >> conf/local.conf
+echo "CORE_IMAGE_EXTRA_INSTALL += \"vsdbg\"" >> conf/local.conf
+
 echo "IMAGE_INSTALL:append = \" \\" >> conf/local.conf
 echo "expand-rootfs \\" >> conf/local.conf
 echo "linux-firmware \\" >> conf/local.conf
 echo "touch-files \\" >> conf/local.conf
+echo "gnupg \\" >> conf/local.conf
+echo "touch-files \\" >> conf/local.conf
+echo "fontconfig \\" >> conf/local.conf
 echo "\"" >> conf/local.conf
+
+echo "INHERIT += \"rm_work\"" >> conf/local.conf
 
 if [ ! -e $BUILD_DIR/conf/bblayers.conf.org ]; then
     cp $BUILD_DIR/conf/bblayers.conf $BUILD_DIR/conf/bblayers.conf.org
@@ -182,6 +190,7 @@ hook_in_layer meta-imx/meta-v2x
 
 echo "" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-clang\"" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-dotnet-core\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-gnome\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-networking\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-filesystems\"" >> $BUILD_DIR/conf/bblayers.conf
