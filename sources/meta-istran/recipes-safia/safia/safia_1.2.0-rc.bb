@@ -5,12 +5,14 @@
 LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
-SRC_URI = "file:///home/dendo/imx-yocto-bsp/sources/meta-istran/recipes-safia/safia/safia-${PV}-linux-arm64.zip"
+SRC_URI = "file://safia-${PV}-linux-arm64.zip"
 
 INSANE_SKIP:${PN} += "already-stripped"
 
 DEPENDS += "fontconfig"
 RDEPENDS_${PN} = "libfontconfig.so.1()(64bit)"
+RDEPENDS_${PN} += "liblttng-ust"
+
 
 do_install () {
 	# Specify install commands here

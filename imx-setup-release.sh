@@ -158,13 +158,21 @@ echo >> conf/local.conf
 echo "# Switch to Debian packaging and include package-management in the image" >> conf/local.conf
 echo "PACKAGE_CLASSES = \"package_deb\"" >> conf/local.conf
 echo "EXTRA_IMAGE_FEATURES += \"package-management\"" >> conf/local.conf
+echo "EXTRA_IMAGE_FEATURES += \"ssh-server-openssh\"" >> conf/local.conf
 echo "CORE_IMAGE_EXTRA_INSTALL += \"dotnet-core\"" >> conf/local.conf
+echo "CORE_IMAGE_EXTRA_INSTALL += \"aspnet-core\"" >> conf/local.conf
 echo "CORE_IMAGE_EXTRA_INSTALL += \"vsdbg\"" >> conf/local.conf
+echo "PREFERRED_VERSION_dotnet-core = \"6.0.0\"" >> conf/local.conf
 
 echo "IMAGE_INSTALL:append = \" \\" >> conf/local.conf
 echo "expand-rootfs \\" >> conf/local.conf
 echo "linux-firmware \\" >> conf/local.conf
 echo "touch-files \\" >> conf/local.conf
+echo "safia \\" >> conf/local.conf
+echo "psplash \\" >> conf/local.conf
+echo "influxdb \\" >> conf/local.conf
+echo "matchbox-keyboard \\" >> conf/local.conf
+echo "telegraf \\" >> conf/local.conf
 echo "gnupg \\" >> conf/local.conf
 echo "touch-files \\" >> conf/local.conf
 echo "fontconfig \\" >> conf/local.conf
@@ -196,6 +204,7 @@ echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-networking\"" >> $
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-filesystems\"" >> $BUILD_DIR/conf/bblayers.conf
 
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-istran\"" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-splash\"" >> $BUILD_DIR/conf/bblayers.conf
 
 # Enable docker for mx8 machines
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-virtualization\"" >> conf/bblayers.conf

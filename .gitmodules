@@ -33,3 +33,6 @@
 [submodule "sources/meta-virtualization"]
 	path = sources/meta-virtualization
 	url = git://git.yoctoproject.org/meta-virtualization
+[submodule "sources/meta-splash"]
+	path = sources/meta-splash
+	url = git@github.com:hamzamac/meta-splash.git
