@@ -21,6 +21,9 @@ SRC_URI[sha512sum] = "0e5f04a12f5857b8847c87b12e87b95ff289b7a0ecc0252620d13f6cd0
 
 S = "${WORKDIR}/${BPN}-${PV}"
 
+INSANE_SKIP:${PN} += "already-stripped"
+
+
 # NOTE: no Makefile found, unable to determine what needs to be done
 
 
@@ -31,15 +34,16 @@ do_install () {
     	install -d ${D}${sysconfdir}/telegraf
     	install -d ${D}${sysconfdir}/telegraf.d
     	install -d ${D}/usr/bin
+    	install -d ${D}/etc/systemd/system
 
-    	install -m 0644 ${S}/etc/logrotate.d/telegraf ${D}/etc/logrotate.d/telegraf
-  	install -m 0644 ${S}/etc/telegraf/telegraf.conf ${D}/etc/telegraf/telegraf.conf
+    	install -m 0755 ${S}/etc/logrotate.d/telegraf ${D}/etc/logrotate.d/telegraf
+  	install -m 0755 ${S}/etc/telegraf/telegraf.conf ${D}/etc/telegraf/telegraf.conf
   	
-    	install -m 0644 ${S}/usr/bin/telegraf ${D}/usr/bin/telegraf
+    	install -m 0755 ${S}/usr/bin/telegraf ${D}/usr/bin/telegraf
     	
-    	install -m 0644 ${S}/usr/lib/telegraf/scripts/init.sh ${D}/usr/lib/telegraf/scripts/init.sh
-    	install -m 0644 ${S}/usr/lib/telegraf/scripts/telegraf.service ${D}/usr/lib/telegraf/scripts/telegraf.service
-    	
+    	install -m 0755 ${S}/usr/lib/telegraf/scripts/init.sh ${D}/usr/lib/telegraf/scripts/init.sh
+    	install -m 0755 ${S}/usr/lib/telegraf/scripts/telegraf.service ${D}/usr/lib/telegraf/scripts/telegraf.service
+    	install -m 0755 ${S}/usr/lib/telegraf/scripts/telegraf.service ${D}/etc/systemd/system/telegraf.service
 }
 
 inherit systemd

@@ -168,8 +168,10 @@ echo "IMAGE_INSTALL:append = \" \\" >> conf/local.conf
 echo "expand-rootfs \\" >> conf/local.conf
 echo "linux-firmware \\" >> conf/local.conf
 echo "touch-files \\" >> conf/local.conf
+echo "bash \\" >> conf/local.conf
 echo "safia \\" >> conf/local.conf
 echo "psplash \\" >> conf/local.conf
+echo "influx \\" >> conf/local.conf
 echo "influxdb \\" >> conf/local.conf
 echo "matchbox-keyboard \\" >> conf/local.conf
 echo "telegraf \\" >> conf/local.conf

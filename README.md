@@ -16,7 +16,7 @@ Based on IMX Yocto: [USER GUIDE (PDF)](https://www.nxp.com/docs/en/user-guide/IM
 $ sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential 
 chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils \
 iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev \
-python3-subunit mesa-common-dev zstd liblz4-tool file locales dotnet6 -y
+python3-subunit mesa-common-dev zstd liblz4-tool file locales uuu -y
 $ sudo locale-gen en_US.UTF-8
 ```
 2. Clone the project and cd to project directory
@@ -52,4 +52,16 @@ After that we can upload the image using UUU to target device (device must be in
 ```
 uuu uuu.auto
 ```
+
+For easier uploads deploy.sh script is provided, which does the steps above automatically (requires sudo). Device must be in download mode, and connected via USB. After deployment, device can be switched back to MMC boot mode and deployed image will be started:
+```
+sh deploy.sh
+```
+
+After deployment, image needs to be configured. Script is provided to make it easier, however some manual input will be needed. This includes:
+- Calibrating touch screen
+- Configuring influxdb, telegraf and SaFIA app
+- Configuring IP address
+- Configuring on-screen keyboard
+
 
