@@ -13,6 +13,7 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
 SRC_URI = "https://dl.influxdata.com/telegraf/releases/telegraf-${PV}_linux_arm64.tar.gz"
+SRC_URI += "file://telegraf.conf.def"
 SRC_URI[md5sum] = "a3375574ed07501c8f2197a4caa6b6ea"
 SRC_URI[sha1sum] = "3f2a8a13446ce06ba89a4641f5c9f1c8c5a4f910"
 SRC_URI[sha256sum] = "7bfb5ea3cdeb587a6bfeb02bc3d8ea954ac05dbcd19e1518f228438ea9cbf66e"
@@ -35,6 +36,7 @@ do_install () {
     	install -d ${D}${sysconfdir}/telegraf.d
     	install -d ${D}/usr/bin
     	install -d ${D}/etc/systemd/system
+    	install -d ${D}/etc/telegraf/
 
     	install -m 0755 ${S}/etc/logrotate.d/telegraf ${D}/etc/logrotate.d/telegraf
   	install -m 0755 ${S}/etc/telegraf/telegraf.conf ${D}/etc/telegraf/telegraf.conf
@@ -44,6 +46,7 @@ do_install () {
     	install -m 0755 ${S}/usr/lib/telegraf/scripts/init.sh ${D}/usr/lib/telegraf/scripts/init.sh
     	install -m 0755 ${S}/usr/lib/telegraf/scripts/telegraf.service ${D}/usr/lib/telegraf/scripts/telegraf.service
     	install -m 0755 ${S}/usr/lib/telegraf/scripts/telegraf.service ${D}/etc/systemd/system/telegraf.service
+    	install -m 0664 ${S}/../telegraf.conf.def ${D}/etc/telegraf/telegraf.conf.def
 }
 
 inherit systemd

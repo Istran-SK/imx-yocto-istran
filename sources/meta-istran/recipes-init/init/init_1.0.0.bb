@@ -14,6 +14,7 @@ do_install () {
 	install -d ${D}/home
     
     	cp -r ${S}/*.sh ${D}/home
+    	cp -r ${S}/*.def ${D}/home
     	chmod +x ${D}/home/*.sh
 }
 
