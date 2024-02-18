@@ -7,11 +7,9 @@ LIC_FILES_CHKSUM = ""
 
 SRC_URI = "file://safia-${PV}-linux-arm64.zip"
 
-INSANE_SKIP:${PN} += "already-stripped"
+INSANE_SKIP:${PN} += "already-stripped file-rdeps"
 
 DEPENDS += "fontconfig"
-RDEPENDS_${PN} = "libfontconfig.so.1()(64bit)"
-RDEPENDS_${PN} += "liblttng-ust"
 
 
 do_install () {
