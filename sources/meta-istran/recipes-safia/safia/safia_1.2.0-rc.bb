@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = ""
 
 SRC_URI = "file://safia-${PV}-linux-arm64.zip"
 
-INSANE_SKIP:${PN} += "already-stripped file-rdeps"
+INSANE_SKIP:${PN} += "already-stripped file-rdeps libdir"
 
 DEPENDS += "fontconfig"
 
@@ -15,11 +15,8 @@ DEPENDS += "fontconfig"
 do_install () {
 	# Specify install commands here
 	install -d ${D}/usr/share/safia
-	install -d ${D}/usr/lib/safia
     
     	cp -r ${S}/*.* ${D}/usr/share/safia
-    	rm -rf ${D}/usr/share/safia/*.so
-    	cp -r ${S}/*.so ${D}/usr/lib/safia
     	chmod +x ${D}/usr/share/safia/*.dll
 }
 

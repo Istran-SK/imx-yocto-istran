@@ -172,6 +172,7 @@ echo "touch-files \\" >> conf/local.conf
 echo "bash \\" >> conf/local.conf
 echo "jq \\" >> conf/local.conf
 echo "safia \\" >> conf/local.conf
+echo "init \\" >> conf/local.conf
 echo "psplash \\" >> conf/local.conf
 echo "influx \\" >> conf/local.conf
 echo "influxdb \\" >> conf/local.conf
@@ -181,6 +182,9 @@ echo "telegraf \\" >> conf/local.conf
 echo "gnupg \\" >> conf/local.conf
 echo "touch-files \\" >> conf/local.conf
 echo "fontconfig \\" >> conf/local.conf
+echo "udev \\" >> conf/local.conf
+echo "udev-extraconf \\" >> conf/local.conf
+echo "ntp \\" >> conf/local.conf
 echo "\"" >> conf/local.conf
 
 echo "INHERIT += \"rm_work\"" >> conf/local.conf
