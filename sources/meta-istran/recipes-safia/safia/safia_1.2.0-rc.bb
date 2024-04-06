@@ -5,12 +5,12 @@
 LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
-SRC_URI = "file://safia-${PV}-linux-arm64.zip"
+SRCREV = "4cb29bfc8379b64e7ac29f615dcbd995504d6cb1"
+SRC_URI = "file://safia_1.2.0-rc.zip"
 
 INSANE_SKIP:${PN} += "already-stripped file-rdeps libdir"
 
 DEPENDS += "fontconfig"
-
 
 do_install () {
 	# Specify install commands here

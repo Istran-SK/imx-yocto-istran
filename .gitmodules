@@ -36,3 +36,6 @@
 [submodule "sources/meta-mono"]
 	path = sources/meta-mono
 	url = git@github.com:DynamicDevices/meta-mono.git
+[submodule "sources/meta-istran/recipes-safia/safia/files/SaFIAreact"]
+	path = sources/meta-istran/recipes-safia/safia/files/SaFIAreact
+	url = git@github.com:Istran-SK/SaFIAreact.git
