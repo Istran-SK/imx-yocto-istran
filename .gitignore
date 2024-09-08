@@ -1,3 +1,7 @@
 build
 .repo
 downloads
+
+*.new
+
+*.orig

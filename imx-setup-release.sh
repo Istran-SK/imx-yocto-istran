@@ -163,7 +163,7 @@ echo "CORE_IMAGE_EXTRA_INSTALL += \"dotnet-core\"" >> conf/local.conf
 echo "CORE_IMAGE_EXTRA_INSTALL += \"aspnet-core\"" >> conf/local.conf
 echo "CORE_IMAGE_EXTRA_INSTALL += \"vsdbg\"" >> conf/local.conf
 echo "PREFERRED_VERSION_dotnet-core = \"6.0.0\"" >> conf/local.conf
-echo "DISTRO_FEATURES:append = \"opengl\"" >> conf/local.conf
+echo "DISTRO_FEATURES:append = \"opengl x11\"" >> conf/local.conf
 
 echo "IMAGE_INSTALL:append = \" \\" >> conf/local.conf
 echo "expand-rootfs \\" >> conf/local.conf
@@ -185,6 +185,8 @@ echo "fontconfig \\" >> conf/local.conf
 echo "udev \\" >> conf/local.conf
 echo "udev-extraconf \\" >> conf/local.conf
 echo "ntp \\" >> conf/local.conf
+echo "gnuplot \\" >> conf/local.conf
+echo "qtbase qtbase-tools qtbase-plugins \\" >> conf/local.conf
 echo "\"" >> conf/local.conf
 
 echo "INHERIT += \"rm_work\"" >> conf/local.conf
@@ -215,6 +217,7 @@ echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-filesystems\"" >> 
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-istran\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-splash\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-mono\"" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-qt5\"" >> $BUILD_DIR/conf/bblayers.conf
 
 # Enable docker for mx8 machines
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-virtualization\"" >> conf/bblayers.conf

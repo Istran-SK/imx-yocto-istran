@@ -12,7 +12,6 @@ index 4c06cbe89ece..99e9c8565054 100644
  
  # *DOCUMENTATION*
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 9a7319c6b4e3..e033f525a8fa 100644
 --- a/arch/arm64/boot/dts/freescale/Makefile
 +++ b/arch/arm64/boot/dts/freescale/Makefile
 @@ -68,6 +68,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb imx8mm-evk-rpmsg.dtb imx8mm-evk-rm67191
@@ -25,7 +24,6 @@ index 9a7319c6b4e3..e033f525a8fa 100644
  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-8mic-revE.dtb imx8mm-evk-8mic-swpdm.dtb \
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-dm421-wm8960.dts b/arch/arm64/boot/dts/freescale/imx8mm-dm421-wm8960.dts
 new file mode 100644
-index 000000000000..481e8a775daf
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-dm421-wm8960.dts
 @@ -0,0 +1,41 @@
@@ -72,7 +70,6 @@ index 000000000000..481e8a775daf
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-dm421.dts b/arch/arm64/boot/dts/freescale/imx8mm-dm421.dts
 new file mode 100644
-index 000000000000..a1845804014b
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-dm421.dts
 @@ -0,0 +1,19 @@
@@ -97,10 +94,9 @@ index 000000000000..a1845804014b
 +
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-dm421.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-dm421.dtsi
 new file mode 100644
-index 000000000000..161de7542006
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-dm421.dtsi
-@@ -0,0 +1,1018 @@
+@@ -0,0 +1,1016 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2020 NXP
@@ -623,6 +619,7 @@ index 000000000000..161de7542006
 +	pinctrl-0 = <&pinctrl_fec1>;
 +	phy-mode = "rgmii-id";
 +	phy-handle = <&ethphy0>;
++	phy-reset-gpios = <&gpio4 3 GPIO_ACTIVE_LOW>;
 +	fsl,magic-packet;
 +	status = "okay";
 +
@@ -633,9 +630,6 @@ index 000000000000..161de7542006
 +		ethphy0: ethernet-phy@0 {
 +			compatible = "ethernet-phy-ieee802.3-c22";
 +			reg = <0>;
-+			reset-gpios = <&gpio4 3 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <1000>;
-+			reset-deassert-us = <1000>;
 +			at803x,led-act-blind-workaround;
 +			at803x,eee-okay;
 +			at803x,vddio-1p8v;
@@ -1133,7 +1127,6 @@ index 3d81471f89d3..e2769f167a84 100644
  
  source "drivers/gpu/drm/bridge/synopsys/Kconfig"
 diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
-index 0f93f88d1815..1f9f6ad7b613 100644
 --- a/drivers/gpu/drm/bridge/Makefile
 +++ b/drivers/gpu/drm/bridge/Makefile
 @@ -24,6 +24,7 @@ obj-$(CONFIG_DRM_TOSHIBA_TC358767) += tc358767.o
@@ -1146,7 +1139,6 @@ index 0f93f88d1815..1f9f6ad7b613 100644
  obj-$(CONFIG_DRM_TI_TFP410) += ti-tfp410.o
 diff --git a/drivers/gpu/drm/bridge/sn65dsi83/Kconfig b/drivers/gpu/drm/bridge/sn65dsi83/Kconfig
 new file mode 100644
-index 000000000000..e1b8e802f61f
 --- /dev/null
 +++ b/drivers/gpu/drm/bridge/sn65dsi83/Kconfig
 @@ -0,0 +1,6 @@
@@ -1158,7 +1150,6 @@ index 000000000000..e1b8e802f61f
 +	  TI SN65DSI83 MIPI DSI to LVDS bridge driver
 diff --git a/drivers/gpu/drm/bridge/sn65dsi83/Makefile b/drivers/gpu/drm/bridge/sn65dsi83/Makefile
 new file mode 100644
-index 000000000000..dee7f493b323
 --- /dev/null
 +++ b/drivers/gpu/drm/bridge/sn65dsi83/Makefile
 @@ -0,0 +1,2 @@
@@ -1166,7 +1157,6 @@ index 000000000000..dee7f493b323
 +obj-$(CONFIG_DRM_I2C_SN65DSI83) := sn65dsi83.o
 diff --git a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.c b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.c
 new file mode 100644
-index 000000000000..59c82916a223
 --- /dev/null
 +++ b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.c
 @@ -0,0 +1,389 @@
@@ -1561,7 +1551,6 @@ index 000000000000..59c82916a223
 +}
 diff --git a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.h b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.h
 new file mode 100644
-index 000000000000..9f23df8afedc
 --- /dev/null
 +++ b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.h
 @@ -0,0 +1,55 @@
@@ -1622,7 +1611,6 @@ index 000000000000..9f23df8afedc
 +#endif /* _SN65DSI83_BRG_H__ */
 diff --git a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c
 new file mode 100644
-index 000000000000..0bcd1eebf6c9
 --- /dev/null
 +++ b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c
 @@ -0,0 +1,420 @@
@@ -2048,7 +2036,6 @@ index 000000000000..0bcd1eebf6c9
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_timing.h b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_timing.h
 new file mode 100644
-index 000000000000..e9bb6633c376
 --- /dev/null
 +++ b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_timing.h
 @@ -0,0 +1,33 @@
@@ -2086,7 +2073,6 @@ index 000000000000..e9bb6633c376
 +
 +#endif /* __SN65DSI83_TIMING_H__ */
 diff --git a/drivers/input/touchscreen/tsc200x-core.c b/drivers/input/touchscreen/tsc200x-core.c
-index b8d720d52013..07461b251bea 100644
 --- a/drivers/input/touchscreen/tsc200x-core.c
 +++ b/drivers/input/touchscreen/tsc200x-core.c
 @@ -102,6 +102,7 @@ struct tsc200x {
@@ -2116,7 +2102,6 @@ index b8d720d52013..07461b251bea 100644
  	/* Ensure the touchscreen is off */
  	tsc200x_stop_scan(ts);
 diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 75de6a81465d..e83e390eb6cb 100644
 --- a/sound/soc/codecs/wm8960.c
 +++ b/sound/soc/codecs/wm8960.c
 @@ -1462,18 +1462,13 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
@@ -2144,7 +2129,6 @@ index 75de6a81465d..e83e390eb6cb 100644
  	i2c_set_clientdata(i2c, wm8960);
  
 diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index c70e9c4eed08..b146221fa283 100644
 --- a/sound/soc/fsl/Kconfig
 +++ b/sound/soc/fsl/Kconfig
 @@ -354,6 +354,19 @@ config SND_SOC_IMX_HDMI
@@ -2168,7 +2152,6 @@ index c70e9c4eed08..b146221fa283 100644
  	tristate "SoC Audio support for i.MX boards with rpmsg"
  	depends on RPMSG
 diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 63e6912675ea..131733c53a05 100644
 --- a/sound/soc/fsl/Makefile
 +++ b/sound/soc/fsl/Makefile
 @@ -72,6 +72,7 @@ obj-$(CONFIG_SND_SOC_IMX_HDMI_DMA) += imx-hdmi-dma.o hdmi_pcm.o
@@ -2188,7 +2171,6 @@ index 63e6912675ea..131733c53a05 100644
  obj-$(CONFIG_SND_SOC_IMX_AUDMIX) += snd-soc-imx-audmix.o
  obj-$(CONFIG_SND_SOC_IMX_HDMI) += snd-soc-imx-hdmi.o
 diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 7e21829f24d1..51fbc7e936a0 100644
 --- a/sound/soc/fsl/fsl-asoc-card.c
 +++ b/sound/soc/fsl/fsl-asoc-card.c
 @@ -1166,7 +1166,7 @@ static const struct of_device_id fsl_asoc_card_dt_ids[] = {
@@ -2202,7 +2184,6 @@ index 7e21829f24d1..51fbc7e936a0 100644
  	{ .compatible = "fsl,imx-audio-si476x", },
 diff --git a/sound/soc/fsl/imx-wm8960.c b/sound/soc/fsl/imx-wm8960.c
 new file mode 100644
-index 000000000000..664fb7e4d44f
 --- /dev/null
 +++ b/sound/soc/fsl/imx-wm8960.c
 @@ -0,0 +1,740 @@

@@ -39,3 +39,6 @@
 [submodule "sources/meta-istran/recipes-safia/safia/files/SaFIAreact"]
 	path = sources/meta-istran/recipes-safia/safia/files/SaFIAreact
 	url = git@github.com:Istran-SK/SaFIAreact.git
+[submodule "sources/meta-qt5"]
+	path = sources/meta-qt5
+	url = https://github.com/meta-qt5/meta-qt5.git
