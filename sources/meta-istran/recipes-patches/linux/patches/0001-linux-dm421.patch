@@ -1,0 +1,2932 @@
+diff --git a/Makefile b/Makefile
+index 4c06cbe89ece..99e9c8565054 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2,7 +2,7 @@
+ VERSION = 5
+ PATCHLEVEL = 15
+ SUBLEVEL = 71
+-EXTRAVERSION =
++EXTRAVERSION = .$(shell date +%F)
+ NAME = Trick or Treat
+ 
+ # *DOCUMENTATION*
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -68,6 +68,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb imx8mm-evk-rpmsg.dtb imx8mm-evk-rm67191
+ 			  imx8mm-evk-dpdk.dtb \
+ 			  imx8mm-evk-rm67199.dtb imx8mm-evk-rm67191-cmd-ram.dtb imx8mm-evk-rm67199-cmd-ram.dtb \
+ 			  imx8mm-evk-lk.dtb imx8mm-evk-rpmsg-wm8524-lpv.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-dm421.dts
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-rpmsg-wm8524.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-ak4497.dtb imx8mm-evk-ak5558.dtb imx8mm-evk-audio-tdm.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-8mic-revE.dtb imx8mm-evk-8mic-swpdm.dtb \
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-dm421-wm8960.dts b/arch/arm64/boot/dts/freescale/imx8mm-dm421-wm8960.dts
+new file mode 100644
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-dm421-wm8960.dts
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2020 NXP
++ */
++
++
++#include "imx8mm-dm421.dts"
++
++&i2c3 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c3>;
++	status = "okay";
++
++        wm8960: wm8960@1a {
++                compatible = "wlf,wm8960";
++                reg = <0x1a>;
++                clocks = <&clk IMX8MM_CLK_SAI2_ROOT>;
++                clock-names = "mclk";
++                wlf,shared-lrclk;
++                status = "okay";
++        };
++
++        wm8962: wm8962@1a {
++                #sound-dai-cells = <0>;
++                compatible = "wlf,wm8962";
++                reg = <0x1a>;
++                clocks = <&clk IMX8MM_CLK_SAI2_ROOT>;
++                clock-names = "mclk";
++                status = "disabled";
++
++                gpio-cfg = <
++                        0x0000 /* 0:Default */
++                        0x0000 /* 1:Default */
++                        0x0000 /* 2:FN_DMICCLK */
++                        0x0000 /* 3:Default */
++                        0x0000 /* 4:FN_DMICCDAT */
++                        0x0000 /* 5:Default */
++                >;
++        };
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-dm421.dts b/arch/arm64/boot/dts/freescale/imx8mm-dm421.dts
+new file mode 100644
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-dm421.dts
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019-2020 NXP
++ */
++
++/dts-v1/;
++
++#include <dt-bindings/usb/pd.h>
++#include "imx8mm-dm421.dtsi"
++
++/ {
++	model = "ICOP i.MX8MM DM421 board";
++	compatible = "icop,imx8mm-dm421", "fsl,imx8mm";
++
++	aliases {
++		spi0 = &flexspi;
++	};
++};
++
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-dm421.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-dm421.dtsi
+new file mode 100644
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-dm421.dtsi
+@@ -0,0 +1,1016 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2020 NXP
++ */
++
++/dts-v1/;
++
++#include <dt-bindings/usb/pd.h>
++#include "imx8mm.dtsi"
++
++/ {
++	chosen {
++		bootargs = "console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200";
++		stdout-path = &uart2;
++	};
++
++	memory@40000000 {
++		device_type = "memory";
++		reg = <0x0 0x40000000 0x1 0x00000000>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_gpio_led>;
++
++		status {
++			label = "status";
++			gpios = <&gpio3 16 GPIO_ACTIVE_HIGH>;
++			default-state = "on";
++		};
++	};
++
++	regulators {
++		compatible = "simple-bus";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		reg_sd1_vmmc: sd1_regulator {
++			compatible = "regulator-fixed";
++			regulator-name = "WLAN_EN";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			gpio = <&gpio2 10 GPIO_ACTIVE_HIGH>;
++			off-on-delay = <20000>;
++			startup-delay-us = <100>;
++			enable-active-high;
++		};
++	};
++
++	usdhc1_pwrseq: usdhc1_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_usdhc1_gpio>;
++		reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
++	};
++
++	modem_reset: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <2000>;
++		reset-post-delay-ms = <40>;
++		#reset-cells = <0>;
++	};
++
++	pcie0_refclk: pcie0-refclk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <100000000>;
++	};
++
++        sound-wm8960 {
++	        compatible = "fsl,imx-audio-wm8960";
++	        model = "wm8960-audio";
++	        cpu-dai = <&sai2>;
++	        audio-codec = <&wm8960>;
++	        audio-routing =
++	                "Headphone Jack", "HP_L",
++	                "Headphone Jack", "HP_R",
++	                "Ext Spk", "SPK_LP",
++	                "Ext Spk", "SPK_LN",
++	                "Ext Spk", "SPK_RP",
++	                "Ext Spk", "SPK_RN",
++	                "LINPUT1", "Mic Jack",
++	                "LINPUT3", "Mic Jack",
++	                "Mic Jack", "MICB";
++        };
++
++        sound-wm8962 {
++                compatible = "fsl,imx-audio-wm8962";
++                model = "wm8962-audio";
++                audio-cpu = <&sai2>;
++                audio-codec = <&wm8962>;
++                 audio-routing =
++                        "Headphone Jack", "HPOUTL",
++                        "Headphone Jack", "HPOUTR",
++                        "AMIC", "MICBIAS",
++                        "IN1L", "AMIC";
++                mux-int-port = <2>;
++                mux-ext-port = <3>;
++        };
++
++	backlight_mipi: 32e10000.mipi_dsi.0 {
++		compatible = "pwm-backlight";
++		brightness-levels = <
++		  0	  1	  2	  3	  4	  5	  6	  7
++		  8	  9	 10	 11	 12	 13	 14	 15
++		 16	 17	 18	 19	 20	 21	 22	 23
++		 24	 25	 26	 27	 28	 29	 30	 31
++		 32	 33	 34	 35	 36	 37	 38	 39
++		 40	 41	 42	 43	 44	 45	 46	 47
++		 48	 49	 50	 51	 52	 53	 54	 55
++		 56	 57	 58	 59	 60	 61	 62	 63
++		 64	 65	 66	 67	 68	 69	 70	 71
++		 72	 73	 74	 75	 76	 77	 78	 79
++		 80	 81	 82	 83	 84	 85	 86	 87
++		 88	 89	 90	 91	 92	 93	 94	 95
++		 96	 97	 98	 99 100 101 102 103
++		104 105 106 107 108 109 110 111
++		112 113 114 115 116 117 118 119
++		120 121 122 123 124 125 126 127
++		128 129 130 131 132 133 134 135
++		136 137 138 139 140 141 142 143
++		144 145 146 147 148 149 150 151
++		152 153 154 155 156 157 158 159
++		160 161 162 163 164 165 166 167
++		168 169 170 171 172 173 174 175
++		176 177 178 179 180 181 182 183
++		184 185 186 187 188 189 190 191
++		192 193 194 195 196 197 198 199
++		200 201 202 203 204 205 206 207
++		208 209 210 211 212 213 214 215
++		216 217 218 219 220 221 222 223
++		224 225 226 227 228 229 230 231
++		232 233 234 235 236 237 238 239
++		240 241 242 243 244 245 246 247
++		248 249 250 251 252 253 254 255>;
++		default-brightness-level = <204>;
++		pwms = <&pwm1 0 5000000>;
++		status = "okay";
++	};
++};
++
++&iomuxc {
++	pinctrl_gpio: gpiogrp {
++		fsl,pins = <
++			/* PCIE_nWake */
++			MX8MM_IOMUXC_GPIO1_IO01_GPIO1_IO1			0x19
++			/* COM1_EN */
++			MX8MM_IOMUXC_SPDIF_TX_GPIO5_IO3				0x40
++			/* TS2005 */
++			MX8MM_IOMUXC_SPDIF_TX_GPIO5_IO3				0x19
++			MX8MM_IOMUXC_SPDIF_RX_GPIO5_IO4				0x19
++			/* BT REG ON */
++			MX8MM_IOMUXC_SD1_DATA4_GPIO2_IO6			0xc1
++			/* BT WAKE HOST */
++			MX8MM_IOMUXC_SD1_DATA6_GPIO2_IO8			0x19
++			/* WL REG ON */
++			MX8MM_IOMUXC_SD1_RESET_B_GPIO2_IO10			0x19
++			/* WL WAKE HOST */
++			MX8MM_IOMUXC_SD1_DATA7_GPIO2_IO9			0x19
++			/* BT_WAKE_DEV */
++			MX8MM_IOMUXC_SD1_DATA5_GPIO2_IO7			0x19
++		>;
++	};
++
++	pinctrl_fec1: fec1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC				0x3
++			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO			0x3
++			MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
++			MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
++			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
++			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
++			MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
++			MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
++			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
++			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
++			MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
++			MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
++			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
++			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
++			MX8MM_IOMUXC_SAI1_RXD1_GPIO4_IO3			0x19
++		>;
++	};
++
++	pinctrl_pcie0: pcie0grp {
++		fsl,pins = <
++			/* Mini-PCIE Reset */
++			MX8MM_IOMUXC_SAI3_TXD_GPIO5_IO1				0x141
++		>;
++	};
++
++	pinctrl_wdog: wdoggrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B		0xc6
++		>;
++	};
++
++	pinctrl_gpio_led: gpioledgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_READY_B_GPIO3_IO16		0x19
++		>;
++	};
++
++	pinctrl_ecspi2: ecspi2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK		0x11
++			MX8MM_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI		0x11
++			MX8MM_IOMUXC_ECSPI2_MISO_ECSPI2_MISO		0x11
++		>;
++	};
++
++	pinctrl_ecspi2_cs:ecspi2csgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_ECSPI2_SS0_GPIO5_IO13			0x11
++			MX8MM_IOMUXC_SPDIF_RX_GPIO5_IO4				0x11
++		>;
++	};
++
++	pinctrl_pwm1:pwm1grp{
++		fsl,pins = <
++			MX8MM_IOMUXC_SPDIF_EXT_CLK_PWM1_OUT			0x16
++		>;
++	};
++
++	pinctrl_pmic: pmicirqgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3			0x141
++		>;
++	};
++
++	pinctrl_i2c1: i2c1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL				0x400001c3
++			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA				0x400001c3
++		>;
++	};
++
++	pinctrl_i2c2: i2c2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL				0x400001c3
++			MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA				0x400001c3
++		>;
++	};
++
++	pinctrl_i2c3: i2c3grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C3_SCL_I2C3_SCL				0x400001c3
++			MX8MM_IOMUXC_I2C3_SDA_I2C3_SDA				0x400001c3
++		>;
++	};
++
++	pinctrl_i2c4: i2c4grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL				0x400001c3
++			MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA				0x400001c3
++		>;
++	};
++
++	pinctrl_i2c1_gpio: i2c1grp-gpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C1_SCL_GPIO5_IO14			0x1c3
++			MX8MM_IOMUXC_I2C1_SDA_GPIO5_IO15			0x1c3
++		>;
++	};
++
++	pinctrl_sai1: sai1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI1_MCLK_SAI1_MCLK			0xd6
++			MX8MM_IOMUXC_SAI1_TXFS_SAI1_TX_SYNC			0xd6
++			MX8MM_IOMUXC_SAI1_RXD7_SAI1_TX_SYNC			0xd6
++			MX8MM_IOMUXC_SAI1_TXC_SAI1_TX_BCLK			0xd6
++			MX8MM_IOMUXC_SAI1_TXD0_SAI1_TX_DATA0		0xd6
++			MX8MM_IOMUXC_SAI1_TXD1_SAI1_TX_DATA1		0xd6
++			MX8MM_IOMUXC_SAI1_TXD2_SAI1_TX_DATA2		0xd6
++			MX8MM_IOMUXC_SAI1_TXD3_SAI1_TX_DATA3		0xd6
++			MX8MM_IOMUXC_SAI1_TXD4_SAI1_TX_DATA4		0xd6
++			MX8MM_IOMUXC_SAI1_TXD5_SAI1_TX_DATA5		0xd6
++			MX8MM_IOMUXC_SAI1_TXD6_SAI1_TX_DATA6		0xd6
++			MX8MM_IOMUXC_SAI1_TXD7_SAI1_TX_DATA7		0xd6
++		>;
++	};
++
++	pinctrl_sai2: sai2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI2_TXC_SAI2_TX_BCLK			0xd6
++			MX8MM_IOMUXC_SAI2_TXFS_SAI2_TX_SYNC			0xd6
++			MX8MM_IOMUXC_SAI2_MCLK_SAI2_MCLK			0xd6
++			MX8MM_IOMUXC_SAI2_TXD0_SAI2_TX_DATA0		0xd6
++			MX8MM_IOMUXC_SAI2_RXD0_SAI2_RX_DATA0		0xd6
++		>;
++	};
++
++	pinctrl_sai3: sai3grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI3_TXFS_SAI3_TX_SYNC			0xd6
++			MX8MM_IOMUXC_SAI3_TXC_SAI3_TX_BCLK			0xd6
++			MX8MM_IOMUXC_SAI3_MCLK_SAI3_MCLK			0xd6
++			//MX8MM_IOMUXC_SAI3_TXD_SAI3_TX_DATA0		0xd6
++		>;
++	};
++
++	pinctrl_pdm: pdmgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI5_MCLK_SAI5_MCLK			0xd6
++			MX8MM_IOMUXC_SAI5_RXC_PDM_CLK				0xd6
++			MX8MM_IOMUXC_SAI5_RXFS_SAI5_RX_SYNC			0xd6
++			MX8MM_IOMUXC_SAI5_RXD0_PDM_DATA0			0xd6
++			MX8MM_IOMUXC_SAI5_RXD1_PDM_DATA1			0xd6
++			MX8MM_IOMUXC_SAI5_RXD2_PDM_DATA2			0xd6
++			MX8MM_IOMUXC_SAI5_RXD3_PDM_DATA3			0xd6
++		>;
++	};
++
++	pinctrl_sai5: sai5grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI5_MCLK_SAI5_MCLK			0xd6
++			MX8MM_IOMUXC_SAI5_RXC_SAI5_RX_BCLK			0xd6
++			MX8MM_IOMUXC_SAI5_RXFS_SAI5_RX_SYNC			0xd6
++			MX8MM_IOMUXC_SAI5_RXD0_SAI5_RX_DATA0		0xd6
++			MX8MM_IOMUXC_SAI5_RXD1_SAI5_RX_DATA1		0xd6
++			MX8MM_IOMUXC_SAI5_RXD2_SAI5_RX_DATA2		0xd6
++			MX8MM_IOMUXC_SAI5_RXD3_SAI5_RX_DATA3		0xd6
++		>;
++	};
++
++	pinctrl_uart1: uart1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_UART1_RXD_UART1_DCE_RX			0x49
++			MX8MM_IOMUXC_UART1_TXD_UART1_DCE_TX			0x49
++			MX8MM_IOMUXC_UART3_RXD_UART1_DCE_CTS_B		0x49
++			MX8MM_IOMUXC_UART3_TXD_UART1_DCE_RTS_B		0x49
++		>;
++	};
++
++	pinctrl_uart2: uart2grp {
++		fsl,pins = <
++			/*
++			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX			0x140
++			MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX			0x140
++			*/
++			/*SAI3_RXC to CTS*/
++			0x1D0 0x438 0x000 0x4 0x0 0x40
++			/*SAI3_RXD to RTS*/
++			0x1D4 0x43C 0x4F8 0x4 0x3 0x40
++			/*SAI3_TXFS to RXD*/
++			0x1D8 0x440 0x4FC 0x4 0x2 0x40
++			/*SAI3_TXC to TXD*/
++			0x1DC 0x444 0x000 0x4 0x0 0x40
++		>;
++	};
++
++	pinctrl_uart3: uart3grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_ECSPI1_SCLK_UART3_DCE_RX		0x40
++			MX8MM_IOMUXC_ECSPI1_MISO_UART3_DCE_CTS_B	0x40
++			MX8MM_IOMUXC_ECSPI1_MOSI_UART3_DCE_TX		0x40
++			MX8MM_IOMUXC_ECSPI1_SS0_UART3_DCE_RTS_B		0x40
++
++		>;
++	};
++
++	pinctrl_uart4: uart4grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_UART4_RXD_UART4_DCE_RX			0x140
++			MX8MM_IOMUXC_UART4_TXD_UART4_DCE_TX			0x140
++		>;
++	};
++
++	pinctrl_usdhc1_wlan: usdhc1grpgpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO00_ANAMIX_REF_CLK_32K	0x41
++			MX8MM_IOMUXC_SD1_RESET_B_GPIO2_IO10			0x41
++		>;
++	};
++
++	pinctrl_usdhc1_gpio: usdhc1grpgpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD1_RESET_B_GPIO2_IO10			0x41
++		>;
++	};
++
++	pinctrl_usdhc1: usdhc1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK				0x190
++			MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD				0x1d0
++			MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0			0x1d0
++			MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1			0x1d0
++			MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2			0x1d0
++			MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3			0x1d0
++		>;
++	};
++
++	pinctrl_usdhc1_100mhz: usdhc1grp100mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK				0x194
++			MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD				0x1d4
++			MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0			0x1d4
++			MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1			0x1d4
++			MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2			0x1d4
++			MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3			0x1d4
++		>;
++	};
++
++	pinctrl_usdhc1_200mhz: usdhc1grp200mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK				0x196
++			MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD				0x1d6
++			MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0			0x1d6
++			MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1			0x1d6
++			MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2			0x1d6
++			MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3			0x1d6
++		>;
++	};
++
++	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19			0x41
++		>;
++	};
++
++	pinctrl_usdhc2_gpio: usdhc2grpgpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO14_GPIO1_IO14			0x1c4
++			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19			0x41
++		>;
++	};
++
++	pinctrl_usdhc2: usdhc2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK				0x190
++			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD				0x1d0
++			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0			0x1d0
++			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1			0x1d0
++			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2			0x1d0
++			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3			0x1d0
++			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
++			MX8MM_IOMUXC_SD2_WP_USDHC2_WP				0x1d0
++		>;
++	};
++
++	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK				0x194
++			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD				0x1d4
++			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0			0x1d4
++			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1			0x1d4
++			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2			0x1d4
++			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3			0x1d4
++			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
++			MX8MM_IOMUXC_SD2_WP_USDHC2_WP				0x1d0
++		>;
++	};
++
++	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK				0x196
++			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD				0x1d6
++			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0			0x1d6
++			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1			0x1d6
++			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2			0x1d6
++			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3			0x1d6
++			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
++			MX8MM_IOMUXC_SD2_WP_USDHC2_WP				0x1d0
++		>;
++	};
++
++	pinctrl_usdhc3: usdhc3grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK			0x190
++			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD			0x1d0
++			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d0
++			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d0
++			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d0
++			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d0
++			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4			0x1d0
++			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x1d0
++			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x1d0
++			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7			0x1d0
++			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE		0x190
++		>;
++	};
++
++	pinctrl_usdhc3_100mhz: usdhc3grp100mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK			0x194
++			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD			0x1d4
++			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d4
++			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d4
++			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d4
++			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d4
++			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4			0x1d4
++			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x1d4
++			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x1d4
++			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7			0x1d4
++			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE		0x194
++		>;
++	};
++
++	pinctrl_usdhc3_200mhz: usdhc3grp200mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK			0x196
++			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD			0x1d6
++			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d6
++			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d6
++			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d6
++			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d6
++			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4			0x1d6
++			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x1d6
++			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x1d6
++			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7			0x1d6
++			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE		0x196
++		>;
++	};
++};
++
++&fec1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_fec1>;
++	phy-mode = "rgmii-id";
++	phy-handle = <&ethphy0>;
++	phy-reset-gpios = <&gpio4 3 GPIO_ACTIVE_LOW>;
++	fsl,magic-packet;
++	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy0: ethernet-phy@0 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <0>;
++			at803x,led-act-blind-workaround;
++			at803x,eee-okay;
++			at803x,vddio-1p8v;
++		};
++	};
++};
++
++&pcie0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pcie0>;
++	reset-gpio = <&gpio1 13 GPIO_ACTIVE_LOW>;
++	clocks = <&clk IMX8MM_CLK_PCIE1_ROOT>,
++	<&clk IMX8MM_CLK_PCIE1_AUX>,
++	<&clk IMX8MM_CLK_PCIE1_PHY>,
++	<&pcie0_refclk>;
++	clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
++	assigned-clocks = <&clk IMX8MM_CLK_PCIE1_AUX>,
++		<&clk IMX8MM_CLK_PCIE1_PHY>,
++		<&clk IMX8MM_CLK_PCIE1_CTRL>;
++	assigned-clock-rates = <10000000>, <100000000>, <250000000>;
++	assigned-clock-parents = <&clk IMX8MM_SYS_PLL2_50M>,
++		<&clk IMX8MM_SYS_PLL2_100M>,
++		<&clk IMX8MM_SYS_PLL2_250M>;
++	ext_osc = <0>;
++	status = "okay";
++};
++
++&ecspi2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	fsl,spi-num-chipselects = <1>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_ecspi2 &pinctrl_ecspi2_cs>;
++	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
++	status = "okay";
++
++	spidev:spidev@0 {
++		compatible = "ti,tsc2005";
++		spi-max-frequency = <1000000>;
++		interrupt-parent = <&gpio5>;
++		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
++		reg = <0>;
++		touchscreen-inverted-x = <1>;
++		touchscreen-fuzz-x = <4>;
++		touchscreen-fuzz-y = <7>;
++		touchscreen-fuzz-pressure = <2>;
++		touchscreen-min-x = <0>;
++		touchscreen-min-y = <125>;
++		touchscreen-size-x = <3986>;
++		touchscreen-size-y = <3886>;
++		touchscreen-max-pressure = <2048>;
++
++		ti,x-plate-ohms = <180>;
++		ti,esd-recovery-timeout-ms = <8000>;
++	};
++};
++
++&i2c1 {
++	clock-frequency = <400000>;
++	pinctrl-names = "default", "gpio";
++	pinctrl-0 = <&pinctrl_i2c1>;
++	pinctrl-1 = <&pinctrl_i2c1_gpio>;
++	scl-gpios = <&gpio5 14 GPIO_ACTIVE_HIGH>;
++	sda-gpios = <&gpio5 15 GPIO_ACTIVE_HIGH>;
++	status = "okay";
++
++	pmic: bd71837@4b {
++		reg = <0x4b>;
++		compatible = "rohm,bd71837";
++		/* PMIC BD71837 PMIC_nINT GPIO1_IO3 */
++		pinctrl-0 = <&pinctrl_pmic>;
++		pinctrl-names  = "default";
++		interrupt-parent = <&gpio1>;
++                interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++		#clock-cells = <0>;
++                clocks = <&osc_32k 0>;
++                rohm,reset-snvs-powered;
++                rohm,short-press-ms = <10>;
++
++		gpo {
++			rohm,drv = <0x0C>;	/* 0b0000_1100 all gpos with cmos output mode */
++		};
++
++		regulators {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			bd71837,pmic-buck2-uses-i2c-dvs;
++			bd71837,pmic-buck2-dvs-voltage = <1000000>, <900000>, <0>; /* VDD_ARM: Run-Idle */
++
++			buck1_reg: BUCK1@0 {
++				regulator-compatible = "BUCK1";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1300000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <1250>;
++				nxp,dvs-run-voltage = <850000>;
++                                nxp,dvs-standby-voltage = <800000>;
++			};
++
++			buck2_reg: BUCK2 {
++				regulator-compatible = "BUCK2";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1300000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <1250>;
++			};
++
++			buck3_reg: BUCK3 {
++				regulator-compatible = "BUCK3";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1300000>;
++			};
++
++			buck4_reg: BUCK4 {
++				regulator-compatible = "BUCK4";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1300000>;
++			};
++
++			buck5_reg: BUCK5 {
++				regulator-compatible = "BUCK5";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck6_reg: BUCK6 {
++				regulator-compatible = "BUCK6";
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck7_reg: BUCK7 {
++				regulator-compatible = "BUCK7";
++				regulator-min-microvolt = <1605000>;
++				regulator-max-microvolt = <1995000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck8_reg: BUCK8 {
++				regulator-compatible = "BUCK8";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <1400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo1_reg: LDO1 {
++				regulator-compatible = "LDO1";
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo2_reg: LDO2 {
++				regulator-compatible = "LDO2";
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <900000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo3_reg: LDO3 {
++				regulator-compatible = "LDO3";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo4_reg: LDO4 {
++				regulator-compatible = "LDO4";
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo5_reg: LDO5 {
++				regulator-compatible = "LDO5";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo6_reg: LDO6 {
++				regulator-compatible = "LDO6";
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo7_reg: LDO7 {
++				regulator-compatible = "LDO7";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++			};
++		};
++	};
++};
++
++&i2c2 {
++	clock-frequency = <400000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c2>;
++	status = "okay";
++
++	dsi_lvds_bridge: sn65dsi83@2d {
++		compatible = "ti,sn65dsi83";
++		reg = <0x2D>;
++		ti,dsi-lanes = <4>;
++		ti,lvds-format = <1>;
++		ti,lvds-bpp = <24>;
++		ti,width-mm = <200>;
++		ti,height-mm = <117>;
++		enable-gpios = <&gpio5 5 GPIO_ACTIVE_HIGH>;
++		status = "okay";
++
++		display-timings {
++			lvds {
++				clock-frequency = <45000000>;
++				hactive = <1024>;
++				vactive = <600>;
++				hback-porch = <100>;
++				hfront-porch = <100>;
++				vback-porch = <8>;
++				vfront-porch = <8>;
++				hsync-len = <100>;
++				vsync-len = <8>;
++				hsync-active = <0>;
++				vsync-active = <0>;
++				de-active = <1>;
++				pixelclk-active = <1>;
++			};
++		};
++
++		port {
++			lvds_from_dsi: endpoint {
++				remote-endpoint = <&dsi_to_lvds>;
++			};
++		};
++	};
++};
++
++&i2c3 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c3>;
++	status = "okay";
++
++        wm8960: wm8960@1a {
++                compatible = "wlf,wm8960";
++                reg = <0x1a>;
++                clocks = <&clk IMX8MM_CLK_SAI2_ROOT>;
++                clock-names = "mclk";
++                wlf,shared-lrclk;
++                status = "disabled";
++        };
++
++        wm8962: wm8962@1a {
++                #sound-dai-cells = <0>;
++                compatible = "wlf,wm8962";
++                reg = <0x1a>;
++                clocks = <&clk IMX8MM_CLK_SAI2_ROOT>;
++                clock-names = "mclk";
++                status = "okay";
++
++                gpio-cfg = <
++                        0x0000 /* 0:Default */
++                        0x0000 /* 1:Default */
++                        0x0000 /* 2:FN_DMICCLK */
++                        0x0000 /* 3:Default */
++                        0x0000 /* 4:FN_DMICCDAT */
++                        0x0000 /* 5:Default */
++                >;
++        };
++};
++
++&i2c4 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c4>;
++	status = "okay";
++
++	ext_rtc: rx8025t@32 {
++		compatible = "rx8025";
++		reg = <0x32>;
++	};
++};
++
++&sai2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_sai2>;
++	assigned-clocks = <&clk IMX8MM_CLK_SAI2>;
++	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
++	assigned-clock-rates = <24576000>;
++	status = "okay";
++};
++
++&sai5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_sai5>;
++	assigned-clocks = <&clk IMX8MM_CLK_SAI5>;
++	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
++	assigned-clock-rates = <49152000>;
++	clocks = <&clk IMX8MM_CLK_SAI5_IPG>, <&clk IMX8MM_CLK_DUMMY>,
++		<&clk IMX8MM_CLK_SAI5_ROOT>, <&clk IMX8MM_CLK_DUMMY>,
++		<&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_AUDIO_PLL1_OUT>,
++		<&clk IMX8MM_AUDIO_PLL2_OUT>;
++	clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3", "pll8k", "pll11k";
++	fsl,sai-asynchronous;
++	status = "disabled";
++};
++
++&uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart1>;
++	assigned-clocks = <&clk IMX8MM_CLK_UART1>;
++	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
++	fsl,uart-has-rtscts;
++	resets = <&modem_reset>;
++	status = "okay";
++};
++
++&uart2 { /* console */
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart2>;
++	status = "okay";
++};
++
++&uart3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart3>;
++	assigned-clocks = <&clk IMX8MM_CLK_UART3>;
++	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
++	fsl,uart-has-rtscts;
++	status = "okay";
++};
++
++&usdhc1 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc1>, <&pinctrl_usdhc1_wlan>;
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz>, <&pinctrl_usdhc1_wlan>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz>, <&pinctrl_usdhc1_wlan>;
++	bus-width = <4>;
++	keep-power-in-suspend;
++	non-removable;
++	wakeup-source;
++	vmmc-supply = <&reg_sd1_vmmc>;
++	fsl,sdio-interrupt-enabled;
++	status = "okay";
++
++	brcmf: brcmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio2>;
++		interrupts = <9 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "host-wake";
++	};
++};
++
++&usdhc2 {
++	assigned-clocks = <&clk IMX8MM_CLK_USDHC2>;
++	assigned-clock-rates = <200000000>;
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
++	cd-gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
++	bus-width = <4>;
++	status = "okay";
++};
++
++&usdhc3 {
++	assigned-clocks = <&clk IMX8MM_CLK_USDHC3_ROOT>;
++	assigned-clock-rates = <400000000>;
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc3>;
++	pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
++	pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
++	bus-width = <8>;
++	non-removable;
++	status = "okay";
++};
++
++&usbotg1 {
++	dr_mode = "otg";
++	picophy,pre-emp-curr-control = <3>;
++	picophy,dc-vol-level-adjust = <7>;
++	status = "okay";
++};
++
++&usbotg2 {
++	dr_mode = "otg";
++	picophy,pre-emp-curr-control = <3>;
++	picophy,dc-vol-level-adjust = <7>;
++	status = "okay";
++};
++
++&lcdif {
++	status = "okay";
++};
++
++&mipi_dsi {
++	status = "okay";
++	port@1 {
++		dsi_to_lvds: endpoint {
++			remote-endpoint = <&lvds_from_dsi>;
++			attach-bridge;
++		};
++	};
++};
++
++&micfil {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pdm>;
++	assigned-clocks = <&clk IMX8MM_CLK_PDM>;
++	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
++	assigned-clock-rates = <196608000>;
++	status = "okay";
++};
++
++&pwm1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pwm1>;
++	status = "okay";
++};
++
++&wdog1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wdog>;
++	fsl,ext-reset-output;
++	status = "okay";
++};
++
++&snvs_pwrkey {
++	status = "okay";
++};
++
++&vpu_g1 {
++	status = "okay";
++};
++
++&vpu_g2 {
++	status = "okay";
++};
++
++&vpu_h1 {
++	status = "okay";
++};
++
++&vpu_v4l2 {
++	status = "okay";
++};
++
++&gpu {
++	status = "okay";
++};
++
++&A53_0 {
++	cpu-supply = <&buck2_reg>;
++};
++
++&A53_1 {
++	cpu-supply = <&buck2_reg>;
++};
++
++&A53_2 {
++	cpu-supply = <&buck2_reg>;
++};
++
++&A53_3 {
++	cpu-supply = <&buck2_reg>;
++};
++
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index 3d81471f89d3..e2769f167a84 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -342,6 +342,8 @@ source "drivers/gpu/drm/bridge/analogix/Kconfig"
+ 
+ source "drivers/gpu/drm/bridge/adv7511/Kconfig"
+ 
++source "drivers/gpu/drm/bridge/sn65dsi83/Kconfig"
++
+ source "drivers/gpu/drm/bridge/cadence/Kconfig"
+ 
+ source "drivers/gpu/drm/bridge/synopsys/Kconfig"
+diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
+--- a/drivers/gpu/drm/bridge/Makefile
++++ b/drivers/gpu/drm/bridge/Makefile
+@@ -24,6 +24,7 @@ obj-$(CONFIG_DRM_TOSHIBA_TC358767) += tc358767.o
+ obj-$(CONFIG_DRM_TOSHIBA_TC358768) += tc358768.o
+ obj-$(CONFIG_DRM_TOSHIBA_TC358775) += tc358775.o
+ obj-$(CONFIG_DRM_I2C_ADV7511) += adv7511/
++obj-$(CONFIG_DRM_I2C_SN65DSI83) += sn65dsi83/
+ obj-$(CONFIG_DRM_TI_SN65DSI83) += ti-sn65dsi83.o
+ obj-$(CONFIG_DRM_TI_SN65DSI86) += ti-sn65dsi86.o
+ obj-$(CONFIG_DRM_TI_TFP410) += ti-tfp410.o
+diff --git a/drivers/gpu/drm/bridge/sn65dsi83/Kconfig b/drivers/gpu/drm/bridge/sn65dsi83/Kconfig
+new file mode 100644
+--- /dev/null
++++ b/drivers/gpu/drm/bridge/sn65dsi83/Kconfig
+@@ -0,0 +1,6 @@
++config DRM_I2C_SN65DSI83
++	bool "TI SN65DSI83 MIPI DSI to LVDS bridge"
++	depends on OF
++	select DRM_MIPI_DSI
++	help
++	  TI SN65DSI83 MIPI DSI to LVDS bridge driver
+diff --git a/drivers/gpu/drm/bridge/sn65dsi83/Makefile b/drivers/gpu/drm/bridge/sn65dsi83/Makefile
+new file mode 100644
+--- /dev/null
++++ b/drivers/gpu/drm/bridge/sn65dsi83/Makefile
+@@ -0,0 +1,2 @@
++sn65dsi83-objs := sn65dsi83_drv.o sn65dsi83_brg.o
++obj-$(CONFIG_DRM_I2C_SN65DSI83) := sn65dsi83.o
+diff --git a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.c b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.c
+new file mode 100644
+--- /dev/null
++++ b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.c
+@@ -0,0 +1,389 @@
++/*
++ * Copyright (C) 2018 CopuLab Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version 2
++ * of the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/i2c.h>
++#include <linux/device.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_graph.h>
++#include <linux/slab.h>
++
++//#include <drm/drmP.h>
++#include <linux/delay.h>
++#include <drm/drm_atomic.h>
++#include <drm/drm_atomic_helper.h>
++#include <drm/drm_edid.h>
++#include <drm/drm_mipi_dsi.h>
++#include <drm/drm_connector.h>
++#include <video/mipi_display.h>
++#include <video/of_videomode.h>
++#include <video/videomode.h>
++
++#include "sn65dsi83_brg.h"
++
++/* Register addresses */
++
++#define SN65DSI83_SOFT_RESET         0x09
++#define SN65DSI83_CORE_PLL           0x0A
++    #define LVDS_CLK_RANGE_SHIFT    1
++    #define HS_CLK_SRC_SHIFT        0
++
++#define SN65DSI83_PLL_DIV            0x0B
++    #define DSI_CLK_DIV_SHIFT       3
++
++#define SN65DSI83_PLL_EN             0x0D
++#define SN65DSI83_DSI_CFG            0x10
++    #define CHA_DSI_LANES_SHIFT    3
++
++#define SN65DSI83_DSI_EQ              0x11
++#define SN65DSI83_CHA_DSI_CLK_RNG     0x12
++#define SN65DSI83_CHB_DSI_CLK_RNG     0x13
++#define SN65DSI83_LVDS_MODE           0x18
++    #define DE_NEG_POLARITY_SHIFT 7
++    #define HS_NEG_POLARITY_SHIFT 6
++    #define VS_NEG_POLARITY_SHIFT 5
++    #define LVDS_LINK_CFG_SHIFT   4
++    #define CHA_24BPP_MODE_SHIFT  3
++    #define CHA_24BPP_FMT1_SHIFT  1
++
++#define SN65DSI83_LVDS_SIGN           0x19
++#define SN65DSI83_LVDS_TERM           0x1A
++#define SN65DSI83_LVDS_CM_ADJ         0x1B
++#define SN65DSI83_CHA_LINE_LEN_LO     0x20
++#define SN65DSI83_CHA_LINE_LEN_HI     0x21
++#define SN65DSI83_CHB_LINE_LEN_LO     0x22
++#define SN65DSI83_CHB_LINE_LEN_HI     0x23
++#define SN65DSI83_CHA_VERT_LINES_LO   0x24
++#define SN65DSI83_CHA_VERT_LINES_HI   0x25
++#define SN65DSI83_CHB_VERT_LINES_LO   0x26
++#define SN65DSI83_CHB_VERT_LINES_HI   0x27
++#define SN65DSI83_CHA_SYNC_DELAY_LO   0x28
++#define SN65DSI83_CHA_SYNC_DELAY_HI   0x29
++#define SN65DSI83_CHB_SYNC_DELAY_LO   0x2A
++#define SN65DSI83_CHB_SYNC_DELAY_HI   0x2B
++#define SN65DSI83_CHA_HSYNC_WIDTH_LO  0x2C
++#define SN65DSI83_CHA_HSYNC_WIDTH_HI  0x2D
++#define SN65DSI83_CHB_HSYNC_WIDTH_LO  0x2E
++#define SN65DSI83_CHB_HSYNC_WIDTH_HI  0x2F
++#define SN65DSI83_CHA_VSYNC_WIDTH_LO  0x30
++#define SN65DSI83_CHA_VSYNC_WIDTH_HI  0x31
++#define SN65DSI83_CHB_VSYNC_WIDTH_LO  0x32
++#define SN65DSI83_CHB_VSYNC_WIDTH_HI  0x33
++#define SN65DSI83_CHA_HORZ_BACKPORCH  0x34
++#define SN65DSI83_CHB_HORZ_BACKPORCH  0x35
++#define SN65DSI83_CHA_VERT_BACKPORCH  0x36
++#define SN65DSI83_CHB_VERT_BACKPORCH  0x37
++#define SN65DSI83_CHA_HORZ_FRONTPORCH 0x38
++#define SN65DSI83_CHB_HORZ_FRONTPORCH 0x39
++#define SN65DSI83_CHA_VERT_FRONTPORCH 0x3A
++#define SN65DSI83_CHB_VERT_FRONTPORCH 0x3B
++#define SN65DSI83_CHA_ERR             0xE5
++#define SN65DSI83_TEST_PATTERN        0x3C
++#define SN65DSI83_REG_3D              0x3D
++#define SN65DSI83_REG_3E              0x3E
++
++static int sn65dsi83_brg_power_on(struct sn65dsi83_brg *brg)
++{
++    dev_dbg(&brg->client->dev,"%s\n",__func__);
++    gpiod_set_value_cansleep(brg->gpio_enable, 1);
++    /* Wait for 1ms for the internal voltage regulator to stabilize */
++    msleep(1);
++
++    return 0;
++}
++
++static void sn65dsi83_brg_power_off(struct sn65dsi83_brg *brg)
++{
++    dev_dbg(&brg->client->dev,"%s\n",__func__);
++    gpiod_set_value_cansleep(brg->gpio_enable, 0);
++    /*
++     * The EN pin must be held low for at least 10 ms
++     * before being asserted high
++     */
++    msleep(10);
++}
++
++static int sn65dsi83_write(struct i2c_client *client, u8 reg, u8 val)
++{
++    int ret;
++
++    ret = i2c_smbus_write_byte_data(client, reg, val);
++
++    if (ret)
++        dev_err(&client->dev, "failed to write at 0x%02x", reg);
++
++    dev_dbg(&client->dev, "%s: write reg 0x%02x data 0x%02x", __func__, reg, val);
++
++    return ret;
++}
++#define SN65DSI83_WRITE(reg,val) sn65dsi83_write(client, (reg) , (val))
++
++static int sn65dsi83_read(struct i2c_client *client, u8 reg)
++{
++    int ret;
++
++    dev_dbg(&client->dev, "client 0x%p", client);
++    ret = i2c_smbus_read_byte_data(client, reg);
++
++    if (ret < 0) {
++        dev_err(&client->dev, "failed reading at 0x%02x", reg);
++        return ret;
++    }
++
++    dev_dbg(&client->dev, "%s: read reg 0x%02x data 0x%02x", __func__, reg, ret);
++
++    return ret;
++}
++#define SN65DSI83_READ(reg) sn65dsi83_read(client, (reg))
++
++static int sn65dsi83_brg_start_stream(struct sn65dsi83_brg *brg)
++{
++    int regval;
++    struct i2c_client *client = I2C_CLIENT(brg);
++
++    dev_dbg(&client->dev,"%s\n",__func__);
++    /* Set the PLL_EN bit (CSR 0x0D.0) */
++    SN65DSI83_WRITE(SN65DSI83_PLL_EN, 0x1);
++    /* Wait for the PLL_LOCK bit to be set (CSR 0x0A.7) */
++    msleep(200);
++
++    /* Perform SW reset to apply changes */
++    SN65DSI83_WRITE(SN65DSI83_SOFT_RESET, 0x01);
++
++    /* Read CHA Error register */
++    regval = SN65DSI83_READ(SN65DSI83_CHA_ERR);
++    dev_dbg(&client->dev, "CHA (0x%02x) = 0x%02x",
++         SN65DSI83_CHA_ERR, regval);
++
++    return 0;
++}
++
++static void sn65dsi83_brg_stop_stream(struct sn65dsi83_brg *brg)
++{
++    struct i2c_client *client = I2C_CLIENT(brg);
++    dev_dbg(&client->dev,"%s\n",__func__);
++    /* Clear the PLL_EN bit (CSR 0x0D.0) */
++    SN65DSI83_WRITE(SN65DSI83_PLL_EN, 0x00);
++}
++
++static int sn65dsi83_calk_clk_range(int min_regval, int max_regval,
++                unsigned long min_clk, unsigned long inc,
++                unsigned long target_clk)
++{
++    int regval = min_regval;
++    unsigned long clk = min_clk;
++
++    while (regval <= max_regval) {
++        if ((clk <= target_clk) && (target_clk < (clk + inc)))
++            return regval;
++
++        regval++;
++        clk += inc;
++    }
++
++    return -1;
++}
++
++#define ABS(X) ((X) < 0 ? (-1 * (X)) : (X))
++static int sn65dsi83_calk_div(int min_regval, int max_regval, int min_div,
++                int inc, unsigned long source_clk,
++                unsigned long target_clk)
++{
++    int regval = min_regval;
++    int div = min_div;
++    unsigned long curr_delta;
++    unsigned long prev_delta = ABS(DIV_ROUND_UP(source_clk, div) -
++                    target_clk);
++
++    while (regval <= max_regval) {
++        curr_delta = ABS(DIV_ROUND_UP(source_clk, div) - target_clk);
++        if (curr_delta > prev_delta)
++            return --regval;
++
++        regval++;
++        div += inc;
++    }
++
++    return -1;
++}
++
++static int sn65dsi83_brg_configure(struct sn65dsi83_brg *brg)
++{
++    int regval = 0;
++    struct i2c_client *client = I2C_CLIENT(brg);
++    struct videomode *vm = VM(brg);
++
++    u32 dsi_clk = (((PIXCLK * BPP(brg)) / DSI_LANES(brg)) >> 1);
++
++    dev_info(&client->dev, "DSI clock [ %u ] Hz\n",dsi_clk);
++    dev_info(&client->dev, "GeoMetry [ %d x %d ] Hz\n",HACTIVE,VACTIVE);
++
++    /* Reset PLL_EN and SOFT_RESET registers */
++    SN65DSI83_WRITE(SN65DSI83_SOFT_RESET,0x00);
++    SN65DSI83_WRITE(SN65DSI83_PLL_EN,0x00);
++
++    /* LVDS clock setup */
++    if  ((25000000 <= PIXCLK) && (PIXCLK < 37500000))
++        regval = 0;
++    else
++        regval = sn65dsi83_calk_clk_range(0x01, 0x05, 37500000, 25000000,
++                    PIXCLK);
++
++    if (regval < 0) {
++        dev_err(&client->dev, "failed to configure LVDS clock");
++        return -EINVAL;
++    }
++
++    regval = (regval << LVDS_CLK_RANGE_SHIFT);
++    regval |= (1 << HS_CLK_SRC_SHIFT); /* Use DSI clock */
++    SN65DSI83_WRITE(SN65DSI83_CORE_PLL,regval);
++
++    /* DSI clock range */
++    regval = sn65dsi83_calk_clk_range(0x08, 0x64, 40000000, 5000000, dsi_clk);
++    if (regval < 0) {
++        dev_err(&client->dev, "failed to configure DSI clock range\n");
++        return -EINVAL;
++    }
++    SN65DSI83_WRITE(SN65DSI83_CHA_DSI_CLK_RNG,regval);
++
++    /* DSI clock divider */
++    regval = sn65dsi83_calk_div(0x0, 0x18, 1, 1, dsi_clk, PIXCLK);
++    if (regval < 0) {
++        dev_err(&client->dev, "failed to calculate DSI clock divider");
++        return -EINVAL;
++    }
++
++    regval = regval << DSI_CLK_DIV_SHIFT;
++    SN65DSI83_WRITE(SN65DSI83_PLL_DIV,regval);
++
++    /* Configure DSI_LANES  */
++    regval = SN65DSI83_READ(SN65DSI83_DSI_CFG);
++    regval &= ~(3 << CHA_DSI_LANES_SHIFT);
++    regval |= ((4 - DSI_LANES(brg)) << CHA_DSI_LANES_SHIFT);
++    SN65DSI83_WRITE(SN65DSI83_DSI_CFG,regval);
++
++    /* CHA_DSI_DATA_EQ - No Equalization */
++    /* CHA_DSI_CLK_EQ  - No Equalization */
++    SN65DSI83_WRITE(SN65DSI83_DSI_EQ,0x00);
++
++    /* Video formats */
++    regval = 0;
++    if (FLAGS & DISPLAY_FLAGS_HSYNC_LOW)
++        regval |= (1 << HS_NEG_POLARITY_SHIFT);
++
++    if (FLAGS & DISPLAY_FLAGS_VSYNC_LOW)
++        regval |= (1 << VS_NEG_POLARITY_SHIFT);
++
++    if (FLAGS & DISPLAY_FLAGS_DE_LOW)
++        regval |= (1 << DE_NEG_POLARITY_SHIFT);
++
++    if (BPP(brg) == 24)
++        regval |= (1 << CHA_24BPP_MODE_SHIFT);
++
++    if (FORMAT(brg) == 1)
++        regval |= (1 << CHA_24BPP_FMT1_SHIFT);
++
++    regval |= (1 << LVDS_LINK_CFG_SHIFT);
++    SN65DSI83_WRITE(SN65DSI83_LVDS_MODE,regval);
++
++    /* Voltage and pins */
++    SN65DSI83_WRITE(SN65DSI83_LVDS_SIGN,0x00);
++    SN65DSI83_WRITE(SN65DSI83_LVDS_TERM,0x03);
++    SN65DSI83_WRITE(SN65DSI83_LVDS_CM_ADJ,0x00);
++
++    /* Configure sync delay to minimal allowed value */
++    SN65DSI83_WRITE(SN65DSI83_CHA_SYNC_DELAY_LO,0x21);
++    SN65DSI83_WRITE(SN65DSI83_CHA_SYNC_DELAY_HI,0x00);
++
++    /* Geometry */
++    SN65DSI83_WRITE(SN65DSI83_CHA_LINE_LEN_LO,LOW(HACTIVE));
++    SN65DSI83_WRITE(SN65DSI83_CHA_LINE_LEN_HI,HIGH(HACTIVE));
++
++    SN65DSI83_WRITE(SN65DSI83_CHA_VERT_LINES_LO,LOW(VACTIVE));
++    SN65DSI83_WRITE(SN65DSI83_CHA_VERT_LINES_HI,HIGH(VACTIVE));
++
++    SN65DSI83_WRITE(SN65DSI83_CHA_HSYNC_WIDTH_LO,LOW(HPW));
++    SN65DSI83_WRITE(SN65DSI83_CHA_HSYNC_WIDTH_HI,HIGH(HPW));
++
++    SN65DSI83_WRITE(SN65DSI83_CHA_VSYNC_WIDTH_LO,LOW(VPW));
++    SN65DSI83_WRITE(SN65DSI83_CHA_VSYNC_WIDTH_HI,HIGH(VPW));
++
++    SN65DSI83_WRITE(SN65DSI83_CHA_HORZ_BACKPORCH,LOW(HBP));
++    SN65DSI83_WRITE(SN65DSI83_CHA_VERT_BACKPORCH,LOW(VBP));
++
++    SN65DSI83_WRITE(SN65DSI83_CHA_HORZ_FRONTPORCH,LOW(HFP));
++    SN65DSI83_WRITE(SN65DSI83_CHA_VERT_FRONTPORCH,LOW(VFP));
++
++    SN65DSI83_WRITE(SN65DSI83_TEST_PATTERN,0x00);
++    SN65DSI83_WRITE(SN65DSI83_REG_3D,0x00);
++    SN65DSI83_WRITE(SN65DSI83_REG_3E,0x00);
++
++    /* mute channel B */
++    SN65DSI83_WRITE(SN65DSI83_CHB_DSI_CLK_RNG, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_LINE_LEN_LO, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_LINE_LEN_HI, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_VERT_LINES_LO, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_VERT_LINES_HI, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_SYNC_DELAY_LO, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_SYNC_DELAY_HI, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_HSYNC_WIDTH_LO, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_HSYNC_WIDTH_HI, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_VSYNC_WIDTH_LO, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_VSYNC_WIDTH_HI, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_HORZ_BACKPORCH, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_VERT_BACKPORCH, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_HORZ_FRONTPORCH, 0x00);
++    SN65DSI83_WRITE(SN65DSI83_CHB_VERT_FRONTPORCH, 0x00);
++    return 0;
++}
++
++static int sn65dsi83_brg_setup(struct sn65dsi83_brg *brg)
++{
++    struct i2c_client *client = I2C_CLIENT(brg);
++    dev_dbg(&client->dev,"%s\n",__func__);
++    sn65dsi83_brg_power_on(brg);
++    return sn65dsi83_brg_configure(brg);
++}
++
++static int sn65dsi83_brg_reset(struct sn65dsi83_brg *brg)
++{
++    /* Soft Reset reg value at power on should be 0x00 */
++    struct i2c_client *client = I2C_CLIENT(brg);
++    int ret = SN65DSI83_READ(SN65DSI83_SOFT_RESET);
++    dev_dbg(&client->dev,"%s\n",__func__);
++    if (ret != 0x00) {
++        dev_err(&client->dev,"Failed to reset the device");
++        return -ENODEV;
++    }
++    return 0;
++}
++
++static struct sn65dsi83_brg_funcs brg_func = {
++    .power_on = sn65dsi83_brg_power_on,
++    .power_off = sn65dsi83_brg_power_off,
++    .setup = sn65dsi83_brg_setup,
++    .reset = sn65dsi83_brg_reset,
++    .start_stream = sn65dsi83_brg_start_stream,
++    .stop_stream = sn65dsi83_brg_stop_stream,
++};
++
++static struct sn65dsi83_brg brg = {
++    .funcs = &brg_func,
++};
++
++struct sn65dsi83_brg *sn65dsi83_brg_get(void) {
++    return &brg;
++}
+diff --git a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.h b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.h
+new file mode 100644
+--- /dev/null
++++ b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_brg.h
+@@ -0,0 +1,55 @@
++#ifndef _SN65DSI83_BRG_H__
++#define _SN65DSI83_BRG_H__
++
++#include <linux/i2c.h>
++#include <linux/gpio/consumer.h>
++#include <video/videomode.h>
++
++struct sn65dsi83_brg;
++struct sn65dsi83_brg_funcs {
++    int (*power_on)(struct sn65dsi83_brg *sn65dsi8383_brg);
++    void (*power_off)(struct sn65dsi83_brg *sn65dsi8383_brg);
++    int (*reset)(struct sn65dsi83_brg *sn65dsi8383_brg);
++    int (*setup)(struct sn65dsi83_brg *sn65dsi8383_brg);
++    int (*start_stream)(struct sn65dsi83_brg *sn65dsi8383_brg);
++    void (*stop_stream)(struct sn65dsi83_brg *sn65dsi8383_brg);
++};
++
++struct sn65dsi83_brg {
++    struct i2c_client *client;
++    struct gpio_desc *gpio_enable;
++    /* Bridge Panel Parameters */
++    struct videomode vm;
++    u32 width_mm;
++    u32 height_mm;
++    u32 format;
++    u32 bpp;
++
++    u8 num_dsi_lanes;
++    struct sn65dsi83_brg_funcs *funcs;
++};
++struct sn65dsi83_brg *sn65dsi83_brg_get(void);
++
++#define I2C_DEVICE(A) &(A)->client->dev
++#define I2C_CLIENT(A) (A)->client
++#define VM(A) &(A)->vm
++#define BPP(A) (A)->bpp
++#define FORMAT(A) (A)->format
++#define DSI_LANES(A) (A)->num_dsi_lanes
++
++/* The caller has to have a vm structure defined */
++#define PIXCLK vm->pixelclock
++#define HACTIVE vm->hactive
++#define HFP vm->hfront_porch
++#define HBP vm->hback_porch
++#define HPW vm->hsync_len
++#define VACTIVE vm->vactive
++#define VFP vm->vfront_porch
++#define VBP vm->vback_porch
++#define VPW vm->vsync_len
++#define FLAGS vm->flags
++
++#define HIGH(A) (((A) >> 8) & 0xFF)
++#define LOW(A)  ((A)  & 0xFF)
++
++#endif /* _SN65DSI83_BRG_H__ */
+diff --git a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c
+new file mode 100644
+--- /dev/null
++++ b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c
+@@ -0,0 +1,420 @@
++/*
++ * Licensed under the GPL-2.
++ */
++
++#include <linux/device.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_graph.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++//#include <drm/drmP.h>
++#include <linux/delay.h>
++#include <drm/drm_bridge.h>
++#include <drm/drm_print.h>
++#include <drm/drm_atomic.h>
++#include <drm/drm_atomic_helper.h>
++#include <drm/drm_edid.h>
++#include <drm/drm_mipi_dsi.h>
++#include <drm/drm_connector.h>
++#include <drm/drm_crtc_helper.h>
++#include <video/mipi_display.h>
++#include <video/of_display_timing.h>
++#include <video/of_videomode.h>
++#include <video/videomode.h>
++
++#include "sn65dsi83_timing.h"
++#include "sn65dsi83_brg.h"
++
++struct sn65dsi83 {
++    u8 channel_id;
++    enum drm_connector_status status;
++    bool powered;
++    struct drm_display_mode curr_mode;
++    struct drm_bridge bridge;
++    struct drm_connector connector;
++    struct device_node *host_node;
++    struct mipi_dsi_device *dsi;
++    struct sn65dsi83_brg *brg;
++};
++
++static int sn65dsi83_attach_dsi(struct sn65dsi83 *sn65dsi83);
++#define DRM_DEVICE(A) A->dev->dev
++/* Connector funcs */
++static struct sn65dsi83 *connector_to_sn65dsi83(struct drm_connector *connector)
++{
++    return container_of(connector, struct sn65dsi83, connector);
++}
++
++static int sn65dsi83_connector_get_modes(struct drm_connector *connector)
++{
++    struct sn65dsi83 *sn65dsi83 = connector_to_sn65dsi83(connector);
++    struct sn65dsi83_brg *brg = sn65dsi83->brg;
++    struct device *dev = connector->dev->dev;
++    struct drm_display_mode *mode;
++    u32 bus_format = MEDIA_BUS_FMT_RGB888_1X24;
++    u32 *bus_flags = &connector->display_info.bus_flags;
++    int ret;
++
++    dev_dbg(dev, "%s\n",__func__);
++    mode = drm_mode_create(connector->dev);
++    if (!mode) {
++        DRM_DEV_ERROR(dev, "Failed to create display mode!\n");
++        return 0;
++    }
++
++    drm_display_mode_from_videomode(&brg->vm, mode);
++    mode->width_mm = brg->width_mm;
++    mode->height_mm = brg->height_mm;
++    mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
++
++    drm_mode_probed_add(connector, mode);
++    //drm_mode_connector_list_update(connector);
++	drm_connector_list_update(connector);
++
++    connector->display_info.width_mm = mode->width_mm;
++    connector->display_info.height_mm = mode->height_mm;
++
++    if (brg->vm.flags & DISPLAY_FLAGS_DE_HIGH)
++        *bus_flags |= DRM_BUS_FLAG_DE_HIGH;
++    if (brg->vm.flags & DISPLAY_FLAGS_DE_LOW)
++        *bus_flags |= DRM_BUS_FLAG_DE_LOW;
++    if (brg->vm.flags & DISPLAY_FLAGS_PIXDATA_NEGEDGE)
++		*bus_flags |= DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE;
++        //*bus_flags |= DRM_BUS_FLAG_PIXDATA_NEGEDGE;
++    if (brg->vm.flags & DISPLAY_FLAGS_PIXDATA_POSEDGE)
++		*bus_flags |= DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE;
++        //*bus_flags |= DRM_BUS_FLAG_PIXDATA_POSEDGE;
++
++    ret = drm_display_info_set_bus_formats(&connector->display_info,
++                           &bus_format, 1);
++    if (ret)
++        return ret;
++
++    return 1;
++}
++
++static enum drm_mode_status
++sn65dsi83_connector_mode_valid(struct drm_connector *connector,
++                 struct drm_display_mode *mode)
++{
++    struct sn65dsi83 *sn65dsi83 = connector_to_sn65dsi83(connector);
++    struct device *dev = connector->dev->dev;
++	if (mode->clock > ( sn65dsi83->brg->vm.pixelclock / 1000 ))
++		return MODE_CLOCK_HIGH;
++
++    dev_info(dev, "%s: mode: %d*%d@%d is valid\n",__func__,
++            mode->hdisplay,mode->vdisplay,mode->clock);
++    return MODE_OK;
++}
++
++static struct drm_connector_helper_funcs sn65dsi83_connector_helper_funcs = {
++    .get_modes = sn65dsi83_connector_get_modes,
++    .mode_valid = sn65dsi83_connector_mode_valid,
++};
++
++static enum drm_connector_status
++sn65dsi83_connector_detect(struct drm_connector *connector, bool force)
++{
++    struct sn65dsi83 *sn65dsi83 = connector_to_sn65dsi83(connector);
++    struct device *dev = connector->dev->dev;
++    enum drm_connector_status status;
++    dev_dbg(dev, "%s\n",__func__);
++
++    status = connector_status_connected;
++    sn65dsi83->status = status;
++    return status;
++}
++
++int drm_helper_probe_single_connector_modes(struct drm_connector *connector,
++                        uint32_t maxX, uint32_t maxY);
++
++static struct drm_connector_funcs sn65dsi83_connector_funcs = {
++    .dpms = drm_helper_connector_dpms,
++    .fill_modes = drm_helper_probe_single_connector_modes,
++    .detect = sn65dsi83_connector_detect,
++    .destroy = drm_connector_cleanup,
++    .reset = drm_atomic_helper_connector_reset,
++    .atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
++    .atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
++};
++
++/* Bridge funcs */
++static struct sn65dsi83 *bridge_to_sn65dsi83(struct drm_bridge *bridge)
++{
++    return container_of(bridge, struct sn65dsi83, bridge);
++}
++
++static void sn65dsi83_bridge_enable(struct drm_bridge *bridge)
++{
++    struct sn65dsi83 *sn65dsi83 = bridge_to_sn65dsi83(bridge);
++    dev_dbg(DRM_DEVICE(bridge),"%s\n",__func__);
++    sn65dsi83->brg->funcs->setup(sn65dsi83->brg);
++    sn65dsi83->brg->funcs->start_stream(sn65dsi83->brg);
++}
++
++static void sn65dsi83_bridge_disable(struct drm_bridge *bridge)
++{
++    struct sn65dsi83 *sn65dsi83 = bridge_to_sn65dsi83(bridge);
++    dev_dbg(DRM_DEVICE(bridge),"%s\n",__func__);
++    sn65dsi83->brg->funcs->stop_stream(sn65dsi83->brg);
++    sn65dsi83->brg->funcs->power_off(sn65dsi83->brg);
++}
++
++static void sn65dsi83_bridge_mode_set(struct drm_bridge *bridge,
++                   const struct drm_display_mode *mode,
++                   const struct drm_display_mode *adj_mode)
++{
++    struct sn65dsi83 *sn65dsi83 = bridge_to_sn65dsi83(bridge);
++    dev_dbg(DRM_DEVICE(bridge), "%s: mode: %d*%d@%d\n",__func__,
++            mode->hdisplay,mode->vdisplay,mode->clock);
++    drm_mode_copy(&sn65dsi83->curr_mode, adj_mode);
++}
++
++static int sn65dsi83_bridge_attach(struct drm_bridge *bridge,enum drm_bridge_attach_flags flags)
++{
++    struct sn65dsi83 *sn65dsi83 = bridge_to_sn65dsi83(bridge);
++    int ret;
++
++    dev_dbg(DRM_DEVICE(bridge),"%s\n",__func__);
++    if (!bridge->encoder) {
++        DRM_ERROR("Parent encoder object not found");
++        return -ENODEV;
++    }
++
++    sn65dsi83->connector.polled = DRM_CONNECTOR_POLL_CONNECT;
++
++    ret = drm_connector_init(bridge->dev, &sn65dsi83->connector,
++                 &sn65dsi83_connector_funcs,
++                 DRM_MODE_CONNECTOR_DSI);
++    if (ret) {
++        DRM_ERROR("Failed to initialize connector with drm\n");
++        return ret;
++    }
++    drm_connector_helper_add(&sn65dsi83->connector,
++                 &sn65dsi83_connector_helper_funcs);
++    //drm_mode_connector_attach_encoder(&sn65dsi83->connector, bridge->encoder);
++	drm_connector_attach_encoder(&sn65dsi83->connector, bridge->encoder);
++
++    ret = sn65dsi83_attach_dsi(sn65dsi83);
++
++    return ret;
++}
++
++static struct drm_bridge_funcs sn65dsi83_bridge_funcs = {
++    .enable = sn65dsi83_bridge_enable,
++    .disable = sn65dsi83_bridge_disable,
++    .mode_set = sn65dsi83_bridge_mode_set,
++    .attach = sn65dsi83_bridge_attach,
++};
++
++static int sn65dsi83_parse_dt(struct device_node *np,
++    struct sn65dsi83 *sn65dsi83)
++{
++    struct device *dev = &sn65dsi83->brg->client->dev;
++    u32 num_lanes = 2, bpp = 24, format = 2, width = 149, height = 93;
++    struct device_node *endpoint;
++
++    endpoint = of_graph_get_next_endpoint(np, NULL);
++    if (!endpoint)
++        return -ENODEV;
++
++    sn65dsi83->host_node = of_graph_get_remote_port_parent(endpoint);
++    if (!sn65dsi83->host_node) {
++        of_node_put(endpoint);
++        return -ENODEV;
++    }
++
++    of_property_read_u32(np, "ti,dsi-lanes", &num_lanes);
++    of_property_read_u32(np, "ti,lvds-format", &format);
++    of_property_read_u32(np, "ti,lvds-bpp", &bpp);
++    of_property_read_u32(np, "ti,width-mm", &width);
++    of_property_read_u32(np, "ti,height-mm", &height);
++
++    if (num_lanes < 1 || num_lanes > 4) {
++        dev_err(dev, "Invalid dsi-lanes: %d\n", num_lanes);
++        return -EINVAL;
++    }
++    sn65dsi83->brg->num_dsi_lanes = num_lanes;
++
++    sn65dsi83->brg->gpio_enable = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
++    if (IS_ERR(sn65dsi83->brg->gpio_enable)) {
++        dev_err(dev, "failed to parse enable gpio");
++        return PTR_ERR(sn65dsi83->brg->gpio_enable);
++    }
++
++    sn65dsi83->brg->format = format;
++    sn65dsi83->brg->bpp = bpp;
++
++    sn65dsi83->brg->width_mm = width;
++    sn65dsi83->brg->height_mm = height;
++
++    /* Read default timing if there is not device tree node for */
++    if ((of_get_videomode(np, &sn65dsi83->brg->vm, 0)) < 0)
++        videomode_from_timing(&panel_default_timing, &sn65dsi83->brg->vm);
++
++    of_node_put(endpoint);
++    of_node_put(sn65dsi83->host_node);
++
++    return 0;
++}
++
++static int sn65dsi83_probe(struct i2c_client *i2c,
++    const struct i2c_device_id *id)
++{
++    struct sn65dsi83 *sn65dsi83;
++    struct device *dev = &i2c->dev;
++    int ret;
++
++    dev_dbg(dev,"%s\n",__func__);
++    if (!dev->of_node)
++        return -EINVAL;
++
++    sn65dsi83 = devm_kzalloc(dev, sizeof(*sn65dsi83), GFP_KERNEL);
++    if (!sn65dsi83)
++        return -ENOMEM;
++
++    /* Initialize it before DT parser */
++    sn65dsi83->brg = sn65dsi83_brg_get();
++    sn65dsi83->brg->client = i2c;
++
++    sn65dsi83->powered = false;
++    sn65dsi83->status = connector_status_disconnected;
++
++    i2c_set_clientdata(i2c, sn65dsi83);
++
++    ret = sn65dsi83_parse_dt(dev->of_node, sn65dsi83);
++    if (ret)
++        return ret;
++
++    sn65dsi83->brg->funcs->power_off(sn65dsi83->brg);
++    sn65dsi83->brg->funcs->power_on(sn65dsi83->brg);
++    ret  = sn65dsi83->brg->funcs->reset(sn65dsi83->brg);
++    if (ret != 0x00) {
++        dev_err(dev, "Failed to reset the device");
++        return -ENODEV;
++    }
++    sn65dsi83->brg->funcs->power_off(sn65dsi83->brg);
++
++
++    sn65dsi83->bridge.funcs = &sn65dsi83_bridge_funcs;
++    sn65dsi83->bridge.of_node = dev->of_node;
++
++    drm_bridge_add(&sn65dsi83->bridge);
++    if (ret) {
++        dev_err(dev, "failed to add sn65dsi83 bridge\n");
++    }
++
++    return ret;
++}
++
++static int sn65dsi83_attach_dsi(struct sn65dsi83 *sn65dsi83)
++{
++    struct device *dev = &sn65dsi83->brg->client->dev;
++    struct mipi_dsi_host *host;
++    struct mipi_dsi_device *dsi;
++    int ret = 0;
++    const struct mipi_dsi_device_info info = { .type = "sn65dsi83",
++                           .channel = 0,
++                           .node = NULL,
++                         };
++
++    dev_dbg(dev, "%s\n",__func__);
++    host = of_find_mipi_dsi_host_by_node(sn65dsi83->host_node);
++    if (!host) {
++        dev_err(dev, "failed to find dsi host\n");
++        return -EPROBE_DEFER;
++    }
++
++    dsi = mipi_dsi_device_register_full(host, &info);
++    if (IS_ERR(dsi)) {
++        dev_err(dev, "failed to create dsi device\n");
++        ret = PTR_ERR(dsi);
++        return -ENODEV;
++    }
++
++    sn65dsi83->dsi = dsi;
++
++    dsi->lanes = sn65dsi83->brg->num_dsi_lanes;
++    dsi->format = MIPI_DSI_FMT_RGB888;
++    dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST;
++
++    ret = mipi_dsi_attach(dsi);
++    if (ret < 0) {
++        dev_err(dev, "failed to attach dsi to host\n");
++        mipi_dsi_device_unregister(dsi);
++    }
++
++    return ret;
++}
++
++static void sn65dsi83_detach_dsi(struct sn65dsi83 *sn65dsi83)
++{
++    struct device *dev = &sn65dsi83->brg->client->dev;
++    dev_dbg(dev, "%s\n",__func__);
++    mipi_dsi_detach(sn65dsi83->dsi);
++    mipi_dsi_device_unregister(sn65dsi83->dsi);
++}
++
++static int sn65dsi83_remove(struct i2c_client *i2c)
++{
++    struct sn65dsi83 *sn65dsi83 = i2c_get_clientdata(i2c);
++    struct device *dev = &sn65dsi83->brg->client->dev;
++    dev_dbg(dev, "%s\n",__func__);
++
++    sn65dsi83_detach_dsi(sn65dsi83);
++    drm_bridge_remove(&sn65dsi83->bridge);
++
++    return 0;
++}
++
++static const struct i2c_device_id sn65dsi83_i2c_ids[] = {
++    { "sn65dsi83", 0 },
++    { }
++};
++MODULE_DEVICE_TABLE(i2c, sn65dsi83_i2c_ids);
++
++static const struct of_device_id sn65dsi83_of_ids[] = {
++    { .compatible = "ti,sn65dsi83" },
++    { }
++};
++MODULE_DEVICE_TABLE(of, sn65dsi83_of_ids);
++
++static struct mipi_dsi_driver sn65dsi83_dsi_driver = {
++    .driver.name = "sn65dsi83",
++};
++
++static struct i2c_driver sn65dsi83_driver = {
++    .driver = {
++        .name = "sn65dsi83",
++        .of_match_table = sn65dsi83_of_ids,
++    },
++    .id_table = sn65dsi83_i2c_ids,
++    .probe = sn65dsi83_probe,
++    .remove = sn65dsi83_remove,
++};
++
++static int __init sn65dsi83_init(void)
++{
++    if (IS_ENABLED(CONFIG_DRM_MIPI_DSI))
++        mipi_dsi_driver_register(&sn65dsi83_dsi_driver);
++
++    return i2c_add_driver(&sn65dsi83_driver);
++}
++module_init(sn65dsi83_init);
++
++static void __exit sn65dsi83_exit(void)
++{
++    i2c_del_driver(&sn65dsi83_driver);
++
++    if (IS_ENABLED(CONFIG_DRM_MIPI_DSI))
++        mipi_dsi_driver_unregister(&sn65dsi83_dsi_driver);
++}
++module_exit(sn65dsi83_exit);
++
++MODULE_AUTHOR("CompuLab <compulab@compula.co.il>");
++MODULE_DESCRIPTION("SN65DSI bridge driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_timing.h b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_timing.h
+new file mode 100644
+--- /dev/null
++++ b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_timing.h
+@@ -0,0 +1,33 @@
++#ifndef __SN65DSI83_TIMING_H__
++#define __SN65DSI83_TIMING_H__
++
++/* Default Video Parameters */
++#define PIXCLK_INIT 62500000
++
++#define HACTIVE_INIT 1280
++#define HPW_INIT 2
++#define HBP_INIT 6
++#define HFP_INIT 5
++
++#define VACTIVE_INIT 800
++#define VPW_INIT 1
++#define VBP_INIT 2
++#define VFP_INIT 3
++
++static const struct display_timing panel_default_timing = {
++    .pixelclock = { PIXCLK_INIT, PIXCLK_INIT, PIXCLK_INIT },
++    .hactive = { HACTIVE_INIT, HACTIVE_INIT, HACTIVE_INIT },
++    .hfront_porch = { HFP_INIT, HFP_INIT, HFP_INIT },
++    .hsync_len = { HPW_INIT, HPW_INIT, HPW_INIT },
++    .hback_porch = { HBP_INIT, HBP_INIT, HBP_INIT },
++    .vactive = { VACTIVE_INIT, VACTIVE_INIT, VACTIVE_INIT },
++    .vfront_porch = { VFP_INIT, VFP_INIT, VFP_INIT },
++    .vsync_len = { VPW_INIT, VPW_INIT, VPW_INIT },
++    .vback_porch = { VBP_INIT, VBP_INIT, VBP_INIT },
++    .flags = DISPLAY_FLAGS_HSYNC_LOW |
++         DISPLAY_FLAGS_VSYNC_LOW |
++         DISPLAY_FLAGS_DE_LOW |
++         DISPLAY_FLAGS_PIXDATA_NEGEDGE,
++};
++
++#endif /* __SN65DSI83_TIMING_H__ */
+diff --git a/drivers/input/touchscreen/tsc200x-core.c b/drivers/input/touchscreen/tsc200x-core.c
+--- a/drivers/input/touchscreen/tsc200x-core.c
++++ b/drivers/input/touchscreen/tsc200x-core.c
+@@ -102,6 +102,7 @@ struct tsc200x {
+ 
+ 	bool			pen_down;
+ 
++	struct touchscreen_properties prop;
+ 	struct regulator	*vio;
+ 
+ 	struct gpio_desc	*reset_gpio;
+@@ -116,6 +117,7 @@ static void tsc200x_update_pen_state(struct tsc200x *ts,
+ 		input_report_abs(ts->idev, ABS_X, x);
+ 		input_report_abs(ts->idev, ABS_Y, y);
+ 		input_report_abs(ts->idev, ABS_PRESSURE, pressure);
++		touchscreen_report_pos(ts->idev, &ts->prop, x, y, false);
+ 		if (!ts->pen_down) {
+ 			input_report_key(ts->idev, BTN_TOUCH, !!pressure);
+ 			ts->pen_down = true;
+@@ -533,7 +535,8 @@ int tsc200x_probe(struct device *dev, int irq, const struct input_id *tsc_id,
+ 	input_set_abs_params(input_dev, ABS_PRESSURE,
+ 			     0, MAX_12BIT, TSC200X_DEF_P_FUZZ, 0);
+ 
+-	touchscreen_parse_properties(input_dev, false, NULL);
++	//touchscreen_parse_properties(input_dev, false, NULL);
++	touchscreen_parse_properties(input_dev, false, &ts->prop);
+ 
+ 	/* Ensure the touchscreen is off */
+ 	tsc200x_stop_scan(ts);
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -1462,18 +1462,13 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
+ 	regmap_update_bits(wm8960->regmap, WM8960_ROUT2, 0x100, 0x100);
+ 
+ 	/* ADCLRC pin configured as GPIO. */
+-	regmap_update_bits(wm8960->regmap, WM8960_IFACE2, 1 << 6,
+-			   wm8960->pdata.gpio_cfg[0] << 6);
+-	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL4, 0xF << 4,
+-			   wm8960->pdata.gpio_cfg[1] << 4);
++	regmap_update_bits(wm8960->regmap, WM8960_IFACE2, 1 << 6, wm8960->pdata.gpio_cfg[0] << 6);
++	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL4, 0xF << 4, wm8960->pdata.gpio_cfg[1] << 4);
+ 
+ 	/* Enable headphone jack detect */
+-	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL4, 3 << 2,
+-			   wm8960->pdata.hp_cfg[0] << 2);
+-	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL2, 3 << 5,
+-			   wm8960->pdata.hp_cfg[1] << 5);
+-	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL1, 3,
+-			   wm8960->pdata.hp_cfg[2]);
++	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL4, 3 << 2, wm8960->pdata.hp_cfg[0] << 2);
++	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL2, 3 << 5, wm8960->pdata.hp_cfg[1] << 5);
++	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL1, 3, wm8960->pdata.hp_cfg[2]);
+ 
+ 	i2c_set_clientdata(i2c, wm8960);
+ 
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -354,6 +354,19 @@ config SND_SOC_IMX_HDMI
+ 	  Say Y if you want to add support for SoC audio on an i.MX board with
+ 	  IMX HDMI.
+ 
++config SND_SOC_IMX_WM8960
++	tristate "SoC Audio support for i.MX boards with wm8960"
++	depends on OF && I2C
++	select SND_SOC_WM8960
++	select SND_SOC_IMX_PCM_DMA
++	select SND_SOC_FSL_SAI
++	select SND_SOC_FSL_UTILS
++	select SND_KCTL_JACK
++	help
++	  SoC Audio support for i.MX boards with WM8960
++	  Say Y if you want to add support for SoC audio on an i.MX board with
++	  a wm8960 codec.
++
+ config SND_SOC_IMX_RPMSG
+ 	tristate "SoC Audio support for i.MX boards with rpmsg"
+ 	depends on RPMSG
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -72,6 +72,7 @@ obj-$(CONFIG_SND_SOC_IMX_HDMI_DMA) += imx-hdmi-dma.o hdmi_pcm.o
+ snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
+ snd-soc-imx-es8328-objs := imx-es8328.o
+ snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
++snd-soc-imx-wm8960-objs := imx-wm8960.o
+ snd-soc-imx-spdif-objs := imx-spdif.o
+ snd-soc-imx-audmix-objs := imx-audmix.o
+ snd-soc-imx-hdmi-objs := imx-hdmi.o
+@@ -84,6 +85,7 @@ snd-soc-imx6qdl-hdmi-objs := imx6qdl-hdmi.o
+ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
+ obj-$(CONFIG_SND_SOC_IMX_ES8328) += snd-soc-imx-es8328.o
+ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
++obj-$(CONFIG_SND_SOC_IMX_WM8960) += snd-soc-imx-wm8960.o
+ obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
+ obj-$(CONFIG_SND_SOC_IMX_AUDMIX) += snd-soc-imx-audmix.o
+ obj-$(CONFIG_SND_SOC_IMX_HDMI) += snd-soc-imx-hdmi.o
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -1166,7 +1166,7 @@ static const struct of_device_id fsl_asoc_card_dt_ids[] = {
+ 	{ .compatible = "fsl,imx-audio-tlv320aic32x4", },
+ 	{ .compatible = "fsl,imx-audio-sgtl5000", },
+ 	{ .compatible = "fsl,imx-audio-wm8962", },
+-	{ .compatible = "fsl,imx-audio-wm8960", },
++//	{ .compatible = "fsl,imx-audio-wm8960", },
+ 	{ .compatible = "fsl,imx-audio-mqs", },
+ 	{ .compatible = "fsl,imx-audio-wm8524", },
+ 	{ .compatible = "fsl,imx-audio-si476x", },
+diff --git a/sound/soc/fsl/imx-wm8960.c b/sound/soc/fsl/imx-wm8960.c
+new file mode 100644
+--- /dev/null
++++ b/sound/soc/fsl/imx-wm8960.c
+@@ -0,0 +1,740 @@
++/*
++ * Copyright (C) 2015-2016 Freescale Semiconductor, Inc.
++ *
++ * The code contained herein is licensed under the GNU General Public
++ * License. You may obtain a copy of the GNU General Public License
++ * Version 2 or later at the following locations:
++ *
++ * http://www.opensource.org/licenses/gpl-license.html
++ * http://www.gnu.org/copyleft/gpl.html
++ */
++
++#include <linux/module.h>
++#include <linux/of_platform.h>
++#include <linux/i2c.h>
++#include <linux/of_gpio.h>
++#include <linux/slab.h>
++#include <linux/gpio.h>
++#include <linux/clk.h>
++#include <sound/soc.h>
++#include <sound/jack.h>
++#include <sound/control.h>
++#include <sound/pcm_params.h>
++#include <sound/soc-dapm.h>
++#include <linux/pinctrl/consumer.h>
++#include <linux/mfd/syscon.h>
++#include "../codecs/wm8960.h"
++#include "fsl_sai.h"
++
++struct imx_wm8960_data {
++	enum of_gpio_flags hp_active_low;
++	enum of_gpio_flags mic_active_low;
++	bool is_headset_jack;
++	struct platform_device *pdev;
++	struct platform_device *asrc_pdev;
++	struct snd_soc_card card;
++	struct clk *codec_clk;
++	unsigned int clk_frequency;
++	bool is_codec_master;
++	bool is_codec_rpmsg;
++	bool is_playback_only;
++	bool is_capture_only;
++	bool is_stream_in_use[2];
++	bool is_stream_opened[2];
++	struct regmap *gpr;
++	unsigned int hp_det[2];
++	u32 asrc_rate;
++	u32 asrc_format;
++	struct snd_soc_jack imx_hp_jack;
++	struct snd_soc_jack_pin imx_hp_jack_pin;
++	struct snd_soc_jack_gpio imx_hp_jack_gpio;
++	struct snd_soc_jack imx_mic_jack;
++	struct snd_soc_jack_pin imx_mic_jack_pin;
++	struct snd_soc_jack_gpio imx_mic_jack_gpio;
++	struct snd_soc_dai_link imx_wm8960_dai[3];
++};
++
++static int hp_jack_status_check(void *data)
++{
++	struct imx_wm8960_data *imx_data = (struct imx_wm8960_data *)data;
++	struct snd_soc_jack *jack = &imx_data->imx_hp_jack;
++	struct snd_soc_dapm_context *dapm = &jack->card->dapm;
++	int hp_status, ret;
++
++	hp_status = gpio_get_value_cansleep(imx_data->imx_hp_jack_gpio.gpio);
++
++	if (hp_status != imx_data->hp_active_low) {
++		snd_soc_dapm_disable_pin(dapm, "Ext Spk");
++		if (imx_data->is_headset_jack) {
++			snd_soc_dapm_enable_pin(dapm, "Mic Jack");
++			snd_soc_dapm_disable_pin(dapm, "Main MIC");
++		}
++		ret = imx_data->imx_hp_jack_gpio.report;
++	} else {
++		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
++		if (imx_data->is_headset_jack) {
++			snd_soc_dapm_disable_pin(dapm, "Mic Jack");
++			snd_soc_dapm_enable_pin(dapm, "Main MIC");
++		}
++		ret = 0;
++	}
++
++	return ret;
++}
++
++static int mic_jack_status_check(void *data)
++{
++	struct imx_wm8960_data *imx_data = (struct imx_wm8960_data *)data;
++	struct snd_soc_jack *jack = &imx_data->imx_mic_jack;
++	struct snd_soc_dapm_context *dapm = &jack->card->dapm;
++	int mic_status, ret;
++
++	mic_status = gpio_get_value_cansleep(imx_data->imx_mic_jack_gpio.gpio);
++
++	if (mic_status != imx_data->mic_active_low) {
++		snd_soc_dapm_disable_pin(dapm, "Main MIC");
++		ret = imx_data->imx_mic_jack_gpio.report;
++	} else {
++		snd_soc_dapm_enable_pin(dapm, "Main MIC");
++		ret = 0;
++	}
++
++	return ret;
++}
++
++static const struct snd_soc_dapm_widget imx_wm8960_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_MIC("Main MIC", NULL),
++};
++
++static int imx_wm8960_jack_init(struct snd_soc_card *card,
++		struct snd_soc_jack *jack, struct snd_soc_jack_pin *pin,
++		struct snd_soc_jack_gpio *gpio)
++{
++	int ret;
++
++	ret = snd_soc_card_jack_new(card, pin->pin, pin->mask, jack, pin, 1);
++	if (ret) {
++		return ret;
++	}
++
++	ret = snd_soc_jack_add_gpios(jack, 1, gpio);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static ssize_t headphone_show(struct device *dev,
++			      struct device_attribute *attr, char *buf)
++{
++	struct snd_soc_card *card = dev_get_drvdata(dev);
++	struct imx_wm8960_data *data = snd_soc_card_get_drvdata(card);
++	int hp_status;
++
++	/* Check if headphone is plugged in */
++	hp_status = gpio_get_value_cansleep(data->imx_hp_jack_gpio.gpio);
++
++	if (hp_status != data->hp_active_low)
++		strcpy(buf, "Headphone\n");
++	else
++		strcpy(buf, "Speaker\n");
++
++	return strlen(buf);
++}
++
++static ssize_t micphone_show(struct device *dev,
++			     struct device_attribute *attr, char *buf)
++{
++	struct snd_soc_card *card = dev_get_drvdata(dev);
++	struct imx_wm8960_data *data = snd_soc_card_get_drvdata(card);
++	int mic_status;
++
++	/* Check if headphone is plugged in */
++	mic_status = gpio_get_value_cansleep(data->imx_mic_jack_gpio.gpio);
++
++	if (mic_status != data->mic_active_low)
++		strcpy(buf, "Mic Jack\n");
++	else
++		strcpy(buf, "Main MIC\n");
++
++	return strlen(buf);
++}
++static DEVICE_ATTR_RO(headphone);
++static DEVICE_ATTR_RO(micphone);
++
++static int imx_hifi_hw_params(struct snd_pcm_substream *substream,
++				     struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	//struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	//struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_card *card = rtd->card;
++	struct imx_wm8960_data *data = snd_soc_card_get_drvdata(card);
++	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	struct device *dev = card->dev;
++	unsigned int sample_rate = params_rate(params);
++	unsigned int pll_out;
++	unsigned int fmt;
++	int ret = 0;
++
++	data->is_stream_in_use[tx] = true;
++
++	if (data->is_stream_in_use[!tx])
++		return 0;
++
++	if (data->is_codec_master)
++		fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBM_CFM;
++	else
++		fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS;
++
++	/* set cpu DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
++	if (ret) {
++		dev_err(dev, "failed to set cpu dai fmt: %d\n", ret);
++		return ret;
++	}
++	/* set codec DAI configuration */
++	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
++	if (ret) {
++		dev_err(dev, "failed to set codec dai fmt: %d\n", ret);
++		return ret;
++	}
++
++	if (!data->is_codec_master) {
++		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0, 2, params_width(params));
++		if (ret) {
++			dev_err(dev, "failed to set cpu dai tdm slot: %d\n", ret);
++			return ret;
++		}
++
++		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, 0, SND_SOC_CLOCK_OUT);
++		if (ret) {
++			dev_err(dev, "failed to set cpu sysclk: %d\n", ret);
++			return ret;
++		}
++		return 0;
++	} else {
++		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, 0, SND_SOC_CLOCK_IN);
++		if (ret) {
++			dev_err(dev, "failed to set cpu sysclk: %d\n", ret);
++			return ret;
++		}
++	}
++
++	data->clk_frequency = clk_get_rate(data->codec_clk);
++
++	/* Set codec pll */
++	if (params_width(params) == 24)
++		pll_out = sample_rate * 768;
++	else
++		pll_out = sample_rate * 512;
++
++	ret = snd_soc_dai_set_pll(codec_dai, WM8960_SYSCLK_AUTO, 0, data->clk_frequency, pll_out);
++	if (ret)
++		return ret;
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8960_SYSCLK_AUTO, pll_out, 0);
++
++	return ret;
++}
++
++static int imx_hifi_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	//struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct snd_soc_card *card = rtd->card;
++	struct imx_wm8960_data *data = snd_soc_card_get_drvdata(card);
++	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	struct device *dev = card->dev;
++	int ret;
++
++	data->is_stream_in_use[tx] = false;
++
++	if (data->is_codec_master && !data->is_stream_in_use[!tx]) {
++		ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF);
++		if (ret)
++			dev_warn(dev, "failed to set codec dai fmt: %d\n", ret);
++	}
++
++	return 0;
++}
++
++static u32 imx_wm8960_rates[] = { 8000, 16000, 32000, 48000 };
++static struct snd_pcm_hw_constraint_list imx_wm8960_rate_constraints = {
++	.count = ARRAY_SIZE(imx_wm8960_rates),
++	.list = imx_wm8960_rates,
++};
++
++static int imx_hifi_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	//struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_card *card = rtd->card;
++	struct imx_wm8960_data *data = snd_soc_card_get_drvdata(card);
++	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
++	int ret = 0;
++
++	/*
++	data->is_stream_opened[tx] = true;
++	if (data->is_stream_opened[tx] != sai->is_stream_opened[tx] ||
++	    data->is_stream_opened[!tx] != sai->is_stream_opened[!tx]) {
++		data->is_stream_opened[tx] = false;
++		return -EBUSY;
++	}
++	*/
++
++	if (!data->is_codec_master) {
++		ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
++				SNDRV_PCM_HW_PARAM_RATE, &imx_wm8960_rate_constraints);
++		if (ret)
++			return ret;
++	}
++
++	return ret;
++}
++
++static void imx_hifi_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_card *card = rtd->card;
++	struct imx_wm8960_data *data = snd_soc_card_get_drvdata(card);
++	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++
++	data->is_stream_opened[tx] = false;
++}
++
++static struct snd_soc_ops imx_hifi_ops = {
++	.hw_params = imx_hifi_hw_params,
++	.hw_free = imx_hifi_hw_free,
++	.startup   = imx_hifi_startup,
++	.shutdown  = imx_hifi_shutdown,
++};
++
++static int imx_wm8960_late_probe(struct snd_soc_card *card)
++{
++	struct snd_soc_pcm_runtime *rtd = list_first_entry(
++		&card->rtd_list, struct snd_soc_pcm_runtime, list);
++	//struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct imx_wm8960_data *data = snd_soc_card_get_drvdata(card);
++
++	/*
++	 * codec ADCLRC pin configured as GPIO, DACLRC pin is used as a frame
++	 * clock for ADCs and DACs
++	 */
++	snd_soc_component_update_bits(codec_dai->component, WM8960_IFACE2, 1<<6, 1<<6);
++
++	/* GPIO1 used as headphone detect output */
++	//snd_soc_component_update_bits(codec_dai->component, WM8960_ADDCTL4, 7<<4, 3<<4);
++
++	/* Enable headphone jack detect */
++	//snd_soc_component_update_bits(codec_dai->component, WM8960_ADDCTL2, 1<<6, 1<<6);
++	//snd_soc_component_update_bits(codec_dai->component, WM8960_ADDCTL2, 1<<5, data->hp_det[1]<<5);
++	//snd_soc_component_update_bits(codec_dai->component, WM8960_ADDCTL4, 3<<2, data->hp_det[0]<<2);
++	//snd_soc_component_update_bits(codec_dai->component, WM8960_ADDCTL1, 3, 3);
++
++	return 0;
++}
++
++static int be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++			struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_card *card = rtd->card;
++	struct imx_wm8960_data *data = snd_soc_card_get_drvdata(card);
++	struct snd_interval *rate;
++	struct snd_mask *mask;
++
++	if (!data->asrc_pdev)
++		return -EINVAL;
++
++	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	rate->max = rate->min = data->asrc_rate;
++
++	mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++	snd_mask_none(mask);
++	snd_mask_set(mask, data->asrc_format);
++
++	return 0;
++}
++
++SND_SOC_DAILINK_DEFS(hifi,
++	DAILINK_COMP_ARRAY(COMP_EMPTY()),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8960-hifi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++
++SND_SOC_DAILINK_DEFS(hifi_fe,
++	DAILINK_COMP_ARRAY(COMP_EMPTY()),
++	DAILINK_COMP_ARRAY(COMP_DUMMY()),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++
++SND_SOC_DAILINK_DEFS(hifi_be,
++	DAILINK_COMP_ARRAY(COMP_EMPTY()),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8960-hifi")),
++	DAILINK_COMP_ARRAY(COMP_DUMMY()));
++
++static int of_parse_gpr(struct platform_device *pdev,
++			struct imx_wm8960_data *data)
++{
++	int ret;
++	struct of_phandle_args args;
++	return 0;
++
++	if (of_device_is_compatible(pdev->dev.of_node,
++				    "fsl,imx7d-evk-wm8960"))
++		return 0;
++
++	ret = of_parse_phandle_with_fixed_args(pdev->dev.of_node,
++					       "gpr", 3, 0, &args);
++	if (ret) {
++		dev_warn(&pdev->dev, "failed to get gpr property\n");
++		return ret;
++	}
++
++	data->gpr = syscon_node_to_regmap(args.np);
++	if (IS_ERR(data->gpr)) {
++		ret = PTR_ERR(data->gpr);
++		dev_err(&pdev->dev, "failed to get gpr regmap\n");
++		return ret;
++	}
++
++	regmap_update_bits(data->gpr, args.args[0], args.args[1],
++			   args.args[2]);
++
++	return 0;
++}
++
++static int imx_wm8960_probe(struct platform_device *pdev)
++{
++	struct device_node *cpu_np = NULL, *codec_np = NULL;
++	struct platform_device *cpu_pdev;
++	struct imx_wm8960_data *data;
++	struct platform_device *asrc_pdev = NULL;
++	struct device_node *asrc_np;
++	u32 width;
++	int ret;
++
++	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data) {
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++	data->pdev = pdev;
++	data->imx_hp_jack_pin.pin = "Headphone Jack";
++	data->imx_hp_jack_pin.mask = SND_JACK_HEADPHONE;
++
++	data->imx_hp_jack_gpio.name = "headphone detect";
++	data->imx_hp_jack_gpio.report = SND_JACK_HEADPHONE;
++	data->imx_hp_jack_gpio.debounce_time = 250;
++	data->imx_hp_jack_gpio.invert = 0;
++
++	data->imx_mic_jack_pin.pin = "Mic Jack";
++	data->imx_mic_jack_pin.mask = SND_JACK_MICROPHONE;
++
++	data->imx_mic_jack_gpio.name = "mic detect";
++	data->imx_mic_jack_gpio.report = SND_JACK_MICROPHONE;
++	data->imx_mic_jack_gpio.debounce_time = 250;
++	data->imx_mic_jack_gpio.invert = 0;
++
++	if (of_property_read_bool(pdev->dev.of_node, "codec-rpmsg"))
++		data->is_codec_rpmsg = true;
++
++	cpu_np = of_parse_phandle(pdev->dev.of_node, "cpu-dai", 0);
++	if (!cpu_np) {
++		dev_err(&pdev->dev, "cpu dai phandle missing or invalid\n");
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	cpu_pdev = of_find_device_by_node(cpu_np);
++	if (!cpu_pdev) {
++		dev_err(&pdev->dev, "failed to find SAI platform device\n");
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
++	if (!codec_np) {
++		dev_err(&pdev->dev, "phandle missing or invalid\n");
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	if (data->is_codec_rpmsg) {
++		struct platform_device *codec_dev;
++
++		codec_dev = of_find_device_by_node(codec_np);
++		if (!codec_dev || !codec_dev->dev.driver) {
++			dev_err(&pdev->dev, "failed to find codec platform device\n");
++			ret = -EINVAL;
++			goto fail;
++		}
++
++		data->codec_clk = devm_clk_get(&codec_dev->dev, "mclk");
++		if (IS_ERR(data->codec_clk)) {
++			ret = PTR_ERR(data->codec_clk);
++			dev_err(&pdev->dev, "failed to get codec clk: %d\n", ret);
++			goto fail;
++		}
++	} else {
++		struct i2c_client *codec_dev;
++
++		codec_dev = of_find_i2c_device_by_node(codec_np);
++		if (!codec_dev || !codec_dev->dev.driver) {
++			dev_dbg(&pdev->dev, "failed to find codec platform device\n");
++			ret = -EPROBE_DEFER;
++			goto fail;
++		}
++
++		data->codec_clk = devm_clk_get(&codec_dev->dev, "mclk");
++		if (IS_ERR(data->codec_clk)) {
++			ret = PTR_ERR(data->codec_clk);
++			dev_err(&pdev->dev, "failed to get codec clk: %d\n", ret);
++			goto fail;
++		}
++	}
++
++	if (of_property_read_bool(pdev->dev.of_node, "codec-master"))
++		data->is_codec_master = true;
++
++	if (of_property_read_bool(pdev->dev.of_node, "capture-only"))
++		data->is_capture_only = true;
++
++	if (of_property_read_bool(pdev->dev.of_node, "playback-only"))
++		data->is_playback_only = true;
++
++	if (data->is_capture_only && data->is_playback_only) {
++		ret = -EINVAL;
++		dev_err(&pdev->dev, "failed for playback only and capture only\n");
++		goto fail;
++	}
++
++	data->imx_wm8960_dai[0].name = "HiFi";
++	data->imx_wm8960_dai[0].stream_name = "HiFi";
++	data->imx_wm8960_dai[0].ops = &imx_hifi_ops;
++	data->imx_wm8960_dai[0].cpus = hifi_cpus;
++	data->imx_wm8960_dai[0].num_cpus = ARRAY_SIZE(hifi_cpus);
++	data->imx_wm8960_dai[0].codecs = hifi_codecs;
++	data->imx_wm8960_dai[0].num_codecs = ARRAY_SIZE(hifi_codecs);
++	data->imx_wm8960_dai[0].platforms = hifi_platforms;
++	data->imx_wm8960_dai[0].num_platforms = ARRAY_SIZE(hifi_platforms);
++
++	data->imx_wm8960_dai[1].name = "HiFi-ASRC-FE";
++	data->imx_wm8960_dai[1].stream_name = "HiFi-ASRC-FE";
++	data->imx_wm8960_dai[1].dynamic = 1;
++	data->imx_wm8960_dai[1].ignore_pmdown_time = 1;
++	data->imx_wm8960_dai[1].dpcm_playback = 1;
++	data->imx_wm8960_dai[1].dpcm_capture = 1;
++	data->imx_wm8960_dai[1].dpcm_merged_chan = 1;
++	data->imx_wm8960_dai[1].cpus = hifi_fe_cpus;
++	data->imx_wm8960_dai[1].num_cpus = ARRAY_SIZE(hifi_fe_cpus);
++	data->imx_wm8960_dai[1].codecs = hifi_fe_codecs;
++	data->imx_wm8960_dai[1].num_codecs = ARRAY_SIZE(hifi_fe_codecs);
++	data->imx_wm8960_dai[1].platforms = hifi_fe_platforms;
++	data->imx_wm8960_dai[1].num_platforms = ARRAY_SIZE(hifi_fe_platforms);
++
++	data->imx_wm8960_dai[2].name = "HiFi-ASRC-BE";
++	data->imx_wm8960_dai[2].stream_name = "HiFi-ASRC-BE";
++	data->imx_wm8960_dai[2].no_pcm = 1;
++	data->imx_wm8960_dai[2].ignore_pmdown_time = 1;
++	data->imx_wm8960_dai[2].dpcm_playback = 1;
++	data->imx_wm8960_dai[2].dpcm_capture = 1;
++	data->imx_wm8960_dai[2].ops = &imx_hifi_ops;
++	data->imx_wm8960_dai[2].be_hw_params_fixup = be_hw_params_fixup;
++	data->imx_wm8960_dai[2].cpus = hifi_be_cpus;
++	data->imx_wm8960_dai[2].num_cpus = ARRAY_SIZE(hifi_be_cpus);
++	data->imx_wm8960_dai[2].codecs = hifi_be_codecs;
++	data->imx_wm8960_dai[2].num_codecs = ARRAY_SIZE(hifi_be_codecs);
++	data->imx_wm8960_dai[2].platforms = hifi_be_platforms;
++	data->imx_wm8960_dai[2].num_platforms = ARRAY_SIZE(hifi_be_platforms);
++
++	if (data->is_capture_only) {
++		data->imx_wm8960_dai[0].capture_only = true;
++		data->imx_wm8960_dai[1].capture_only = true;
++		data->imx_wm8960_dai[2].capture_only = true;
++	}
++
++	if (data->is_playback_only) {
++		data->imx_wm8960_dai[0].playback_only = true;
++		data->imx_wm8960_dai[1].playback_only = true;
++		data->imx_wm8960_dai[2].playback_only = true;
++	}
++
++	ret = of_parse_gpr(pdev, data);
++	if (ret)
++		goto fail;
++
++	of_property_read_u32_array(pdev->dev.of_node, "hp-det", data->hp_det, 2);
++
++	asrc_np = of_parse_phandle(pdev->dev.of_node, "asrc-controller", 0);
++	if (asrc_np) {
++		asrc_pdev = of_find_device_by_node(asrc_np);
++		data->asrc_pdev = asrc_pdev;
++	}
++
++	data->card.dai_link = data->imx_wm8960_dai;
++
++	if (data->is_codec_rpmsg) {
++		data->imx_wm8960_dai[0].codecs->name     = "rpmsg-audio-codec-wm8960";
++		data->imx_wm8960_dai[0].codecs->dai_name = "rpmsg-wm8960-hifi";
++	} else
++		data->imx_wm8960_dai[0].codecs->of_node	= codec_np;
++
++	data->imx_wm8960_dai[0].cpus->dai_name = dev_name(&cpu_pdev->dev);
++	data->imx_wm8960_dai[0].platforms->of_node = cpu_np;
++
++	if (!asrc_pdev) {
++		data->card.num_links = 1;
++	} else {
++		data->imx_wm8960_dai[1].cpus->of_node = asrc_np;
++		data->imx_wm8960_dai[1].platforms->of_node = asrc_np;
++		if (data->is_codec_rpmsg) {
++			data->imx_wm8960_dai[2].codecs->name     = "rpmsg-audio-codec-wm8960";
++			data->imx_wm8960_dai[2].codecs->dai_name = "rpmsg-wm8960-hifi";
++		} else
++			data->imx_wm8960_dai[2].codecs->of_node	= codec_np;
++		data->imx_wm8960_dai[2].cpus->dai_name = dev_name(&cpu_pdev->dev);
++		data->card.num_links = 3;
++
++		ret = of_property_read_u32(asrc_np, "fsl,asrc-rate",
++				&data->asrc_rate);
++		if (ret) {
++			dev_err(&pdev->dev, "failed to get output rate\n");
++			ret = -EINVAL;
++			goto fail;
++		}
++
++		ret = of_property_read_u32(asrc_np, "fsl,asrc-width", &width);
++		if (ret) {
++			dev_err(&pdev->dev, "failed to get output rate\n");
++			ret = -EINVAL;
++			goto fail;
++		}
++
++		if (width == 24)
++			data->asrc_format = SNDRV_PCM_FORMAT_S24_LE;
++		else
++			data->asrc_format = SNDRV_PCM_FORMAT_S16_LE;
++	}
++
++	data->card.dev = &pdev->dev;
++	data->card.owner = THIS_MODULE;
++	ret = snd_soc_of_parse_card_name(&data->card, "model");
++	if (ret)
++		goto fail;
++	data->card.dapm_widgets = imx_wm8960_dapm_widgets;
++	data->card.num_dapm_widgets = ARRAY_SIZE(imx_wm8960_dapm_widgets);
++
++	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
++	if (ret)
++		goto fail;
++
++	data->card.late_probe = imx_wm8960_late_probe;
++
++	snd_soc_card_set_drvdata(&data->card, data);
++	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++		goto fail;
++	}
++
++	data->imx_hp_jack_gpio.gpio = of_get_named_gpio_flags(pdev->dev.of_node,
++							      "hp-det-gpios", 0,
++							      &data->hp_active_low);
++
++	data->imx_mic_jack_gpio.gpio = of_get_named_gpio_flags(pdev->dev.of_node,
++							       "mic-det-gpios", 0,
++							       &data->mic_active_low);
++
++	if (gpio_is_valid(data->imx_hp_jack_gpio.gpio) &&
++	    gpio_is_valid(data->imx_mic_jack_gpio.gpio) &&
++	    data->imx_hp_jack_gpio.gpio == data->imx_mic_jack_gpio.gpio)
++		data->is_headset_jack = true;
++
++	if (gpio_is_valid(data->imx_hp_jack_gpio.gpio)) {
++		if (data->is_headset_jack) {
++			data->imx_hp_jack_pin.mask |= SND_JACK_MICROPHONE;
++			data->imx_hp_jack_gpio.report |= SND_JACK_MICROPHONE;
++		}
++
++		data->imx_hp_jack_gpio.jack_status_check = hp_jack_status_check;
++		data->imx_hp_jack_gpio.data = data;
++		ret = imx_wm8960_jack_init(&data->card, &data->imx_hp_jack,
++					   &data->imx_hp_jack_pin, &data->imx_hp_jack_gpio);
++		if (ret) {
++			dev_warn(&pdev->dev, "hp jack init failed (%d)\n", ret);
++			goto out;
++		}
++
++		ret = device_create_file(&pdev->dev, &dev_attr_headphone);
++		if (ret)
++			dev_warn(&pdev->dev, "create hp attr failed (%d)\n", ret);
++	}
++
++	if (gpio_is_valid(data->imx_mic_jack_gpio.gpio)) {
++		if (!data->is_headset_jack) {
++			data->imx_mic_jack_gpio.jack_status_check = mic_jack_status_check;
++			data->imx_mic_jack_gpio.data = data;
++			ret = imx_wm8960_jack_init(&data->card, &data->imx_mic_jack,
++						   &data->imx_mic_jack_pin, &data->imx_mic_jack_gpio);
++			if (ret) {
++				dev_warn(&pdev->dev, "mic jack init failed (%d)\n", ret);
++				goto out;
++			}
++		}
++
++		ret = device_create_file(&pdev->dev, &dev_attr_micphone);
++		if (ret)
++			dev_warn(&pdev->dev, "create mic attr failed (%d)\n", ret);
++	}
++
++out:
++	ret = 0;
++fail:
++	if (cpu_np)
++		of_node_put(cpu_np);
++	if (codec_np)
++		of_node_put(codec_np);
++
++	return ret;
++}
++
++static int imx_wm8960_remove(struct platform_device *pdev)
++{
++	device_remove_file(&pdev->dev, &dev_attr_micphone);
++	device_remove_file(&pdev->dev, &dev_attr_headphone);
++
++	return 0;
++}
++
++static const struct of_device_id imx_wm8960_dt_ids[] = {
++	{ .compatible = "fsl,imx-audio-wm8960", },
++	{ .compatible = "fsl,imx7d-evk-wm8960"  },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, imx_wm8960_dt_ids);
++
++static struct platform_driver imx_wm8960_driver = {
++	.driver = {
++		.name = "imx-wm8960",
++		.pm = &snd_soc_pm_ops,
++		.of_match_table = imx_wm8960_dt_ids,
++	},
++	.probe = imx_wm8960_probe,
++	.remove = imx_wm8960_remove,
++};
++module_platform_driver(imx_wm8960_driver);
++
++MODULE_AUTHOR("Freescale Semiconductor, Inc.");
++MODULE_DESCRIPTION("Freescale i.MX WM8960 ASoC machine driver");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:imx-wm8960");
+-- 
+2.25.1
+

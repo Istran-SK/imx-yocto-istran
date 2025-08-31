@@ -154,50 +154,24 @@ else
     cp $BUILD_DIR/conf/local.conf.org $BUILD_DIR/conf/local.conf
 fi
 
+PREFERRED_PROVIDER_virtual/libgles3 = "mesa"
+
 echo >> conf/local.conf
 echo "# Switch to Debian packaging and include package-management in the image" >> conf/local.conf
 echo "PACKAGE_CLASSES = \"package_deb\"" >> conf/local.conf
-echo "EXTRA_IMAGE_FEATURES += \"package-management\"" >> conf/local.conf
-echo "EXTRA_IMAGE_FEATURES += \"ssh-server-openssh\"" >> conf/local.conf
-echo "PREFERRED_VERSION_dotnet-core = \"6.0.0\"" >> conf/local.conf
-echo "DISTRO_FEATURES:append = \"opengl x11\"" >> conf/local.conf
-
-echo "IMAGE_INSTALL:append = \" \\" >> conf/local.conf
-echo "expand-rootfs \\" >> conf/local.conf
-echo "linux-firmware \\" >> conf/local.conf
-echo "touch-files \\" >> conf/local.conf
-echo "bash \\" >> conf/local.conf
-echo "jq \\" >> conf/local.conf
-echo "init \\" >> conf/local.conf
-echo "psplash \\" >> conf/local.conf
-echo "libgdiplus \\" >> conf/local.conf
-echo "matchbox-keyboard \\" >> conf/local.conf
-echo "gnupg \\" >> conf/local.conf
-echo "touch-files \\" >> conf/local.conf
-echo "python3 \\" >> conf/local.conf
-echo "python3-pip \\" >> conf/local.conf
-echo "python3-setuptools \\" >> conf/local.conf
-echo "python3-wheel \\" >> conf/local.conf
-echo "python3-dev \\" >> conf/local.conf
-echo "libffi-dev \\" >> conf/local.conf
-echo "openssl-dev \\" >> conf/local.conf
-echo "make \\" >> conf/local.conf
-echo "gcc \\" >> conf/local.conf
-echo "python3-pip \\" >> conf/local.conf
-echo "qtbase \\" >> conf/local.conf
-echo "qttools \\" >> conf/local.conf
-echo "qtdeclarative \\" >> conf/local.conf
-echo "qtvirtualkeyboard \\" >> conf/local.conf
-echo "qtwayland \\" >> conf/local.conf
-echo "qtsvg \\" >> conf/local.conf
-echo "qtquick3d \\" >> conf/local.conf
-echo "udev \\" >> conf/local.conf
-echo "udev-extraconf \\" >> conf/local.conf
-echo "ntp \\" >> conf/local.conf
-echo "qtbase qtbase-tools qtbase-plugins \\" >> conf/local.conf
-echo "\"" >> conf/local.conf
+echo "DISTRO_FEATURES:append = \"opengl wayland pam\"" >> conf/local.conf
+echo "DISTRO_FEATURES:remove = \"x11\"" >> conf/local.conf
+echo "PREFERRED_PROVIDER_virtual/egl = \"imx-gpu-viv\"" >> conf/local.conf
+echo "PREFERRED_PROVIDER_virtual/libgles2 = \"imx-gpu-viv\"" >> conf/local.conf
 
 echo "INHERIT += \"rm_work\"" >> conf/local.conf
+
+echo "INHERIT:remove = \"ccache\"" >> conf/local.conf
+
+echo "CCACHE_DIR = \"${TOPDIR}/ccache\"" >> conf/local.conf
+
+echo "BB_NUMBER_THREADS = \"8\"" >> conf/local.conf
+echo "PARALLEL_MAKE = \"-j 8\"" >> conf/local.conf
 
 if [ ! -e $BUILD_DIR/conf/bblayers.conf.org ]; then
     cp $BUILD_DIR/conf/bblayers.conf $BUILD_DIR/conf/bblayers.conf.org
