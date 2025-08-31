@@ -159,9 +159,6 @@ echo "# Switch to Debian packaging and include package-management in the image" 
 echo "PACKAGE_CLASSES = \"package_deb\"" >> conf/local.conf
 echo "EXTRA_IMAGE_FEATURES += \"package-management\"" >> conf/local.conf
 echo "EXTRA_IMAGE_FEATURES += \"ssh-server-openssh\"" >> conf/local.conf
-echo "CORE_IMAGE_EXTRA_INSTALL += \"dotnet-core\"" >> conf/local.conf
-echo "CORE_IMAGE_EXTRA_INSTALL += \"aspnet-core\"" >> conf/local.conf
-echo "CORE_IMAGE_EXTRA_INSTALL += \"vsdbg\"" >> conf/local.conf
 echo "PREFERRED_VERSION_dotnet-core = \"6.0.0\"" >> conf/local.conf
 echo "DISTRO_FEATURES:append = \"opengl x11\"" >> conf/local.conf
 
@@ -171,21 +168,32 @@ echo "linux-firmware \\" >> conf/local.conf
 echo "touch-files \\" >> conf/local.conf
 echo "bash \\" >> conf/local.conf
 echo "jq \\" >> conf/local.conf
-echo "safia \\" >> conf/local.conf
 echo "init \\" >> conf/local.conf
 echo "psplash \\" >> conf/local.conf
-echo "influx \\" >> conf/local.conf
-echo "influxdb \\" >> conf/local.conf
 echo "libgdiplus \\" >> conf/local.conf
 echo "matchbox-keyboard \\" >> conf/local.conf
-echo "telegraf \\" >> conf/local.conf
 echo "gnupg \\" >> conf/local.conf
 echo "touch-files \\" >> conf/local.conf
-echo "fontconfig \\" >> conf/local.conf
+echo "python3 \\" >> conf/local.conf
+echo "python3-pip \\" >> conf/local.conf
+echo "python3-setuptools \\" >> conf/local.conf
+echo "python3-wheel \\" >> conf/local.conf
+echo "python3-dev \\" >> conf/local.conf
+echo "libffi-dev \\" >> conf/local.conf
+echo "openssl-dev \\" >> conf/local.conf
+echo "make \\" >> conf/local.conf
+echo "gcc \\" >> conf/local.conf
+echo "python3-pip \\" >> conf/local.conf
+echo "qtbase \\" >> conf/local.conf
+echo "qttools \\" >> conf/local.conf
+echo "qtdeclarative \\" >> conf/local.conf
+echo "qtvirtualkeyboard \\" >> conf/local.conf
+echo "qtwayland \\" >> conf/local.conf
+echo "qtsvg \\" >> conf/local.conf
+echo "qtquick3d \\" >> conf/local.conf
 echo "udev \\" >> conf/local.conf
 echo "udev-extraconf \\" >> conf/local.conf
 echo "ntp \\" >> conf/local.conf
-echo "gnuplot \\" >> conf/local.conf
 echo "qtbase qtbase-tools qtbase-plugins \\" >> conf/local.conf
 echo "\"" >> conf/local.conf
 
@@ -209,15 +217,13 @@ hook_in_layer meta-imx/meta-v2x
 
 echo "" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-clang\"" >> $BUILD_DIR/conf/bblayers.conf
-echo "BBLAYERS += \"\${BSPDIR}/sources/meta-dotnet-core\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-gnome\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-networking\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-filesystems\"" >> $BUILD_DIR/conf/bblayers.conf
-
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-istran\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-splash\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-mono\"" >> $BUILD_DIR/conf/bblayers.conf
-echo "BBLAYERS += \"\${BSPDIR}/sources/meta-qt5\"" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-qt6\"" >> $BUILD_DIR/conf/bblayers.conf
 
 # Enable docker for mx8 machines
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-virtualization\"" >> conf/bblayers.conf

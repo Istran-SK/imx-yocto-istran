@@ -26,19 +26,15 @@
 [submodule "sources/poky"]
 	path = sources/poky
 	url = git@github.com:yoctoproject/poky.git
-[submodule "sources/meta-dotnet-core"]
-	path = sources/meta-dotnet-core
-	url = git@github.com:RDunkley/meta-dotnet-core.git
-	branch = kirkstone
 [submodule "sources/meta-virtualization"]
 	path = sources/meta-virtualization
 	url = git://git.yoctoproject.org/meta-virtualization
 [submodule "sources/meta-mono"]
 	path = sources/meta-mono
 	url = git@github.com:DynamicDevices/meta-mono.git
-[submodule "sources/meta-istran/recipes-safia/safia/files/SaFIAreact"]
-	path = sources/meta-istran/recipes-safia/safia/files/SaFIAreact
-	url = git@github.com:Istran-SK/SaFIAreact.git
 [submodule "sources/meta-qt5"]
 	path = sources/meta-qt5
 	url = https://github.com/meta-qt5/meta-qt5.git
+[submodule "sources/meta-qt6"]
+	path = sources/meta-qt6
+	url = git://code.qt.io/yocto/meta-qt6.git
