@@ -154,21 +154,24 @@ else
     cp $BUILD_DIR/conf/local.conf.org $BUILD_DIR/conf/local.conf
 fi
 
-PREFERRED_PROVIDER_virtual/libgles3 = "mesa"
-
 echo >> conf/local.conf
 echo "# Switch to Debian packaging and include package-management in the image" >> conf/local.conf
 echo "PACKAGE_CLASSES = \"package_deb\"" >> conf/local.conf
-echo "DISTRO_FEATURES:append = \"opengl wayland pam\"" >> conf/local.conf
-echo "DISTRO_FEATURES:remove = \"x11\"" >> conf/local.conf
-echo "PREFERRED_PROVIDER_virtual/egl = \"imx-gpu-viv\"" >> conf/local.conf
+echo "PACKAGECONFIG:append:pn-qtbase:class-target = \" wayland libinput xkbcommon eglfs kms\"" >> conf/local.conf
+echo 'DISTRO_FEATURES:append = " opengl x11 wayland pam"' >> conf/local.conf
+echo 'PREFERRED_PROVIDER_virtual/egl = "imx-gpu-viv"' >> conf/local.conf
 echo "PREFERRED_PROVIDER_virtual/libgles2 = \"imx-gpu-viv\"" >> conf/local.conf
+
+
+echo 'PREFERRED_VERSION_python3-pydantic = "2.%"' >> conf/local.conf
+echo 'PREFERRED_VERSION_python3-pydantic-core = "2.%"' >> conf/local.conf
+echo 'PREFERRED_VERSION_python3-fastapi = "0.116.%"' >> conf/local.conf
+echo 'PREFERRED_VERSION_python3-httpx = "0.28.%"' >> conf/local.conf
+echo 'PREFERRED_VERSION_python3-anyio = "4.%"' >> conf/local.conf
 
 echo "INHERIT += \"rm_work\"" >> conf/local.conf
 
 echo "INHERIT:remove = \"ccache\"" >> conf/local.conf
-
-echo "CCACHE_DIR = \"${TOPDIR}/ccache\"" >> conf/local.conf
 
 echo "BB_NUMBER_THREADS = \"8\"" >> conf/local.conf
 echo "PARALLEL_MAKE = \"-j 8\"" >> conf/local.conf

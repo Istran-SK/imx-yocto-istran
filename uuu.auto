@@ -16,7 +16,7 @@ SDPV: jump
 FB: ucmd setenv fastboot_dev mmc
 FB: ucmd setenv mmcdev 2
 FB: ucmd mmc dev 2 0
-FB: flash -raw2sparse all deploy/imx-image-core-dm421.wic
+FB: flash -raw2sparse all deploy/imx-image-istran-dm421.wic
 FB: flash bootloader deploy/imx-boot-dm421-sd.bin-flash_evk
 FB: ucmd if env exists emmc_ack; then ; else setenv emmc_ack 0; fi;
 FB: ucmd mmc partconf 2 ${emmc_ack} 1 0
