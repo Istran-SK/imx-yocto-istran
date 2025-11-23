@@ -170,8 +170,8 @@ echo 'INHERIT += "rm_work"' >> conf/local.conf
 echo 'INHERIT:remove = "ccache"' >> conf/local.conf
 
 # Parallelism
-echo 'BB_NUMBER_THREADS = "8"' >> conf/local.conf
-echo 'PARALLEL_MAKE = "-j 8"' >> conf/local.conf
+echo 'BB_NUMBER_THREADS = "12"' >> conf/local.conf
+echo 'PARALLEL_MAKE = "-j 16"' >> conf/local.conf
 #
 # === END CUSTOM local.conf ADDITIONS ===
 #
