@@ -1,6 +1,6 @@
-build
+build*
 .repo
-downloads
+downloads*
 
 *.new
 
