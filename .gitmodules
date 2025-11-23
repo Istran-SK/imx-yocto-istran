@@ -35,3 +35,9 @@
 [submodule "sources/meta-qt6"]
 	path = sources/meta-qt6
 	url = git://code.qt.io/yocto/meta-qt6.git
+[submodule "sources/meta-security"]
+	path = sources/meta-security
+	url = git://git.yoctoproject.org/meta-security
+[submodule "sources/meta-arm"]
+	path = sources/meta-arm
+	url = git://git.yoctoproject.org/meta-arm

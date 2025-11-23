@@ -191,9 +191,6 @@ hook_in_layer meta-imx/meta-imx-bsp
 hook_in_layer meta-imx/meta-imx-sdk
 hook_in_layer meta-imx/meta-imx-ml
 hook_in_layer meta-imx/meta-imx-v2x
-hook_in_layer meta-nxp-demo-experience
-hook_in_layer meta-nxp-connectivity/meta-nxp-matter-baseline
-hook_in_layer meta-nxp-connectivity/meta-nxp-openthread
 
 echo "" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-arm/meta-arm\"" >> $BUILD_DIR/conf/bblayers.conf
@@ -210,7 +207,6 @@ echo "BBLAYERS += \"\${BSPDIR}/sources/meta-virtualization\"" >> $BUILD_DIR/conf
 # === YOUR EXTRA LAYERS ===
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-istran\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-splash\"" >> $BUILD_DIR/conf/bblayers.conf
-echo "BBLAYERS += \"\${BSPDIR}/sources/meta-mono\"" >> $BUILD_DIR/conf/bblayers.conf
 # === END EXTRA LAYERS ===
 
 echo BSPDIR=$BSPDIR
