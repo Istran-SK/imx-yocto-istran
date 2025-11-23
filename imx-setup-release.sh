@@ -3,7 +3,7 @@
 # i.MX Yocto Project Build Environment Setup Script
 #
 # Copyright (C) 2011-2016 Freescale Semiconductor
-# Copyright 2017 NXP
+# Copyright 2017, 2019-2024 NXP
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,27 +23,34 @@
 
 CWD=`pwd`
 PROGNAME="setup-environment"
+
 exit_message ()
 {
    echo "To return to this build environment later please run:"
    echo "    source setup-environment <build_dir>"
-
 }
 
 usage()
 {
     echo -e "\nUsage: source imx-setup-release.sh
     Optional parameters: [-b build-dir] [-h]"
-echo "
+    echo "
     * [-b build-dir]: Build directory, if unspecified script uses 'build' as output directory
     * [-h]: help
 "
-}
+    echo -e "\n
+    Supported machines: `echo; ls sources/meta-freescale/conf/machine/*.conf \
+                              sources/meta-imx/meta-imx-bsp/conf/machine/*.conf \
+        |egrep "/(imx6|imx7|imx8|imx9).*conf$" | sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
 
+
+    Supported NXP's i.MX distros: `echo; ls sources/meta-imx/meta-imx-sdk/conf/distro/fsl-*.conf \
+        | sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+"
+}
 
 clean_up()
 {
-
     unset CWD BUILD_DIR FSLDISTRO
     unset fsl_setup_help fsl_setup_error fsl_setup_flag
     unset usage clean_up
@@ -79,7 +86,6 @@ elif test $fsl_setup_error; then
     clean_up && return 1
 fi
 
-
 if [ -z "$DISTRO" ]; then
     if [ -z "$FSLDISTRO" ]; then
         FSLDISTRO='fsl-imx-xwayland'
@@ -98,44 +104,28 @@ if [ -z "$MACHINE" ]; then
 fi
 
 case $MACHINE in
-imx8*)
-    case $DISTRO in
+imx6*|imx7*)
+    : ok
+    ;;
+*)
+    case $FSLDISTRO in
     *wayland)
         : ok
         ;;
     *)
-        echo -e "\n ERROR - Only Wayland distros are supported for i.MX 8 or i.MX 8M"
+        echo -e "\n ERROR - Only Wayland distros are supported for $MACHINE"
         echo -e "\n"
         return 1
         ;;
     esac
     ;;
-*)
-    : ok
-    ;;
 esac
 
-# Cleanup previous meta-freescale/EULA overrides
-cd $CWD/sources/meta-freescale
-if [ -h EULA ]; then
-    echo Cleanup meta-freescale/EULA...
-    git checkout -- EULA
-fi
-if [ ! -f classes/fsl-eula-unpack.bbclass ]; then
-    echo Cleanup meta-freescale/classes/fsl-eula-unpack.bbclass...
-    git checkout -- classes/fsl-eula-unpack.bbclass
-fi
-cd -
-
-# Override the click-through in meta-freescale/EULA
-FSL_EULA_FILE=$CWD/sources/meta-imx/EULA.txt
+# New-style EULA handling for scarthgap meta-imx
+FSL_EULA_FILE=$CWD/sources/meta-imx/LICENSE.txt
 
 # Set up the basic yocto environment
-if [ -z "$DISTRO" ]; then
-   DISTRO=$FSLDISTRO MACHINE=$MACHINE . ./$PROGNAME $BUILD_DIR
-else
-   MACHINE=$MACHINE . ./$PROGNAME $BUILD_DIR
-fi
+DISTRO=$FSLDISTRO MACHINE=$MACHINE . ./$PROGNAME $BUILD_DIR
 
 # Point to the current directory since the last command changed the directory to $BUILD_DIR
 BUILD_DIR=.
@@ -154,68 +144,78 @@ else
     cp $BUILD_DIR/conf/local.conf.org $BUILD_DIR/conf/local.conf
 fi
 
+#
+# === YOUR CUSTOM local.conf ADDITIONS ===
+#
 echo >> conf/local.conf
 echo "# Switch to Debian packaging and include package-management in the image" >> conf/local.conf
 echo "PACKAGE_CLASSES = \"package_deb\"" >> conf/local.conf
+echo "EXTRA_IMAGE_FEATURES += \"package-management\"" >> conf/local.conf
+
+# Qt / graphics / features
 echo "PACKAGECONFIG:append:pn-qtbase:class-target = \" wayland libinput xkbcommon eglfs kms\"" >> conf/local.conf
 echo 'DISTRO_FEATURES:append = " opengl x11 wayland pam"' >> conf/local.conf
 echo 'PREFERRED_PROVIDER_virtual/egl = "imx-gpu-viv"' >> conf/local.conf
-echo "PREFERRED_PROVIDER_virtual/libgles2 = \"imx-gpu-viv\"" >> conf/local.conf
+echo 'PREFERRED_PROVIDER_virtual/libgles2 = "imx-gpu-viv"' >> conf/local.conf
 
-
+# Python versions for your stack
 echo 'PREFERRED_VERSION_python3-pydantic = "2.%"' >> conf/local.conf
 echo 'PREFERRED_VERSION_python3-pydantic-core = "2.%"' >> conf/local.conf
 echo 'PREFERRED_VERSION_python3-fastapi = "0.116.%"' >> conf/local.conf
 echo 'PREFERRED_VERSION_python3-httpx = "0.28.%"' >> conf/local.conf
 echo 'PREFERRED_VERSION_python3-anyio = "4.%"' >> conf/local.conf
 
-echo "INHERIT += \"rm_work\"" >> conf/local.conf
+# rm_work and no ccache
+echo 'INHERIT += "rm_work"' >> conf/local.conf
+echo 'INHERIT:remove = "ccache"' >> conf/local.conf
 
-echo "INHERIT:remove = \"ccache\"" >> conf/local.conf
+# Parallelism
+echo 'BB_NUMBER_THREADS = "8"' >> conf/local.conf
+echo 'PARALLEL_MAKE = "-j 8"' >> conf/local.conf
+#
+# === END CUSTOM local.conf ADDITIONS ===
+#
 
-echo "BB_NUMBER_THREADS = \"8\"" >> conf/local.conf
-echo "PARALLEL_MAKE = \"-j 8\"" >> conf/local.conf
-
+# Backup / restore bblayers.conf similar to local.conf
 if [ ! -e $BUILD_DIR/conf/bblayers.conf.org ]; then
     cp $BUILD_DIR/conf/bblayers.conf $BUILD_DIR/conf/bblayers.conf.org
 else
     cp $BUILD_DIR/conf/bblayers.conf.org $BUILD_DIR/conf/bblayers.conf
 fi
 
-
-META_FSL_BSP_RELEASE="${CWD}/sources/meta-imx/meta-bsp"
+META_FSL_BSP_RELEASE="${CWD}/sources/meta-imx/meta-imx-bsp"
 
 echo "" >> $BUILD_DIR/conf/bblayers.conf
 echo "# i.MX Yocto Project Release layers" >> $BUILD_DIR/conf/bblayers.conf
-hook_in_layer meta-imx/meta-bsp
-hook_in_layer meta-imx/meta-sdk
-hook_in_layer meta-imx/meta-ml
-hook_in_layer meta-imx/meta-v2x
+hook_in_layer meta-imx/meta-imx-bsp
+hook_in_layer meta-imx/meta-imx-sdk
+hook_in_layer meta-imx/meta-imx-ml
+hook_in_layer meta-imx/meta-imx-v2x
+hook_in_layer meta-nxp-demo-experience
+hook_in_layer meta-nxp-connectivity/meta-nxp-matter-baseline
+hook_in_layer meta-nxp-connectivity/meta-nxp-openthread
 
 echo "" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-arm/meta-arm\"" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-arm/meta-arm-toolchain\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-clang\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-gnome\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-networking\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-openembedded/meta-filesystems\"" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-qt6\"" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-security/meta-parsec\"" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-security/meta-tpm\"" >> $BUILD_DIR/conf/bblayers.conf
+echo "BBLAYERS += \"\${BSPDIR}/sources/meta-virtualization\"" >> $BUILD_DIR/conf/bblayers.conf
+
+# === YOUR EXTRA LAYERS ===
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-istran\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-splash\"" >> $BUILD_DIR/conf/bblayers.conf
 echo "BBLAYERS += \"\${BSPDIR}/sources/meta-mono\"" >> $BUILD_DIR/conf/bblayers.conf
-echo "BBLAYERS += \"\${BSPDIR}/sources/meta-qt6\"" >> $BUILD_DIR/conf/bblayers.conf
-
-# Enable docker for mx8 machines
-echo "BBLAYERS += \"\${BSPDIR}/sources/meta-virtualization\"" >> conf/bblayers.conf
+# === END EXTRA LAYERS ===
 
 echo BSPDIR=$BSPDIR
 echo BUILD_DIR=$BUILD_DIR
 
-# Support integrating community meta-freescale instead of meta-fsl-arm
-if [ -d ../sources/meta-freescale ]; then
-    echo meta-freescale directory found
-    # Change settings according to environment
-    sed -e "s,meta-fsl-arm\s,meta-freescale ,g" -i conf/bblayers.conf
-    sed -e "s,\$.BSPDIR./sources/meta-fsl-arm-extra\s,,g" -i conf/bblayers.conf
-fi
-
-cd  $BUILD_DIR
+cd $BUILD_DIR
 clean_up
 unset FSLDISTRO
