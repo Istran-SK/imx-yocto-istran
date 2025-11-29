@@ -1,0 +1,51 @@
+From 5f38688a57aa0d46d9ab6a82d2b0ac7976a82bf3 Mon Sep 17 00:00:00 2001
+From: Denis <denis.voltmann@gmail.com>
+Date: Sat, 29 Nov 2025 16:03:25 +0100
+Subject: [PATCH] dm421: sn65ds83 update API
+
+---
+ drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c
+index 0bcd1eebf6c9..090f48fe8c4f 100644
+--- a/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c
++++ b/drivers/gpu/drm/bridge/sn65dsi83/sn65dsi83_drv.c
+@@ -10,6 +10,7 @@
+ #include <linux/of_graph.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
++#include <linux/media-bus-format.h>
+ 
+ //#include <drm/drmP.h>
+ #include <linux/delay.h>
+@@ -262,8 +263,7 @@ static int sn65dsi83_parse_dt(struct device_node *np,
+     return 0;
+ }
+ 
+-static int sn65dsi83_probe(struct i2c_client *i2c,
+-    const struct i2c_device_id *id)
++static int sn65dsi83_probe(struct i2c_client *i2c)
+ {
+     struct sn65dsi83 *sn65dsi83;
+     struct device *dev = &i2c->dev;
+@@ -359,7 +359,7 @@ static void sn65dsi83_detach_dsi(struct sn65dsi83 *sn65dsi83)
+     mipi_dsi_device_unregister(sn65dsi83->dsi);
+ }
+ 
+-static int sn65dsi83_remove(struct i2c_client *i2c)
++static void sn65dsi83_remove(struct i2c_client *i2c)
+ {
+     struct sn65dsi83 *sn65dsi83 = i2c_get_clientdata(i2c);
+     struct device *dev = &sn65dsi83->brg->client->dev;
+@@ -368,7 +368,6 @@ static int sn65dsi83_remove(struct i2c_client *i2c)
+     sn65dsi83_detach_dsi(sn65dsi83);
+     drm_bridge_remove(&sn65dsi83->bridge);
+ 
+-    return 0;
+ }
+ 
+ static const struct i2c_device_id sn65dsi83_i2c_ids[] = {
+-- 
+2.34.1
+

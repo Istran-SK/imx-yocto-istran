@@ -1,0 +1,25 @@
+From ed20eda2ff1ab299047d9d8b20e2835fd5328c06 Mon Sep 17 00:00:00 2001
+From: Denis <denis.voltmann@gmail.com>
+Date: Sat, 29 Nov 2025 16:14:25 +0100
+Subject: [PATCH] dm421: remove duplicates
+
+---
+ drivers/input/touchscreen/tsc200x-core.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/input/touchscreen/tsc200x-core.c b/drivers/input/touchscreen/tsc200x-core.c
+index ff8b2e9d5063..3d98bb1b24b0 100644
+--- a/drivers/input/touchscreen/tsc200x-core.c
++++ b/drivers/input/touchscreen/tsc200x-core.c
+@@ -88,8 +88,6 @@ struct tsc200x {
+ 	int                     in_z1;
+ 	int			in_z2;
+ 
+-	struct touchscreen_properties prop;
+-
+ 	spinlock_t		lock;
+ 	struct timer_list	penup_timer;
+ 
+-- 
+2.34.1
+

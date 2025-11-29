@@ -1,0 +1,7 @@
+python3 -m ensurepip --upgrade
+mkdir safia
+# copy/clone safia, TODO: bake it in yocto
+cd safia
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt

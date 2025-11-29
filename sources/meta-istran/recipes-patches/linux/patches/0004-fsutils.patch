@@ -1,0 +1,37 @@
+From d4526ab7359a511437b9a6dcf306b9150ebfe484 Mon Sep 17 00:00:00 2001
+From: Denis <denis.voltmann@gmail.com>
+Date: Sat, 29 Nov 2025 16:48:28 +0100
+Subject: [PATCH] dm421: fix fsutils
+
+---
+ drivers/media/platform/Kconfig | 1 +
+ sound/soc/fsl/Kconfig          | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index 0ab3bbdb4db2..4048145ac7e7 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -72,6 +72,7 @@ source "drivers/media/platform/imx8/Kconfig"
+ config VIDEO_MXC_CAPTURE
+ 	tristate "MXC Video For Linux Video Capture"
+ 	depends on VIDEO_DEV
++	select VIDEOBUF2_DMA_CONTIG
+ 	help
+ 	  This is the video4linux2 capture driver based on i.MX video-in module.
+ 
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 72e11c2b28e1..cb13b4414c38 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -103,6 +103,7 @@ config SND_SOC_FSL_XCVR
+ 	select REGMAP_MMIO
+ 	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
++	select SND_SOC_FSL_UTILS
+ 	help
+ 	  Say Y if you want to add Audio Transceiver (XCVR) support for NXP
+ 	  iMX CPUs. XCVR is a digital module that supports HDMI2.1 eARC,
+-- 
+2.34.1
+
